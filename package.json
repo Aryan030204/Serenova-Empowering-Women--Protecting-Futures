@@ -1,0 +1,11 @@
+{
+  "name": "serenova",
+  "version": "1.0.0",
+  "description": "Empowering Women, Protecting Futures",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Aryan Arora",
+  "license": "ISC"
+}
