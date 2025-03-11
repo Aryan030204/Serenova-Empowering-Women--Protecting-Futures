@@ -1,9 +1,9 @@
 /* eslint-disable react/prop-types */
 
-const CustomButton = ({ title }) => {
+const CustomButton = ({ title, color, size }) => {
   return (
     <>
-      <button className="bg-red-600 p-[1rem] text-white border-none rounded-2xl text-xl">
+      <button className={`bg-${color}-500 p-[1rem] text-white border-none rounded-2xl text-${size} font-semibold`}>
         {title}
       </button>
     </>
