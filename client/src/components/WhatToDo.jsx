@@ -55,7 +55,7 @@ const WhatToDo = () => {
           </div>
           <div className="flex justify-center items-center gap-[2rem] font-sans font-bold">
             <div className="flex h-full items-center justify-center relative lg:left-[9rem]">
-              <CustomButton title={"Download Our App"} />
+              <CustomButton title={"Download Our App"} color={"red"} />
             </div>
 
             <img
