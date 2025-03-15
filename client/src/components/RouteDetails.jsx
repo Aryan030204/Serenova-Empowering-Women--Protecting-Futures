@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router";
 import axios from "axios";
 import { useDispatch } from "react-redux";
-import { useSelector } from "react-redux";
 import {
   setFromLat,
   setToLat,
@@ -11,7 +10,6 @@ import {
 } from "../utils/routeSlice";
 
 const RouteDetails = () => {
-  const route = useSelector((state) => state.route);
   const dispatch = useDispatch();
   const [countries, setCountries] = useState([]);
   const [states, setStates] = useState([]);
@@ -24,8 +22,26 @@ const RouteDetails = () => {
   const [coordinates, setCoordinates] = useState("");
 
   const getLocation = () => {
-    navigator.geolocation.getCurrentPosition((position) => {
-      setLocation(`${position.coords.latitude}, ${position.coords.longitude}`);
+    navigator.geolocation.getCurrentPosition(async (position) => {
+      const lat = position.coords.latitude;
+      const lon = position.coords.longitude;
+      setLocation(`${lat}, ${lon}`);
+
+      try {
+        const response = await axios.get(
+          `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}`
+        );
+
+        if (response.data.address) {
+          const detectedCountry = response.data.address.country;
+          const detectedState = response.data.address.state;
+
+          setSelectedCountry(detectedCountry);
+          setSelectedState(detectedState);
+        }
+      } catch (error) {
+        console.error("Error fetching location details:", error);
+      }
     });
   };
 
@@ -114,11 +130,14 @@ const RouteDetails = () => {
           <div className="flex gap-2">
             <input
               type="checkbox"
-              onChange={(e) => {
+              onChange={async (e) => {
                 if (e.target.checked) {
+                  getLocation();
                   document.querySelector(".dest").value = location;
                 } else {
                   document.querySelector(".dest").value = "";
+                  setSelectedCountry("");
+                  setSelectedState("");
                 }
               }}
             />
