@@ -1,15 +1,16 @@
 import { Circle } from "lucide-react";
 import { Link } from "react-router";
 import Map from "./Map";
+import Map2 from "./Map2";
+import Map3 from "./Map3";
 const SafeRoute = () => {
   return (
     <div className="flex flex-col p-10 my-[3rem] w-[31rem] h-fit gap-5 bg-slate-300 items-center">
-      <Map/>
       <h1 className="font-bold text-2xl text-center">SAFE ROUTES HERE</h1>
       <div className="flex justify-between items-center w-full gap-4">
-        
-        <div className="flex w-full">
+        <div className="flex w-full items-center">
           <div className="flex gap-2 items-center w-full">
+            <Map />
             <Circle size={15} color="green" />
             <p>
               Route 1 (<span>90%</span> safe)
@@ -23,9 +24,9 @@ const SafeRoute = () => {
         </div>
       </div>
       <div className="flex justify-between items-center w-full gap-4">
-        
-        <div className="flex w-full">
+        <div className="flex w-full items-center">
           <div className="flex gap-2 items-center w-full">
+            <Map2 />
             <Circle size={15} color="orange" />
             <p>
               Route 2 (<span>75%</span> safe)
@@ -39,8 +40,9 @@ const SafeRoute = () => {
         </div>
       </div>
       <div className="flex justify-between items-center w-full gap-4">
-        <div className="flex w-full">
+        <div className="flex w-full items-center">
           <div className="flex gap-2 items-center w-full">
+            <Map3 />
             <Circle size={15} color="red" />
             <p>
               Route 1 (<span>50%</span> safe)

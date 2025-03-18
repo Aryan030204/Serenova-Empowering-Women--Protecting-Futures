@@ -1,9 +1,9 @@
-import { useEffect, useRef } from "react";
+import React, { useEffect, useRef } from "react";
 import L from "leaflet";
 import "leaflet-routing-machine";
 import "leaflet/dist/leaflet.css";
 
-const Map = () => {
+const Map2 = () => {
   const fromLat = parseFloat(localStorage.getItem("fromLat"));
   const fromLong = parseFloat(localStorage.getItem("fromLong"));
   const toLat = parseFloat(localStorage.getItem("toLat"));
@@ -65,14 +65,11 @@ const Map = () => {
       }).addTo(mapRef.current);
     };
 
-    
-    createRoute("green", [
+    createRoute("orange", [
       L.latLng(fromLat, fromLong),
-      L.latLng(fromLat + 0.01, fromLong + 0.01),
       L.latLng(toLat, toLong),
     ]);
 
-    
     setTimeout(() => {
       document
         .querySelectorAll(".leaflet-routing-container")
@@ -89,14 +86,14 @@ const Map = () => {
     <>
       <style>
         {`
-          .leaflet-routing-container {
-            display: none !important;
-          }
-        `}
+            .leaflet-routing-container {
+              display: none !important;
+            }
+          `}
       </style>
       <div ref={mapContainerRef} className="w-[170px] h-[170px]" />
     </>
   );
 };
 
-export default Map;
+export default Map2;
