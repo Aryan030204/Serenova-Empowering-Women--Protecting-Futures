@@ -9,6 +9,7 @@ import Signup from "./pages/Signup";
 import Help from "./pages/Help";
 import RoutePlanner from "./pages/RoutePlanner";
 import { useEffect } from "react";
+import RouteScorer from "./pages/RouteScorer";
 function App() {
   return (
     <>
@@ -23,6 +24,7 @@ function App() {
             <Route path="/routeplanner" element={<RoutePlanner />} />
             <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<Signup />} />
+            <Route path="/routescorer" element={<RouteScorer/>}/>
           </Routes>
           <Footer />
         </div>

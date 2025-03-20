@@ -54,7 +54,7 @@ const SafeRoute = () => {
       ))}
       <h1 className="text-center relative top-5 text-sm">
         Want to know about how routes are scored ? {" "}
-        <Link to={""} className="text-blue-500 underline">
+        <Link to={"/routescorer"} className="text-blue-500 underline">
           Know here
         </Link>
       </h1>
