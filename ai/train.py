@@ -6,19 +6,36 @@ from sklearn.ensemble import RandomForestRegressor
 # Load dataset
 df = pd.read_csv("./datasets/dataset.csv")
 
-# Select features (latitude & longitude) and target (safety_score)
-X = df[['Latitude', 'Longitude']]
+# Separate target variable
 y = df['Safety score']
 
-# Split data into training & testing sets
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+# Identify categorical columns
+categorical_cols = df.select_dtypes(include=['object']).columns.tolist()
 
-# Train model
-model = RandomForestRegressor(n_estimators=100, random_state=42)
-model.fit(X_train, y_train)
+# Drop the target column before processing features
+X_full = df.drop(columns=['Safety score'])
 
-# Save model
-with open("model.pkl", "wb") as file:
-    pickle.dump(model, file)
+# Encode categorical columns (One-Hot Encoding)
+X_full = pd.get_dummies(X_full, columns=categorical_cols, drop_first=True)
 
-print("✅ Model trained & saved as 'model.pkl'")
+# Model 1: Train using only Latitude & Longitude
+X_coords = df[['Latitude', 'Longitude']]
+X_train_c, X_test_c, y_train_c, y_test_c = train_test_split(X_coords, y, test_size=0.2, random_state=42)
+
+model_coords = RandomForestRegressor(n_estimators=100, random_state=42)
+model_coords.fit(X_train_c, y_train_c)
+
+# Model 2: Train using all 9 features (after encoding)
+X_train_f, X_test_f, y_train_f, y_test_f = train_test_split(X_full, y, test_size=0.2, random_state=42)
+
+model_full = RandomForestRegressor(n_estimators=100, random_state=42)
+model_full.fit(X_train_f, y_train_f)
+
+# Save both models
+with open("model_coords.pkl", "wb") as f:
+    pickle.dump(model_coords, f)
+
+with open("model_full.pkl", "wb") as f:
+    pickle.dump(model_full, f)
+
+print("✅ Both models trained & saved: 'model_coords.pkl' (coords only) & 'model_full.pkl' (all features)")

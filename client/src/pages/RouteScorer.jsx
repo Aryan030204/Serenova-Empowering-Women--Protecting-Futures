@@ -1,12 +1,11 @@
-import React from 'react'
-import RouteScorerForm from '../components/RouteScorerForm'
+import RouteScorerForm from "../components/RouteScorerForm";
 
 const RouteScorer = () => {
   return (
-    <div className='flex justify-center m-2 items-center'>
-      <RouteScorerForm/>
+    <div className="flex justify-center m-2 items-center p-[5rem]">
+      <RouteScorerForm />
     </div>
-  )
-}
+  );
+};
 
-export default RouteScorer
+export default RouteScorer;
