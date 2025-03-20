@@ -1,50 +1,27 @@
 import pickle
-import pandas as pd
-from flask import Flask, request, jsonify
-
-app = Flask(__name__)
+import numpy as np
 
 # Load trained model
-model = pickle.load(open("safety_model.pkl", "rb"))
+with open("model.pkl", "rb") as file:
+    model = pickle.load(file)
 
-# Load dataset to fetch additional details
-df = pd.read_csv("./datasets/dataset.csv")
+def predict_safety_score(lat1, lon1, lat2, lon2):
+    """Predicts safety score based on lat/lon"""
+    # Create feature array
+    input_data = np.array([[lat1, lon1], [lat2, lon2]])
 
-def get_location_data(latitude, longitude):
-    """Fetch data for a given location based on latitude & longitude."""
-    location_data = df.loc[(df["Latitude"] == latitude) & (df["Longitude"] == longitude)]
-    
-    if not location_data.empty:
-        return location_data.iloc[0].to_dict()  # Convert row to dictionary
-    else:
-        return None  # Location not found
+    # Predict scores
+    predictions = model.predict(input_data)
 
-@app.route('/predict', methods=['POST'])
-def predict_safety():
-    data = request.json
-    lat1, lon1 = data.get("current_lat"), data.get("current_lon")
-    lat2, lon2 = data.get("destination_lat"), data.get("destination_lon")
+    # Calculate average safety score
+    avg_safety_score = np.mean(predictions)
 
-    # Fetch details for current and destination location
-    current_data = get_location_data(lat1, lon1)
-    destination_data = get_location_data(lat2, lon2)
+    return avg_safety_score
 
-    if current_data and destination_data:
-        # Average both locations' feature values for prediction
-        input_features = {
-            "Light Intensity": (current_data["Light Intensity"] + destination_data["Light Intensity"]) / 2,
-            "Traffic Density": (current_data["Traffic Density"] + destination_data["Traffic Density"]) / 2,
-            "Crowd Density": (current_data["Crowd Density"] + destination_data["Crowd Density"]) / 2,
-            "Crime Rate": (current_data["Crime Rate"] + destination_data["Crime Rate"]) / 2,
-            "Accident Rate": (current_data["Accident Rate"] + destination_data["Accident Rate"]) / 2,
-            "Crime against women": (current_data["Crime against women"] + destination_data["Crime against women"]) / 2,
-        }
+if __name__ == "__main__":
+    # Test Prediction
+    lat1, lon1 = 28.7041, 77.1025  # Example: Delhi
+    lat2, lon2 = 19.0760, 72.8777  # Example: Mumbai
 
-        input_df = pd.DataFrame([input_features])
-        safety_score = model.predict(input_df)[0]
-        return jsonify({"safety_score": safety_score})
-    
-    return jsonify({"error": "Location data not found"}), 404
-
-if __name__ == '__main__':
-    app.run(debug=True)
+    safety_score = predict_safety_score(lat1, lon1, lat2, lon2)
+    print(f"Predicted Safety Score: {safety_score:.2f}")

@@ -1,44 +1,27 @@
 from flask import Flask, request, jsonify
+import pickle
+import numpy as np
 from flask_cors import CORS
-import pandas as pd
-import joblib
 
-# Initialize Flask App
 app = Flask(__name__)
-CORS(app)  # Allow cross-origin requests from React frontend
+CORS(app)
 
-# Load Trained Model
-model = joblib.load("safety_model.pkl")
+# Load ML model
+with open("./model.pkl", "rb") as file:
+    model = pickle.load(file)
 
-@app.route("/predict", methods=["POST"])
+@app.route('/predict', methods=['POST'])
 def predict():
-    try:
-        # Get JSON data from request
-        data = request.get_json()
-        
-        # Extract features from request
-        features = [
-            data["latitude"], data["longitude"], 
-            data["light_intensity"], data["traffic_density"], 
-            data["crowd_density"], data["crime_rate"], 
-            data["accident_rate"], data["crime_against_women"]
-        ]
+    data = request.json
+    lat1, lon1 = data['lat1'], data['lon1']
+    lat2, lon2 = data['lat2'], data['lon2']
 
-        # Convert to DataFrame
-        input_df = pd.DataFrame([features], columns=[
-            "Latitude", "Longitude", "Light Intensity", "Traffic Density", 
-            "Crowd Density", "Crime Rate", "Accident Rate", "Crime against women"
-        ])
+    # Predict safety score
+    input_data = np.array([[lat1, lon1], [lat2, lon2]])
+    predictions = model.predict(input_data)
+    avg_safety_score = np.mean(predictions)
 
-        # Predict safety score
-        prediction = model.predict(input_df)[0]
-        
-        # Return JSON response
-        return jsonify({"safety_score": round(float(prediction), 2)})
+    return jsonify({"safety_score": avg_safety_score})
 
-    except Exception as e:
-        return jsonify({"error": str(e)}), 500
-
-# Run Flask App
-if __name__ == "__main__":
-    app.run(debug=True, port=5000)
+if __name__ == '__main__':
+    app.run(debug=True)

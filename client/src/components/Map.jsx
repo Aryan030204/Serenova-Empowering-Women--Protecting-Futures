@@ -13,6 +13,7 @@ const Map = () => {
   const mapContainerRef = useRef(null);
 
   useEffect(() => {
+
     if (!mapContainerRef.current || mapRef.current) return;
 
     mapRef.current = L.map(mapContainerRef.current).setView(
@@ -65,14 +66,12 @@ const Map = () => {
       }).addTo(mapRef.current);
     };
 
-    
     createRoute("green", [
       L.latLng(fromLat, fromLong),
       L.latLng(fromLat + 0.01, fromLong + 0.01),
       L.latLng(toLat, toLong),
     ]);
 
-    
     setTimeout(() => {
       document
         .querySelectorAll(".leaflet-routing-container")

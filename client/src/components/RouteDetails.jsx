@@ -20,6 +20,7 @@ const RouteDetails = () => {
   const [suggestions, setSuggestions] = useState([]);
   const [loading, setLoading] = useState(false);
   const [coordinates, setCoordinates] = useState("");
+  
 
   const getLocation = () => {
     navigator.geolocation.getCurrentPosition(async (position) => {
@@ -243,3 +244,4 @@ const RouteDetails = () => {
 };
 
 export default RouteDetails;
+
