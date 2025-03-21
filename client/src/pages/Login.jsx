@@ -9,18 +9,16 @@ import { RENDER_SERVER_URL, SERVER_URL } from "../utils/config";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/ReactToastify.css";
 import { login } from "../utils/userSlice";
+import QuoteBox from "../components/QuoteBox";
 const Login = () => {
   const [hidden, isHidden] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  useEffect(() => {
-
-  })
+  useEffect(() => {});
   const handleLogin = async () => {
     try {
-      
       const res = await axios.post(
         SERVER_URL + "/login",
         {
@@ -36,7 +34,7 @@ const Login = () => {
         dispatch(login(res.data.data));
         localStorage.setItem("user", JSON.stringify(res.data.data));
         navigate("/");
-      },3000);
+      }, 3000);
     } catch (err) {
       toast.error(err.message);
       console.log(err);
@@ -45,6 +43,26 @@ const Login = () => {
   return (
     <>
       <div className="flex items-center justify-center">
+        <div>
+          <div className="relative right-[22rem] top-10">
+            <QuoteBox
+              quote={
+                "Empowered women empower the world—rise, lead, and inspire change with courage, confidence, and resilience."
+              }
+              bcolor={"border-red-500"}
+              bgcolor={"bg-red-100"}
+            />
+          </div>
+          <div className="relative right-[2rem]">
+            <QuoteBox
+              quote={
+                "Break barriers, shatter ceilings, and redefine limits—because nothing is impossible when a woman decides to rise."
+              }
+              bcolor={"border-blue-500"}
+              bgcolor={"bg-blue-100"}
+            />
+          </div>
+        </div>
         <div className="relative flex flex-col justify-evenly items-center mt-[5rem] shadow-lg bg-white border-0 rounded-lg w-[30rem] h-[35rem]">
           <h1 className="font-bold text-2xl">Login to your Account</h1>
           <div className="flex flex-col justify-center items-center w-full relative bottom-[3rem]">
@@ -95,7 +113,27 @@ const Login = () => {
                 Signup
               </Link>
             </h1>
-            <ToastContainer/>
+            <ToastContainer />
+          </div>
+        </div>
+        <div>
+          <div className="relative left-[18rem]">
+            <QuoteBox
+              quote={
+                "Empowered women empower the world—rise, lead, and inspire change with courage, confidence, and resilience."
+              }
+              bcolor={"border-red-500"}
+              bgcolor={"bg-red-100"}
+            />
+          </div>
+          <div className="relative left-[2rem] top-12">
+            <QuoteBox
+              quote={
+                "Break barriers, shatter ceilings, and redefine limits—because nothing is impossible when a woman decides to rise."
+              }
+              bcolor={"border-blue-500"}
+              bgcolor={"bg-blue-100"}
+            />
           </div>
         </div>
       </div>

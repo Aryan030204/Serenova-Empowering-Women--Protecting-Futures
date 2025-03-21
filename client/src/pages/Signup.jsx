@@ -6,6 +6,7 @@ import axios from "axios";
 import { RENDER_SERVER_URL, SERVER_URL } from "../utils/config";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/ReactToastify.css";
+import QuoteBox from "../components/QuoteBox";
 const Signup = () => {
   const [hidden, isHidden] = useState(false);
   const [firstName, setFirstName] = useState("");
@@ -32,11 +33,11 @@ const Signup = () => {
           withCredentials: true,
         }
       );
-      
+
       toast.success("Account created successfully");
       setTimeout(() => {
         navigate("/login");
-      },2000)
+      }, 2000);
     } catch (err) {
       toast.error(err.message);
       console.error(err);
@@ -45,6 +46,26 @@ const Signup = () => {
   return (
     <>
       <div className="flex justify-center items-center">
+        <div>
+          <div className="relative right-[18rem]">
+            <QuoteBox
+              quote={
+                "No one can limit a woman who believes in her potential and takes action to achieve her goals."
+              }
+              bcolor={"border-red-500"}
+              bgcolor={"bg-red-100"}
+            />
+          </div>
+          <div className="relative right-[2rem] top-12">
+            <QuoteBox
+              quote={
+                "You are powerful, brilliant, and enough—never let the world convince you otherwise."
+              }
+              bcolor={"border-blue-500"}
+              bgcolor={"bg-blue-100"}
+            />
+          </div>
+        </div>
         <div className="relative flex flex-col justify-evenly items-center mt-[5rem] shadow-lg bg-white border-0 rounded-lg w-[35rem] h-[35rem]">
           <h1 className="font-bold text-2xl">Create a new Account</h1>
           <div className="flex flex-col justify-center items-center w-full relative bottom-[3rem]">
@@ -152,6 +173,28 @@ const Signup = () => {
               </Link>
             </h1>
             <ToastContainer />
+          </div>
+        </div>
+        <div>
+          <div>
+            <div className="relative left-[19rem] top-10">
+              <QuoteBox
+                quote={
+                  "A woman’s strength lies in her ability to rise every time she falls and keep moving forward."
+                }
+                bcolor={"border-red-500"}
+                bgcolor={"bg-red-100"}
+              />
+            </div>
+            <div className="relative left-[2rem]">
+              <QuoteBox
+                quote={
+                  "Women are not meant to fit into boxes, they are born to create new paths and rewrite history."
+                }
+                bcolor={"border-blue-500"}
+                bgcolor={"bg-blue-100"}
+              />
+            </div>
           </div>
         </div>
       </div>
