@@ -6,14 +6,12 @@ from flask_cors import CORS
 app = Flask(__name__)
 CORS(app)
 
-# Load both models
 with open("./model_coords.pkl", "rb") as file:
     model_coords = pickle.load(file)
 
 with open("./model_full.pkl", "rb") as file:
     model_full = pickle.load(file)
 
-# Define full feature set (excluding coordinates)
 full_features = [
     "Latitude", "Longitude", "Light Intensity", "Traffic Density",
     "Crowd Density", "Crime Rate", "Accident Rate"
@@ -25,21 +23,17 @@ def predict():
 
     data = request.json
 
-    # Determine whether to use full model
     use_full_model = data.get("use_full_model", False)
 
     if use_full_model:
-        # Ensure all features are provided
         missing_features = [feat for feat in full_features if feat not in data]
         if missing_features:
             return jsonify({"error": f"Missing features: {', '.join(missing_features)}"}), 400
 
-        # Prepare input for full model
         input_data = np.array([[data[feat] for feat in full_features]])
         prediction = model_full.predict(input_data)[0]
 
     else:
-        # Validate coordinates
         if 'lat1' not in data or 'lon1' not in data or 'lat2' not in data or 'lon2' not in data:
             return jsonify({"error": "Missing latitude or longitude values"}), 400
 

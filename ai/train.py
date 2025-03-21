@@ -3,19 +3,14 @@ import pickle
 from sklearn.model_selection import train_test_split
 from sklearn.ensemble import RandomForestRegressor
 
-# Load dataset
 df = pd.read_csv("./datasets/dataset.csv")
 
-# Separate target variable
 y = df['Safety score']
 
-# Identify categorical columns
 categorical_cols = df.select_dtypes(include=['object']).columns.tolist()
 
-# Drop the target column before processing features
 X_full = df.drop(columns=['Safety score'])
 
-# Encode categorical columns (One-Hot Encoding)
 X_full = pd.get_dummies(X_full, columns=categorical_cols, drop_first=True)
 
 # Model 1: Train using only Latitude & Longitude
@@ -31,7 +26,6 @@ X_train_f, X_test_f, y_train_f, y_test_f = train_test_split(X_full, y, test_size
 model_full = RandomForestRegressor(n_estimators=100, random_state=42)
 model_full.fit(X_train_f, y_train_f)
 
-# Save both models
 with open("model_coords.pkl", "wb") as f:
     pickle.dump(model_coords, f)
 
