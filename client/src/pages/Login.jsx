@@ -5,7 +5,7 @@ import { Eye, EyeOff } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import axios from "axios";
-import { SERVER_URL } from "../utils/config";
+import { RENDER_SERVER_URL } from "../utils/config";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/ReactToastify.css";
 import { login } from "../utils/userSlice";
@@ -22,7 +22,7 @@ const Login = () => {
     try {
       
       const res = await axios.post(
-        SERVER_URL + "/login",
+        RENDER_SERVER_URL + "/login",
         {
           email,
           password,

@@ -1,4 +1,5 @@
 export const SERVER_URL="http://localhost:3000/api"
+export const RENDER_SERVER_URL="https://serenova-empowering-women-protecting.onrender.com"
 export const PYTHON_APP_URL="http://127.0.0.1:5000"
 export const EMAIL_TEMPLATE_ID="template_aht6na8"
 export const EMAIL_SERVICE_ID="service_1o4ehaj"

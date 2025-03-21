@@ -3,7 +3,7 @@ import { Link, useNavigate } from "react-router";
 import { Eye, EyeOff } from "lucide-react";
 import { useState } from "react";
 import axios from "axios";
-import { SERVER_URL } from "../utils/config";
+import { RENDER_SERVER_URL } from "../utils/config";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/ReactToastify.css";
 const Signup = () => {
@@ -19,7 +19,7 @@ const Signup = () => {
   const handleSignup = async () => {
     try {
       await axios.post(
-        SERVER_URL + "/signup",
+        RENDER_SERVER_URL + "/signup",
         {
           firstName,
           lastName,
