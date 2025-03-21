@@ -18,7 +18,7 @@ const Signup = () => {
 
   const handleSignup = async () => {
     try {
-      const res = await axios.post(
+      await axios.post(
         SERVER_URL + "/signup",
         {
           firstName,

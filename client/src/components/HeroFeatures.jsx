@@ -3,7 +3,7 @@ const HeroFeatures = () => {
   return (
     <div className="flex flex-col gap-[2rem] w-full">
       <div className="flex justify-center items-center">
-        <h1 className="text-7xl font-handwriting">Our Features</h1>
+        <h1 className="text-5xl font-semibold">Our Features</h1>
       </div>
       <div className="flex flex-col gap-[5rem] justify-center items-center">
         <div className="flex items-center justify-evenly w-full flex-wrap">

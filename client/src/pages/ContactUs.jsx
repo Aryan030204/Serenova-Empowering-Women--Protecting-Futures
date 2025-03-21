@@ -1,4 +1,3 @@
-import React from 'react'
 import ContactLeft from '../components/ContactLeft'
 import ContactForm from '../components/ContactForm'
 

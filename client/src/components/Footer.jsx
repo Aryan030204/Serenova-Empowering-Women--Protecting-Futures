@@ -89,7 +89,6 @@ const Footer = () => {
                 </li>
               </ul>
             </div>
-
             <div>
               <p className="text-sm font-semibold tracking-widest text-gray-400 uppercase">
                 Company
@@ -101,19 +100,18 @@ const Footer = () => {
                 </li>
 
                 <li>
-                  <Link to={"/"}>Blog</Link>
+                  <Link to={"/blog"}>Blog</Link>
                 </li>
 
                 <li>
-                  <Link to={"/"}>Contact</Link>
+                  <Link to={"/contact"}>Contact Us</Link>
                 </li>
 
                 <li>
-                  <Link to={"/"}>Contact Us</Link>
+                  <Link to={"/help"}>Help</Link>
                 </li>
               </ul>
             </div>
-
             <div>
               <p className="text-sm font-semibold tracking-widest text-gray-400 uppercase">
                 Help
@@ -129,7 +127,6 @@ const Footer = () => {
                 </li>
               </ul>
             </div>
-
             <div className="col-span-2 md:col-span-1 lg:col-span-2 lg:pl-8">
               <p className="text-sm font-semibold tracking-widest text-gray-400 uppercase">
                 Support
