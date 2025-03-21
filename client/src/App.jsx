@@ -1,6 +1,5 @@
 import Home from "./pages/Home";
 import { BrowserRouter, Route, Routes } from "react-router";
-import Blog from "./pages/Blog";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
 import ContactUs from "./pages/ContactUs";
@@ -8,8 +7,8 @@ import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import Help from "./pages/Help";
 import RoutePlanner from "./pages/RoutePlanner";
-import { useEffect } from "react";
 import RouteScorer from "./pages/RouteScorer";
+import Stories from "./pages/Stories";
 function App() {
   return (
     <>
@@ -18,7 +17,7 @@ function App() {
           <Header />
           <Routes>
             <Route path="/" element={<Home />} />
-            <Route path="/blog" element={<Blog />} />
+            <Route path="/blog" element={<Stories />} />
             <Route path="/contact" element={<ContactUs />} />
             <Route path="/help" element={<Help />} />
             <Route path="/routeplanner" element={<RoutePlanner />} />
