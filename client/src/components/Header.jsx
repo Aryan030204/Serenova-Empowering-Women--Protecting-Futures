@@ -8,8 +8,6 @@ import Profile from "./Profile";
 const Header = () => {
   const [isOpen, setIsOpen] = useState(false);
   const user = useSelector((store) => store.user.user);
-  
-  
 
   return (
     <div className="flex w-full h-[5rem] justify-between items-center px-6 bg-white sticky z-50">

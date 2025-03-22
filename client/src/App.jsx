@@ -9,6 +9,7 @@ import Help from "./pages/Help";
 import RoutePlanner from "./pages/RoutePlanner";
 import RouteScorer from "./pages/RouteScorer";
 import Stories from "./pages/Stories";
+import ProfilePage from "./pages/ProfilePage";
 function App() {
   return (
     <>
@@ -23,7 +24,8 @@ function App() {
             <Route path="/routeplanner" element={<RoutePlanner />} />
             <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<Signup />} />
-            <Route path="/routescorer" element={<RouteScorer/>}/>
+            <Route path="/routescorer" element={<RouteScorer />} />
+            <Route path="/profile" element={<ProfilePage />} />
           </Routes>
           <Footer />
         </div>

@@ -7,7 +7,7 @@ import { useDispatch } from "react-redux";
 import { logout } from "../utils/userSlice";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/ReactToastify.css";
-import { useNavigate } from "react-router";
+import { useNavigate, Link } from "react-router";
 
 const Profile = ({ user }) => {
   const dispatch = useDispatch();
@@ -35,11 +35,13 @@ const Profile = ({ user }) => {
 
   return (
     <div className="flex items-center justify-center gap-1 w-[15rem]">
-      <img
-        src={user.gender === "male" ? male : female}
-        alt="dp_avatar"
-        className="w-[2.2rem] border-none rounded-full"
-      />
+      <Link to={"/profile"}>
+        <img
+          src={user.gender === "male" ? male : female}
+          alt="dp_avatar"
+          className="w-[2.2rem] border-none rounded-full"
+        />
+      </Link>
       <h1 className="whitespace-nowrap font-bold mr-5">
         Hello, <span className="text-blue-500 font-bold">{user.firstName}</span>
       </h1>
