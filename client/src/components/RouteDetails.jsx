@@ -23,6 +23,8 @@ const RouteDetails = () => {
   const [loading, setLoading] = useState(false);
   const [coordinates, setCoordinates] = useState("");
   const [saved, setSaved] = useState(false);
+  const [alreadySaved, setAlreadySaved] = useState(false);
+  const [savebtn, setSaveBtn] = useState(false);
 
   const getLocation = () => {
     navigator.geolocation.getCurrentPosition(
@@ -152,12 +154,16 @@ const RouteDetails = () => {
         { withCredentials: true }
       );
       console.log("route saved");
-
+      setAlreadySaved(false);
       setSaved(true);
       setTimeout(() => {
         setSaved(false);
       }, 4000);
     } catch (err) {
+      setAlreadySaved(true);
+      setTimeout(() => {
+        setAlreadySaved(false);
+      }, 4000);
       console.error("Error saving route:", err);
     }
   };
@@ -278,20 +284,23 @@ const RouteDetails = () => {
             dispatch(setToLat(coordinates.split(",")[0]));
             dispatch(setToLong(coordinates.split(",")[1]));
             setTimeout(() => {
-              document.querySelector(".saveRoute").style.display = "block";
+              setSaveBtn(true);
             }, 2000);
           }}
         >
           GET ROUTE
         </button>
-        <button
-          className="hidden text-white p-2 items-center font-semibold bg-blue-500 rounded-xl text-[18px] saveRoute"
-          onClick={handleSaveRoute}
-        >
-          Save Route
-        </button>
+        {savebtn && (
+          <button
+            className="text-white p-2 items-center font-semibold bg-blue-500 rounded-xl text-[18px] saveRoute"
+            onClick={handleSaveRoute}
+          >
+            Save Route
+          </button>
+        )}
         <h1 className="text-green-600 font-semibold underline">
           {saved ? "route saved successfully" : ""}
+          {alreadySaved ? "route already saved !" : ""}
         </h1>
       </div>
     </div>
