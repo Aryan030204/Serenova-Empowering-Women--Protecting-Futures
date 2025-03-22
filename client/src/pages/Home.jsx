@@ -1,7 +1,9 @@
 /* eslint-disable no-undef */
+import { useSelector } from "react-redux";
 import HeroBanner from "../components/HeroBanner";
 import HeroFeatures from "../components/HeroFeatures";
 import WhatToDo from "../components/WhatToDo";
+import { useEffect } from "react";
 
 const Home = () => {
   

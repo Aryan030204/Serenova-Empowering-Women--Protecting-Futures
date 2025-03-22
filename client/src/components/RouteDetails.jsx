@@ -1,5 +1,4 @@
-import { useEffect, useState } from "react";
-import { Link } from "react-router";
+import { useCallback, useEffect, useState } from "react";
 import axios from "axios";
 import { useDispatch } from "react-redux";
 import {
@@ -8,9 +7,12 @@ import {
   setFromLong,
   setToLong,
 } from "../utils/routeSlice";
+import { OPENWEATHER_API_KEY, SERVER_URL } from "../utils/config";
+import { useSelector } from "react-redux";
 
 const RouteDetails = () => {
   const dispatch = useDispatch();
+  const user = useSelector((state) => state.user);
   const [countries, setCountries] = useState([]);
   const [states, setStates] = useState([]);
   const [selectedCountry, setSelectedCountry] = useState("");
@@ -20,31 +22,32 @@ const RouteDetails = () => {
   const [suggestions, setSuggestions] = useState([]);
   const [loading, setLoading] = useState(false);
   const [coordinates, setCoordinates] = useState("");
+  const [saved, setSaved] = useState(false);
 
   const getLocation = () => {
-    navigator.geolocation.getCurrentPosition(async (position) => {
-      const lat = position.coords.latitude;
-      const lon = position.coords.longitude;
-      setLocation(`${lat}, ${lon}`);
+    navigator.geolocation.getCurrentPosition(
+      async (position) => {
+        const lat = Number(position.coords.latitude.toFixed(4));
+        const lon = Number(position.coords.longitude.toFixed(4));
+        setLocation(`${lat}, ${lon}`);
 
-      try {
-        const response = await axios.get(
-          `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}`
-        );
-
-        if (response.data.address) {
-          const detectedCountry = response.data.address.country;
-          const detectedState = response.data.address.state;
-
-          setSelectedCountry(detectedCountry);
-          setSelectedState(detectedState);
+        try {
+          const response = await axios.get(
+            `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}`
+          );
+          if (response.data.address) {
+            setSelectedCountry(response.data.address.country || "");
+            setSelectedState(response.data.address.state || "");
+          }
+        } catch (error) {
+          console.error("Error fetching location details:", error);
         }
-      } catch (error) {
-        console.error("Error fetching location details:", error);
+      },
+      (error) => {
+        console.error("Error getting user location:", error);
       }
-    });
+    );
   };
-
   useEffect(() => {
     getLocation();
     axios
@@ -73,28 +76,36 @@ const RouteDetails = () => {
     }
   }, [selectedCountry]);
 
-  const fetchLocationSuggestions = async (query) => {
-    if (query.length > 2) {
-      setLoading(true);
-      try {
-        const response = await axios.get(
-          `https://nominatim.openstreetmap.org/search?format=json&q=${query}`
-        );
-        setSuggestions(response.data);
-      } catch (error) {
-        console.error("Error fetching location suggestions:", error);
-      } finally {
-        setLoading(false);
-      }
-    } else {
-      setSuggestions([]);
-    }
-  };
+  const fetchLocationSuggestions = useCallback(
+    (() => {
+      let timer;
+      return (query) => {
+        clearTimeout(timer);
+        timer = setTimeout(async () => {
+          if (query.length > 2) {
+            setLoading(true);
+            try {
+              const response = await axios.get(
+                `https://nominatim.openstreetmap.org/search?format=json&q=${query}`
+              );
+              setSuggestions(response.data);
+            } catch (error) {
+              console.error("Error fetching location suggestions:", error);
+            } finally {
+              setLoading(false);
+            }
+          } else {
+            setSuggestions([]);
+          }
+        }, 300);
+      };
+    })(),
+    []
+  );
 
   const handleSelectDestination = async (place) => {
     setDestination(place.display_name);
     setSuggestions([]);
-    setLoading(true);
 
     try {
       const response = await axios.get(
@@ -112,6 +123,44 @@ const RouteDetails = () => {
     }
   };
 
+  const handleSaveRoute = async () => {
+    if (!location || !coordinates) {
+      console.error("Missing location data");
+      return;
+    }
+
+    try {
+      const [lat, lon] = location.split(",").map(Number);
+      const [destLat, destLon] = coordinates.split(",").map(Number);
+
+      const currentNameRes = await axios.get(
+        `http://api.openweathermap.org/geo/1.0/reverse?lat=${lat}&lon=${lon}&appid=${OPENWEATHER_API_KEY}`
+      );
+      const destNameRes = await axios.get(
+        `http://api.openweathermap.org/geo/1.0/reverse?lat=${destLat}&lon=${destLon}&appid=${OPENWEATHER_API_KEY}`
+      );
+
+      await axios.post(
+        `${SERVER_URL}/route/save`,
+        {
+          userId: user.user._id,
+          currentLocation: [lat, lon],
+          destinationLocation: [destLat, destLon],
+          currentLocationName: currentNameRes?.data?.[0]?.name || "Unknown",
+          destinationLocationName: destNameRes?.data?.[0]?.name || "Unknown",
+        },
+        { withCredentials: true }
+      );
+      console.log("route saved");
+
+      setSaved(true);
+      setTimeout(() => {
+        setSaved(false);
+      }, 4000);
+    } catch (err) {
+      console.error("Error saving route:", err);
+    }
+  };
   return (
     <div className="flex flex-col p-10 my-[3rem] h-[45.3rem] gap-2 bg-slate-300 w-[31rem]">
       <h1 className="font-bold text-2xl text-center">SAFE ROUTE PLANNER</h1>
@@ -124,7 +173,7 @@ const RouteDetails = () => {
           <input
             type="text"
             placeholder="Area"
-            className="text-center p-1 dest"
+            className="currname text-center p-1 dest"
           />
 
           <div className="flex gap-2">
@@ -183,7 +232,7 @@ const RouteDetails = () => {
           <input
             type="text"
             placeholder="Search for a place..."
-            className="text-center p-1 border border-gray-400 rounded-md"
+            className="destname text-center p-1 border border-gray-400 rounded-md"
             value={destination}
             onChange={(e) => {
               setDestination(e.target.value);
@@ -228,15 +277,22 @@ const RouteDetails = () => {
             dispatch(setFromLong(location.split(",")[1]));
             dispatch(setToLat(coordinates.split(",")[0]));
             dispatch(setToLong(coordinates.split(",")[1]));
+            setTimeout(() => {
+              document.querySelector(".saveRoute").style.display = "block";
+            }, 2000);
           }}
         >
-          <Link to={""}>GET ROUTE</Link>
+          GET ROUTE
         </button>
-        <Link to="">
-          <button className="text-white p-2 items-center font-semibold bg-red-500 rounded-xl text-[13px]">
-            <Link to={""}>QUICK HELP</Link>
-          </button>
-        </Link>
+        <button
+          className="hidden text-white p-2 items-center font-semibold bg-blue-500 rounded-xl text-[18px] saveRoute"
+          onClick={handleSaveRoute}
+        >
+          Save Route
+        </button>
+        <h1 className="text-green-600 font-semibold underline">
+          {saved ? "route saved successfully" : ""}
+        </h1>
       </div>
     </div>
   );
