@@ -10,6 +10,7 @@ import RoutePlanner from "./pages/RoutePlanner";
 import RouteScorer from "./pages/RouteScorer";
 import Stories from "./pages/Stories";
 import ProfilePage from "./pages/ProfilePage";
+import RoutesPage from "./pages/RoutesPage";
 function App() {
   return (
     <>
@@ -26,6 +27,7 @@ function App() {
             <Route path="/signup" element={<Signup />} />
             <Route path="/routescorer" element={<RouteScorer />} />
             <Route path="/profile" element={<ProfilePage />} />
+            <Route path="/routes" element={<RoutesPage />} />
           </Routes>
           <Footer />
         </div>
