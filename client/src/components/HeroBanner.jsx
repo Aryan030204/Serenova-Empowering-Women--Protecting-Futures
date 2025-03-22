@@ -29,7 +29,7 @@ const HeroBanner = () => {
         opacity: 1,
         x: 0,
         duration: 2,
-        ease: "power2.out"
+        ease: "power2.out",
       }
     );
   }, []);
@@ -58,11 +58,11 @@ const HeroBanner = () => {
       <div className="flex w-[40%] gap-2">
         <img
           src={hero2}
-          className="relative lg:top-[10rem] lg:left-[7rem] w-[32rem] h-[13rem] md:left-[-4rem] md:top-[5.5rem] hero2"
+          className="relative lg:top-[12.5rem] lg:left-[7rem] w-[32rem] h-[13rem] md:left-[-4rem] md:top-[5.5rem] hero2"
         />
         <img
           src={hero1}
-          className="relative lg:bottom-[7.5rem] lg:h-[32rem] md:h-[22rem] lg:right-[1rem] md:bottom-[3rem] md:right-[8.5rem] hero1"
+          className="relative lg:bottom-[4.5rem] lg:h-[32rem] md:h-[22rem] lg:right-[1rem] md:bottom-[3rem] md:right-[8.5rem] hero1"
         />
       </div>
     </div>

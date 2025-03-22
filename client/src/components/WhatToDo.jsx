@@ -54,14 +54,14 @@ const WhatToDo = () => {
             <h1>OR</h1>
           </div>
           <div className="flex justify-center items-center gap-[2rem] font-sans font-bold">
-            <div className="flex h-full items-center justify-center relative lg:left-[9rem]">
+            <div className="flex h-full items-center justify-center relative lg:left-[15.5rem]">
               <CustomButton title={"Download Our App"} color={"red"} />
             </div>
 
             <img
               src={guide2}
               alt="guide2"
-              className="md:hidden lg:block absolute lg:right-[1rem] lg:bottom-[-43.6rem]"
+              className="md:hidden lg:block absolute lg:right-[1rem] lg:bottom-[-39.5rem]"
             />
           </div>
         </div>
