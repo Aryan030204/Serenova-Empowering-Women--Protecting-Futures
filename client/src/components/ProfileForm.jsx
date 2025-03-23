@@ -4,6 +4,8 @@ import axios from "axios";
 import { SERVER_URL } from "../utils/config";
 import male from "../assets/male.png";
 import female from "../assets/female.png";
+import "react-toastify/dist/ReactToastify.css";
+import {toast, ToastContainer} from "react-toastify";
 
 const ProfileForm = () => {
   const [formData, setFormData] = useState({
@@ -26,7 +28,7 @@ const ProfileForm = () => {
   };
   useEffect(() => {
     getProfile();
-  }, []);
+  }, [saved]);
 
   const handleUpdate = async () => {
     try {
@@ -43,11 +45,13 @@ const ProfileForm = () => {
         }
       );
       setSaved(true);
+      toast.success("Profile updated successfully");
       setTimeout(() => {
         setSaved(false);
       }, 3000);
       console.log("profile updated successfully");
     } catch (err) {
+      toast.error("Error updating profile");
       console.log(err);
     }
   };
@@ -145,6 +149,7 @@ const ProfileForm = () => {
         >
           {saved ? "Saved successfully!" : "Save profile"}
         </button>
+        <ToastContainer/>
       </div>
     </div>
   );
