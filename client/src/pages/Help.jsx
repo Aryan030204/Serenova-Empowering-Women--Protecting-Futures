@@ -1,79 +1,17 @@
 import { PhoneCall } from "lucide-react";
+import EmergencyNums from "../components/EmergencyNums";
 
 const Help = () => {
-  const copyNumber = (num) => {
-    navigator.clipboard.writeText(num);
-  };
+
+  const nums = [["Women helpline",1091], ["Senior citizen helpline", 14567],["Child Abuse helpline",1098], ["Police",100], ["Fire",101], ["Ambulance",102], ["Traffic Police",103], ["Health",104], ["Disaster management",108], ["Railway",131], ["Domestic abuse",181], ["Anti corruption",1031], ["Road accident",1073], ["Anti terror",1090]];
+  
   return (
     <div className="flex flex-col gap-[2rem] my-[2rem]">
       <h1 className="text-center text-3xl font-bold">
         📞 EMERGENCY/HELPLINE NUMBERS 📞
       </h1>
       <div className="flex justify-evenly items-start p-[2rem]">
-        <div className="flex flex-col gap-4">
-          <div className="flex flex-col gap-2 border p-4">
-            <div className="flex gap-2 items-center">
-              <PhoneCall size={20} />
-              <h1 className="text-xl font-semibold women">
-                Women Helpline: 1091
-              </h1>
-            </div>
-            <div>
-              <button
-                className="bg-purple-500 rounded-[5px] p-[5px] text-center text-white font-bold copyWomen"
-                onClick={copyNumber(1091)}
-              >
-                Copy
-              </button>
-            </div>
-          </div>
-          <div className="flex flex-col gap-2 border p-4">
-            <div className="flex gap-2 items-center">
-              <PhoneCall size={20} />
-              <h1 className="text-xl font-semibold">Child Helpline: 1098</h1>
-            </div>
-            <div>
-              <button className="bg-purple-500 rounded-[5px] p-[5px] text-center text-white font-bold" onClick={copyNumber(1098)}>
-                Copy
-              </button>
-            </div>
-          </div>
-        </div>
-        <div className="flex flex-col gap-4">
-          <div className="flex flex-col gap-2 border p-4">
-            <div className="flex gap-2 items-center">
-              <PhoneCall size={20} />
-              <h1 className="text-xl font-semibold">Police: 100</h1>
-            </div>
-            <div>
-              <button className="bg-purple-500 rounded-[5px] p-[5px] text-center text-white font-bold" onClick={copyNumber(100)}>
-                Copy
-              </button>
-            </div>
-          </div>
-          <div className="flex flex-col gap-2 border p-4">
-            <div className="flex gap-2 items-center">
-              <PhoneCall size={20} />
-              <h1 className="text-xl font-semibold">Fire: 101</h1>
-            </div>
-            <div>
-              <button className="bg-purple-500 rounded-[5px] p-[5px] text-center text-white font-bold" onClick={copyNumber(101)}>
-                Copy
-              </button>
-            </div>
-          </div>
-          <div className="flex flex-col gap-2 border p-4">
-            <div className="flex gap-2 items-center">
-              <PhoneCall size={20} />
-              <h1 className="text-xl font-semibold">Ambulance: 102</h1>
-            </div>
-            <div>
-              <button className="bg-purple-500 rounded-[5px] p-[5px] text-center text-white font-bold" onClick={copyNumber(102)}>
-                Copy
-              </button>
-            </div>
-          </div>
-        </div>
+        <EmergencyNums nums={nums}/>
       </div>
     </div>
   );
