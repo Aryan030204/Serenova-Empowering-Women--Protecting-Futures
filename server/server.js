@@ -6,6 +6,7 @@ const profileRouter = require("./routes/profile.route");
 const cookieParser = require("cookie-parser");
 const cors = require("cors");
 const routesRouter = require("./routes/routes.route");
+const storyRouter = require("./routes/story.route");
 require("dotenv").config();
 
 app.use(express.json());
@@ -20,6 +21,7 @@ app.use(
 app.use("/api/", authRouter);
 app.use("/api/", profileRouter);
 app.use("/api/", routesRouter);
+app.use("/api/", storyRouter);
 
 app.listen(process.env.PORT, () => {
   try {

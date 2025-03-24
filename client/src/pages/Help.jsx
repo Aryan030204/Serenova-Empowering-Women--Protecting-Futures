@@ -1,4 +1,3 @@
-import { PhoneCall } from "lucide-react";
 import EmergencyNums from "../components/EmergencyNums";
 
 const Help = () => {
