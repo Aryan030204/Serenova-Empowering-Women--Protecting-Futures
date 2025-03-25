@@ -1,5 +1,6 @@
 const Story = require("../models/story.model");
 
+//get all stories (feed)
 const getAllStories = async (req, res) => {
   try {
     const stories = await Story.find();
@@ -15,6 +16,7 @@ const getAllStories = async (req, res) => {
   }
 };
 
+//get all stories by author/user
 const getAllStoriesByUser = async (req, res) => {
   try {
     const { userId } = req.params;
@@ -32,6 +34,7 @@ const getAllStoriesByUser = async (req, res) => {
   }
 };
 
+//get a story by its id
 const getStoryById = async (req, res) => {
   try {
     const { id } = req.params;
@@ -53,6 +56,7 @@ const getStoryById = async (req, res) => {
   }
 };
 
+//create a new story
 const postStory = async (req, res) => {
   try {
     const { userId, title, content, author, likes, dislikes } = req.body;
@@ -88,6 +92,7 @@ const postStory = async (req, res) => {
   }
 };
 
+//delete a story
 const deleteStory = async (req, res) => {
   try {
     const { id } = req.params;
@@ -108,6 +113,7 @@ const deleteStory = async (req, res) => {
   }
 };
 
+//update/edit a story
 const updateStory = async (req, res) => {
   try {
     const { title, content } = req.body;
@@ -140,6 +146,7 @@ const updateStory = async (req, res) => {
   }
 };
 
+//like a story
 const likeStory = async (req, res) => {
   try {
     const { id } = req.params;
@@ -172,6 +179,7 @@ const likeStory = async (req, res) => {
   }
 };
 
+//dislike a story
 const dislikeStory = async (req, res) => {
   try {
     const { id } = rrw.params;
@@ -203,13 +211,44 @@ const dislikeStory = async (req, res) => {
   }
 };
 
+const viewStory = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const story = await Story.findByIdAndUpdate(
+      id,
+      {
+        $inc: { views: 1 },
+      },
+      {
+        new: true,
+      }
+    );
+    if (!story) {
+      return res.status(404).json({
+        message: "Story not found",
+      });
+    }
+
+    res.status(200).json({
+      message: "Story viewed successfully",
+      story: story,
+    });
+  } catch (err) {
+    res.status(500).json({
+      message: "Error viewing story",
+      error: err,
+    });
+  }
+};
+
 module.exports = {
-    getAllStories,
-    getAllStoriesByUser,
-    getStoryById,
-    postStory,
-    deleteStory,
-    updateStory,
-    likeStory,
-    dislikeStory
-}
+  getAllStories,
+  getAllStoriesByUser,
+  getStoryById,
+  postStory,
+  deleteStory,
+  updateStory,
+  likeStory,
+  dislikeStory,
+  viewStory,
+};

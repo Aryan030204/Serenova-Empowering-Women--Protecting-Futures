@@ -5,7 +5,7 @@ const storySchema = mongoose.Schema(
     userId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
-      required: true
+      required: true,
     },
     title: {
       type: String,
@@ -25,9 +25,13 @@ const storySchema = mongoose.Schema(
     },
     likes: {
       type: Number,
-      default: 0
+      default: 0,
     },
     dislikes: {
+      type: Number,
+      default: 0,
+    },
+    views: {
       type: Number,
       default: 0,
     },

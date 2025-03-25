@@ -8,6 +8,7 @@ const {
   updateStory,
   likeStory,
   dislikeStory,
+  viewStory,
 } = require("../controllers/story.controller");
 const authMiddleware = require("../middlewares/auth.middleware");
 
@@ -19,7 +20,8 @@ storyRouter.get("/stories/:id", getStoryById);
 storyRouter.post("/stories/add", authMiddleware, postStory);
 storyRouter.delete("/stories/:id", authMiddleware, deleteStory);
 storyRouter.put("/stories/:id", authMiddleware, updateStory);
-storyRouter.patch("/stories/:id", authMiddleware, likeStory);
-storyRouter.patch("/stories/:id", authMiddleware, dislikeStory);
+storyRouter.patch("/stories/:id/like", authMiddleware, likeStory);
+storyRouter.patch("/stories/:id/dislike", authMiddleware, dislikeStory);
+storyRouter.patch("/stories/:id/viewed", viewStory);
 
 module.exports = storyRouter;
