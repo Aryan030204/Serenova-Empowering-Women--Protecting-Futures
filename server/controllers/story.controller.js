@@ -66,10 +66,6 @@ const postStory = async (req, res) => {
       });
     }
 
-    if (!likes || !dislikes) {
-      likes = 0;
-      dislikes = 0;
-    }
     const newStory = new Story({
       userId,
       title,
@@ -87,7 +83,7 @@ const postStory = async (req, res) => {
   } catch (err) {
     res.status(500).json({
       message: "Error posting story",
-      error: err,
+      error: err.message,
     });
   }
 };
@@ -146,7 +142,7 @@ const updateStory = async (req, res) => {
   }
 };
 
-//like a story
+//like a story (likes)
 const likeStory = async (req, res) => {
   try {
     const { id } = req.params;
@@ -179,7 +175,7 @@ const likeStory = async (req, res) => {
   }
 };
 
-//dislike a story
+//dislike a story (dislikes)
 const dislikeStory = async (req, res) => {
   try {
     const { id } = rrw.params;
@@ -210,7 +206,7 @@ const dislikeStory = async (req, res) => {
     });
   }
 };
-
+ //view a story (views)
 const viewStory = async (req, res) => {
   try {
     const { id } = req.params;

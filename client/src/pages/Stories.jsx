@@ -21,7 +21,6 @@ const Stories = () => {
         {/*posts section*/}
         <div className="flex w-[80%] bg-white flex-col gap-2 justify-start rounded-lg pb-5 pl-2">
           <StoryPost />
-          <StoryPost />
         </div>
         <div className="w-[1px] h-full bg-gray-300"></div>
         {/*navigation section*/}
