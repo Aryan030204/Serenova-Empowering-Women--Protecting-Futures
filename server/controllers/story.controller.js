@@ -142,21 +142,13 @@ const updateStory = async (req, res) => {
   }
 };
 
-//like a story (likes)
-const likeStory = async (req, res) => {
+//like a story
+const increaseLike = async (req, res) => {
   try {
     const { id } = req.params;
-
-    const story = await findByIdAndUpdate(
-      id,
-      {
-        $inc: { likes: 1 },
-      },
-      {
-        new: true,
-      }
-    );
-
+    const story = await Story.findByIdAndUpdate(id, {
+      $inc: { likes: 1 },
+    });
     if (!story) {
       return res.status(404).json({
         message: "Story not found",
@@ -164,31 +156,23 @@ const likeStory = async (req, res) => {
     }
 
     res.status(200).json({
-      message: "Story liked successfully",
+      message: "Story like increased successfully",
       story: story,
     });
   } catch (err) {
     res.status(500).json({
-      message: "Error liking story",
-      error: err,
+      message: "Error increasing like on story",
+      error: err.message,
     });
   }
 };
 
-//dislike a story (dislikes)
-const dislikeStory = async (req, res) => {
+const decreaseLike = async (req, res) => {
   try {
-    const { id } = rrw.params;
-    const story = await findByIdAndUpdate(
-      id,
-      {
-        $inc: { dislikes: 1 },
-      },
-      {
-        new: true,
-      }
-    );
-
+    const { id } = req.params;
+    const story = await Story.findByIdAndUpdate(id, {
+      $inc: { likes: -1 },
+    });
     if (!story) {
       return res.status(404).json({
         message: "Story not found",
@@ -196,17 +180,66 @@ const dislikeStory = async (req, res) => {
     }
 
     res.status(200).json({
-      message: "Story disliked successfully",
+      message: "Story like increased successfully",
       story: story,
     });
   } catch (err) {
     res.status(500).json({
-      message: "Error disliking story",
-      error: err,
+      message: "Error increasing like on story",
+      error: err.message,
     });
   }
 };
- //view a story (views)
+
+//dislike a story
+const increaseDislike = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const story = await Story.findByIdAndUpdate(id, {
+      $inc: { dislikes: 1 },
+    });
+    if (!story) {
+      return res.status(404).json({
+        message: "Story not found",
+      });
+    }
+
+    res.status(200).json({
+      message: "Story like increased successfully",
+      story: story,
+    });
+  } catch (err) {
+    res.status(500).json({
+      message: "Error increasing like on story",
+      error: err.message,
+    });
+  }
+};
+
+const decreaseDislike = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const story = await Story.findByIdAndUpdate(id, {
+      $inc: { dislikes: -1 },
+    });
+    if (!story) {
+      return res.status(404).json({
+        message: "Story not found",
+      });
+    }
+
+    res.status(200).json({
+      message: "Story like increased successfully",
+      story: story,
+    });
+  } catch (err) {
+    res.status(500).json({
+      message: "Error increasing like on story",
+      error: err.message,
+    });
+  }
+};
+//view a story (views)
 const viewStory = async (req, res) => {
   try {
     const { id } = req.params;
@@ -244,7 +277,9 @@ module.exports = {
   postStory,
   deleteStory,
   updateStory,
-  likeStory,
-  dislikeStory,
+  increaseLike,
+  decreaseLike,
+  increaseDislike,
+  decreaseDislike,
   viewStory,
 };
