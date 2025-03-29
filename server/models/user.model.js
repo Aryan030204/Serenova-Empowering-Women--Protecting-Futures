@@ -3,7 +3,7 @@ const validator = require("validator");
 require("dotenv").config();
 const jwt = require("jsonwebtoken");
 
-const userSchema = mongoose.Schema(
+const userSchema = new mongoose.Schema(
   {
     firstName: {
       type: String,
@@ -26,7 +26,7 @@ const userSchema = mongoose.Schema(
       type: String,
       unique: true,
       lowercase: true,
-      unique: true,
+      required: true,
       validate(emailid) {
         if (!validator.isEmail(emailid)) {
           throw new Error("Invalid Email");
@@ -39,6 +39,12 @@ const userSchema = mongoose.Schema(
       minLength: 8,
       maxLength: 256,
     },
+    savedPosts: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Story",
+      },
+    ],
   },
   {
     timestamps: true,
@@ -46,7 +52,6 @@ const userSchema = mongoose.Schema(
 );
 
 userSchema.methods.getJwt = async function () {
-  const user = this;
   const token = jwt.sign({ _id: this._id }, process.env.JWT_SECRET_KEY, {
     expiresIn: "1d",
   });
