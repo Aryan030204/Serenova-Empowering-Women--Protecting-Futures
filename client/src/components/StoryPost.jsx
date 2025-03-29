@@ -21,6 +21,16 @@ const StoryPost = () => {
             withCredentials: true,
           }
         );
+        if (disliked) {
+          await axios.patch(
+            SERVER_URL + `/stories/${id}/dislike/decrement`,
+            {},
+            {
+              withCredentials: true,
+            }
+          );
+          setDisliked(false);
+        }
         setLiked(true);
       } else {
         await axios.patch(
@@ -48,6 +58,17 @@ const StoryPost = () => {
             withCredentials: true,
           }
         );
+        if (liked) {
+          await axios.patch(
+            SERVER_URL + `/stories/${id}/like/decrement`,
+            {},
+            {
+              withCredentials: true,
+            }
+          );
+          setLiked(false);
+        }
+
         setDisliked(true);
       } else {
         await axios.patch(
@@ -70,7 +91,6 @@ const StoryPost = () => {
     setStories(res.data.stories);
   };
   useEffect(() => {
-    console.log(user);
     getStories();
   }, []);
   return (
@@ -78,8 +98,6 @@ const StoryPost = () => {
       <div className="flex flex-col justify-evenly rounded-lg md:w-fit h-fit p-3 lg:w-[60%] gap-[2rem]">
         {/*content*/}
         {stories.map((i) => {
-          console.log(i);
-
           const months = [
             "January",
             "February",
@@ -99,10 +117,10 @@ const StoryPost = () => {
             <>
               <div
                 key={i._id}
-                className="flex flex-col gap-2 mt-2 border-2 p-3 border-black bg-gray-800 rounded-3xl shadow-purple-500 shadow-xl text-white"
+                className="flex flex-col gap-2 mt-2 p-3 bg-gray-800 rounded-3xl shadow-purple-500 shadow-xl text-white"
               >
                 <div>
-                  <Link>
+                  <Link to={`stories/${i._id}`}>
                     <div className="w-full flex flex-col text-3xl font-bold text-start">
                       <h1 className="text-yellow-400">{i.title}</h1>
                       <div className="flex gap-2 items-center justify-start">
@@ -148,9 +166,9 @@ const StoryPost = () => {
                           }
                         }}
                       >
-                        {liked ? <ThumbsUp color="blue" /> : <ThumbsUp />}
+                        {liked ? <ThumbsUp fill="blue" /> : <ThumbsUp />}
                       </button>
-                      <h1>{i.likes}</h1>
+                      <h1>{i.likes > 0 ? i.likes : 0}</h1>
                     </div>
                     <div className="flex justify-center items-center gap-1 text-lg">
                       <button
@@ -168,9 +186,9 @@ const StoryPost = () => {
                           }
                         }}
                       >
-                        {disliked ? <ThumbsDown color="red" /> : <ThumbsDown />}
+                        {disliked ? <ThumbsDown fill="red" /> : <ThumbsDown />}
                       </button>
-                      <h1>{i.dislikes}</h1>
+                      <h1>{i.dislikes > 0 ? i.dislikes : 0}</h1>
                     </div>
                     <div className="flex justify-center items-center gap-1 text-lg">
                       <button>

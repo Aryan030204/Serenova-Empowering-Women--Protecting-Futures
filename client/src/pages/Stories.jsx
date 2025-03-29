@@ -17,12 +17,11 @@ const Stories = () => {
         </p>
         <h3 className="mt-4">In development, come back later :{")"} </h3>
       </div>
-      <div className="flex p-1">
+      <div className="flex p-1 w-fit items-start ">
         {/*posts section*/}
         <div className="flex w-[80%] flex-col gap-2 rounded-lg pb-5 pl-2">
           <StoryPost />
         </div>
-        {/* <div className="w-[2px] h-full bg-black"></div> */}
         {/*navigation section*/}
         <div className="flex w-[20%] flex-col bg-purple-900 rounded-2xl gap-[5rem] h-[40rem] items-center justify-evenly shadow-purple-500 shadow-xl">
           <PostsNavbar/>

@@ -1,5 +1,5 @@
 import Home from "./pages/Home";
-import { BrowserRouter, Route, Routes } from "react-router";
+import { BrowserRouter, Route, Routes, useParams } from "react-router";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
 import ContactUs from "./pages/ContactUs";
@@ -11,6 +11,7 @@ import RouteScorer from "./pages/RouteScorer";
 import Stories from "./pages/Stories";
 import ProfilePage from "./pages/ProfilePage";
 import RoutesPage from "./pages/RoutesPage";
+import OpenedPost from "./components/OpenedPost";
 function App() {
   return (
     <>
@@ -28,6 +29,7 @@ function App() {
             <Route path="/routescorer" element={<RouteScorer />} />
             <Route path="/profile" element={<ProfilePage />} />
             <Route path="/routes" element={<RoutesPage />} />
+            <Route path="blog/stories/:id" element={<OpenedPost />} />
           </Routes>
           <Footer />
         </div>
