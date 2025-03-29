@@ -1,4 +1,4 @@
-import { Share2, ThumbsDown, ThumbsUp } from "lucide-react";
+import { Bookmark, Share2, ThumbsDown, ThumbsUp } from "lucide-react";
 import axios from "axios";
 import { SERVER_URL } from "../utils/config";
 import { useEffect, useState } from "react";
@@ -9,6 +9,7 @@ const StoryPost = () => {
   const [stories, setStories] = useState([]);
   const [liked, setLiked] = useState(false);
   const [disliked, setDisliked] = useState(false);
+  const [saved, setSaved] = useState(false);
   const user = localStorage.getItem("user");
 
   const likeStory = async (id) => {
@@ -81,6 +82,32 @@ const StoryPost = () => {
         setDisliked(false);
       }
       getStories();
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const saveStory = async (id) => {
+    try {
+      if (!saved) {
+        await axios.post(
+          `${SERVER_URL}/user/stories/${id}/save`,
+          {},
+          {
+            withCredentials: true,
+          }
+        );
+        setSaved(true);
+      } else {
+        await axios.post(
+          `${SERVER_URL}/user/stories/${id}/unsave`,
+          {},
+          {
+            withCredentials: true,
+          }
+        );
+        setSaved(false);
+      }
     } catch (err) {
       console.log(err);
     }
@@ -189,6 +216,17 @@ const StoryPost = () => {
                         {disliked ? <ThumbsDown fill="red" /> : <ThumbsDown />}
                       </button>
                       <h1>{i.dislikes > 0 ? i.dislikes : 0}</h1>
+                    </div>
+                    <div className="flex justify-center items-center gap-1 text-lg">
+                      <button
+                        onClick={() => {
+                          if (user !== null) {
+                            saveStory(i._id);
+                          }
+                        }}
+                      >
+                        {saved ? <Bookmark fill="white" /> : <Bookmark />}
+                      </button>
                     </div>
                     <div className="flex justify-center items-center gap-1 text-lg">
                       <button>
