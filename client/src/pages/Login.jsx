@@ -5,7 +5,7 @@ import { Eye, EyeOff } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import axios from "axios";
-import { RENDER_SERVER_URL, SERVER_URL } from "../utils/config";
+import { SERVER_URL } from "../utils/config";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/ReactToastify.css";
 import { login } from "../utils/userSlice";

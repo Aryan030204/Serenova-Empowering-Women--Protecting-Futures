@@ -20,10 +20,9 @@ const Profile = ({ user }) => {
     try {
       await axios.post(SERVER_URL + "/logout");
 
-      dispatch(logout()); // Instantly update Redux
+      dispatch(logout());
       toast.success("Logged out successfully");
 
-      // Redirect after toast (optional delay)
       setTimeout(() => {
         navigate("/");
       }, 2000);

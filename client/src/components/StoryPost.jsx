@@ -3,10 +3,13 @@ import axios from "axios";
 import { SERVER_URL } from "../utils/config";
 import { useEffect, useState } from "react";
 import { Link } from "react-router";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/ReactToastify.css";
 const StoryPost = () => {
   const [stories, setStories] = useState([]);
   const [liked, setLiked] = useState(false);
   const [disliked, setDisliked] = useState(false);
+  const user = localStorage.getItem("user");
 
   const likeStory = async (id) => {
     try {
@@ -67,6 +70,7 @@ const StoryPost = () => {
     setStories(res.data.stories);
   };
   useEffect(() => {
+    console.log(user);
     getStories();
   }, []);
   return (
@@ -76,26 +80,72 @@ const StoryPost = () => {
         {stories.map((i) => {
           console.log(i);
 
+          const months = [
+            "January",
+            "February",
+            "March",
+            "April",
+            "May",
+            "June",
+            "July",
+            "August",
+            "September",
+            "October",
+            "November",
+            "December",
+          ];
+
           return (
             <>
-              <div key={i._id} className="flex flex-col gap-2 mt-2 border-0 p-3 border-b-2 border-black">
+              <div
+                key={i._id}
+                className="flex flex-col gap-2 mt-2 border-2 p-3 border-black bg-gray-800 rounded-3xl shadow-purple-500 shadow-xl text-white"
+              >
                 <div>
                   <Link>
                     <div className="w-full flex flex-col text-3xl font-bold text-start">
-                      <h1>{i.title}</h1>
-                      <div className="w-full h-[0.1px] mt-3 bg-black"></div>
+                      <h1 className="text-yellow-400">{i.title}</h1>
+                      <div className="flex gap-2 items-center justify-start">
+                        <h1 className="text-sm font-normal opacity-50 mt-1">
+                          Posted:{" "}
+                          {`${i.createdAt.split("T")[0].split("-")[2]}th ${
+                            months[
+                              i.createdAt
+                                .split("T")[0]
+                                .split("-")[1]
+                                .split("0")[1] - 1
+                            ]
+                          }, ${i.createdAt.split("T")[0].split("-")[0]} ${
+                            i.createdAt.split("T")[1].split(".")[0]
+                          },`}
+                        </h1>
+                        <h1 className="text-sm font-normal opacity-50 mt-1">
+                          {i.author}
+                        </h1>
+                      </div>
+
+                      <div className="w-full h-[1px] mt-3 mb-2 bg-white"></div>
                     </div>
                     <div className="w-full text-lg text-start whitespace-pre-line my-1">
                       <p className="overflow-hidden">{i.content}</p>
                     </div>
                   </Link>
                   {/*navigation*/}
-                  <div className="flex gap-2 w-fit self-end text-2xl items-center justify-center">
+                  <div className="flex gap-2 w-fit self-end text-2xl items-center justify-center mt-3">
                     <div className="flex justify-center items-center gap-1 text-lg">
                       <button
                         onClick={() => {
-                          setLiked(!liked);
-                          likeStory(i._id);
+                          if (user !== null) {
+                            setLiked(!liked);
+                            likeStory(i._id);
+                          } else {
+                            toast.error(
+                              "You must be logged in to like or dislike a post",
+                              {
+                                className: "font-semibold",
+                              }
+                            );
+                          }
                         }}
                       >
                         {liked ? <ThumbsUp color="blue" /> : <ThumbsUp />}
@@ -105,8 +155,17 @@ const StoryPost = () => {
                     <div className="flex justify-center items-center gap-1 text-lg">
                       <button
                         onClick={() => {
-                          setDisliked(!disliked);
-                          dislikeStory(i._id);
+                          if (user !== null) {
+                            setDisliked(!disliked);
+                            dislikeStory(i._id);
+                          } else {
+                            toast.error(
+                              "You must be logged in to like or dislike a post",
+                              {
+                                className: "font-semibold",
+                              }
+                            );
+                          }
                         }}
                       >
                         {disliked ? <ThumbsDown color="red" /> : <ThumbsDown />}
@@ -124,6 +183,7 @@ const StoryPost = () => {
             </>
           );
         })}
+        <ToastContainer />
       </div>
     </>
   );

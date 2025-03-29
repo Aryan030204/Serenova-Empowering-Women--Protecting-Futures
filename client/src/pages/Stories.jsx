@@ -17,14 +17,14 @@ const Stories = () => {
         </p>
         <h3 className="mt-4">In development, come back later :{")"} </h3>
       </div>
-      <div className="flex w-full justify-between items-start p-2">
+      <div className="flex p-1">
         {/*posts section*/}
-        <div className="flex w-[80%] bg-white flex-col gap-2 justify-start rounded-lg pb-5 pl-2">
+        <div className="flex w-[80%] flex-col gap-2 rounded-lg pb-5 pl-2">
           <StoryPost />
         </div>
-        <div className="w-[1px] h-full bg-gray-300"></div>
+        {/* <div className="w-[2px] h-full bg-black"></div> */}
         {/*navigation section*/}
-        <div className="flex w-[20%] flex-col gap-[5rem] h-full bg-white items-center">
+        <div className="flex w-[20%] flex-col bg-purple-900 rounded-2xl gap-[5rem] h-[40rem] items-center justify-evenly shadow-purple-500 shadow-xl">
           <PostsNavbar/>
           <UserActivityNavbar/>
         </div>
