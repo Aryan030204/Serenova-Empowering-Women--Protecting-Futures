@@ -9,8 +9,8 @@ const StoryPost = () => {
   const [stories, setStories] = useState([]);
   const [liked, setLiked] = useState(false);
   const [disliked, setDisliked] = useState(false);
-  const [saved, setSaved] = useState(false);
-  const user = localStorage.getItem("user");
+  const [savedStories, setSavedStories] = useState([]);
+  const user = JSON.parse(localStorage.getItem("user"));
 
   const likeStory = async (id) => {
     try {
@@ -89,33 +89,43 @@ const StoryPost = () => {
 
   const saveStory = async (id) => {
     try {
-      if (!saved) {
+      if (savedStories.includes(id)) {
         await axios.post(
-          `${SERVER_URL}/user/stories/${id}/save`,
+          SERVER_URL + `/user/stories/${id}/unsave`,
           {},
-          {
-            withCredentials: true,
-          }
+          { withCredentials: true }
         );
-        setSaved(true);
+        setSavedStories((prev) => prev.filter((postId) => postId !== id));
+        toast.success("Post unsaved successfully");
       } else {
         await axios.post(
-          `${SERVER_URL}/user/stories/${id}/unsave`,
+          SERVER_URL + `/user/stories/${id}/save`,
           {},
-          {
-            withCredentials: true,
-          }
+          { withCredentials: true }
         );
-        setSaved(false);
+        setSavedStories((prev) => [...prev, id]);
+        toast.success("Post saved successfully");
       }
     } catch (err) {
-      console.log(err);
+      console.error("Error saving post:", err);
+    }
+  };
+
+  const getSavedStories = async () => {
+    try {
+      const res = await axios.get(SERVER_URL + "/user/stories/saved", {
+        withCredentials: true,
+      });
+      setSavedStories(res.data.savedPosts.map((post) => post._id));
+    } catch (err) {
+      console.error("Error fetching saved posts:", err);
     }
   };
 
   const getStories = async () => {
     const res = await axios.get(SERVER_URL + "/stories/all");
     setStories(res.data.stories);
+    getSavedStories();
   };
   useEffect(() => {
     getStories();
@@ -218,14 +228,12 @@ const StoryPost = () => {
                       <h1>{i.dislikes > 0 ? i.dislikes : 0}</h1>
                     </div>
                     <div className="flex justify-center items-center gap-1 text-lg">
-                      <button
-                        onClick={() => {
-                          if (user !== null) {
-                            saveStory(i._id);
-                          }
-                        }}
-                      >
-                        {saved ? <Bookmark fill="white" /> : <Bookmark />}
+                      <button onClick={() => saveStory(i._id)}>
+                        {savedStories.includes(i._id) ? (
+                          <Bookmark fill="white" />
+                        ) : (
+                          <Bookmark />
+                        )}
                       </button>
                     </div>
                     <div className="flex justify-center items-center gap-1 text-lg">

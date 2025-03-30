@@ -77,9 +77,9 @@ const unsavePost = async (req, res) => {
 
 const getSavedPosts = async (req, res) => {
   try {
-    const { userId } = req.body;
+    const { _id } = req.user;
 
-    const user = await User.findById(userId).populate("savedPosts");
+    const user = await User.findById(_id).populate("savedPosts");
 
     res.status(200).json({
       success: true,
@@ -93,6 +93,7 @@ const getSavedPosts = async (req, res) => {
     });
   }
 };
+
 
 module.exports = {
   savePost,
