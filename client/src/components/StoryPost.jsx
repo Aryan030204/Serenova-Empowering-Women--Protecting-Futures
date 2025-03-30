@@ -111,6 +111,20 @@ const StoryPost = () => {
     }
   };
 
+  const viewStory = async (id) => {
+    try {
+      await axios.patch(
+        SERVER_URL + `/stories/${id}/viewed`,
+        {},
+        {
+          withCredentials: true,
+        }
+      );
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
   const getSavedStories = async () => {
     try {
       const res = await axios.get(SERVER_URL + "/user/stories/saved", {
@@ -157,7 +171,10 @@ const StoryPost = () => {
                 className="flex flex-col gap-2 mt-2 p-3 bg-gray-800 rounded-3xl shadow-purple-500 shadow-xl text-white"
               >
                 <div>
-                  <Link to={`stories/${i._id}`}>
+                  <Link
+                    to={`stories/${i._id}`}
+                    onClick={() => viewStory(i._id)}
+                  >
                     <div className="w-full flex flex-col text-3xl font-bold text-start">
                       <h1 className="text-yellow-400">{i.title}</h1>
                       <div className="flex gap-2 items-center justify-start">
@@ -186,60 +203,69 @@ const StoryPost = () => {
                     </div>
                   </Link>
                   {/*navigation*/}
-                  <div className="flex gap-2 w-fit self-end text-2xl items-center justify-center mt-3">
-                    <div className="flex justify-center items-center gap-1 text-lg">
-                      <button
-                        onClick={() => {
-                          if (user !== null) {
-                            setLiked(!liked);
-                            likeStory(i._id);
-                          } else {
-                            toast.error(
-                              "You must be logged in to like or dislike a post",
-                              {
-                                className: "font-semibold",
-                              }
-                            );
-                          }
-                        }}
-                      >
-                        {liked ? <ThumbsUp fill="blue" /> : <ThumbsUp />}
-                      </button>
-                      <h1>{i.likes > 0 ? i.likes : 0}</h1>
+                  <div className="flex gap-2 w-full justify-between p-1 text-2xl items-center mt-3">
+                    <div className="flex gap-2">
+                      <div className="flex gap-1 text-lg">
+                        <button
+                          onClick={() => {
+                            if (user !== null) {
+                              setLiked(!liked);
+                              likeStory(i._id);
+                            } else {
+                              toast.error(
+                                "You must be logged in to like or dislike a post",
+                                {
+                                  className: "font-semibold",
+                                }
+                              );
+                            }
+                          }}
+                        >
+                          {liked ? <ThumbsUp fill="blue" /> : <ThumbsUp />}
+                        </button>
+                        <h1>{i.likes > 0 ? i.likes : 0}</h1>
+                      </div>
+                      <div className="flex gap-1 text-lg">
+                        <button
+                          onClick={() => {
+                            if (user !== null) {
+                              setDisliked(!disliked);
+                              dislikeStory(i._id);
+                            } else {
+                              toast.error(
+                                "You must be logged in to like or dislike a post",
+                                {
+                                  className: "font-semibold",
+                                }
+                              );
+                            }
+                          }}
+                        >
+                          {disliked ? (
+                            <ThumbsDown fill="red" />
+                          ) : (
+                            <ThumbsDown />
+                          )}
+                        </button>
+                        <h1>{i.dislikes > 0 ? i.dislikes : 0}</h1>
+                      </div>
+                      <div className="flex gap-1 text-lg">
+                        <button onClick={() => saveStory(i._id)}>
+                          {savedStories.includes(i._id) ? (
+                            <Bookmark fill="white" />
+                          ) : (
+                            <Bookmark />
+                          )}
+                        </button>
+                      </div>
+                      <div className="flex gap-1 justify-end text-lg">
+                        <button>
+                          <Share2 />
+                        </button>
+                      </div>
                     </div>
-                    <div className="flex justify-center items-center gap-1 text-lg">
-                      <button
-                        onClick={() => {
-                          if (user !== null) {
-                            setDisliked(!disliked);
-                            dislikeStory(i._id);
-                          } else {
-                            toast.error(
-                              "You must be logged in to like or dislike a post",
-                              {
-                                className: "font-semibold",
-                              }
-                            );
-                          }
-                        }}
-                      >
-                        {disliked ? <ThumbsDown fill="red" /> : <ThumbsDown />}
-                      </button>
-                      <h1>{i.dislikes > 0 ? i.dislikes : 0}</h1>
-                    </div>
-                    <div className="flex justify-center items-center gap-1 text-lg">
-                      <button onClick={() => saveStory(i._id)}>
-                        {savedStories.includes(i._id) ? (
-                          <Bookmark fill="white" />
-                        ) : (
-                          <Bookmark />
-                        )}
-                      </button>
-                    </div>
-                    <div className="flex justify-center items-center gap-1 text-lg">
-                      <button>
-                        <Share2 />
-                      </button>
+                    <div className="flex">
+                      <h1 className="text-lg opacity-50">{i.views} views</h1>
                     </div>
                   </div>
                 </div>
