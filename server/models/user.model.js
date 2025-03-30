@@ -45,6 +45,12 @@ const userSchema = new mongoose.Schema(
         ref: "Story",
       },
     ],
+    likedPosts: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Story",
+      },
+    ],
   },
   {
     timestamps: true,

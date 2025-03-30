@@ -1,4 +1,6 @@
+const { default: mongoose } = require("mongoose");
 const Story = require("../models/story.model");
+const User = require("../models/user.model");
 
 //get all stories (feed)
 const getAllStories = async (req, res) => {
@@ -146,14 +148,28 @@ const updateStory = async (req, res) => {
 const increaseLike = async (req, res) => {
   try {
     const { id } = req.params;
-    const story = await Story.findByIdAndUpdate(id, {
-      $inc: { likes: 1 },
-    });
+    const { _id } = req.user;
+    const user = await User.findById(_id);
+    const storyId = mongoose.Types.ObjectId(id);
+    const story = await Story.findByIdAndUpdate(
+      id,
+      { $inc: { likes: 1 } },
+      { new: true }
+    );
+
     if (!story) {
       return res.status(404).json({
         message: "Story not found",
       });
     }
+    if (user.likedPosts.includes(id)) {
+      return res.status(400).json({
+        message: "You already liked this story",
+      });
+    }
+
+    user.likedPosts.push(storyId);
+    await user.save();
 
     res.status(200).json({
       message: "Story like increased successfully",
@@ -170,14 +186,25 @@ const increaseLike = async (req, res) => {
 const decreaseLike = async (req, res) => {
   try {
     const { id } = req.params;
-    const story = await Story.findByIdAndUpdate(id, {
-      $inc: { likes: -1 },
-    });
+    const { _id } = req.user;
+    const user = await User.findById(_id);
+    const storyId = mongoose.Schema.ObjectId(id);
+    const story = await Story.findByIdAndUpdate(
+      id,
+      {
+        $inc: { likes: -1 },
+      },
+      {
+        new: true,
+      }
+    );
     if (!story) {
       return res.status(404).json({
         message: "Story not found",
       });
     }
+    user.likedPosts.pull(storyId);
+    await user.save();
 
     res.status(200).json({
       message: "Story like increased successfully",
@@ -239,6 +266,7 @@ const decreaseDislike = async (req, res) => {
     });
   }
 };
+
 //view a story (views)
 const viewStory = async (req, res) => {
   try {
@@ -270,6 +298,72 @@ const viewStory = async (req, res) => {
   }
 };
 
+//get trending stories
+const getTrendingStories = async (req, res) => {
+  try {
+    const stories = await Story.find()
+      .sort({ views: -1, dislikes: 1, likes: -1 })
+      .limit(5);
+    res.status(200).json({
+      message: "Trending stories fetched successfully",
+      trendingStories: stories,
+    });
+  } catch (err) {
+    res.status(500).json({
+      message: "Error getting trending stories",
+      error: err.message,
+    });
+  }
+};
+
+//get most viewed stories
+const getMostViewedStories = async (req, res) => {
+  try {
+    const stories = await Story.find().sort({ views: -1 }).limit(5);
+    res.status(200).json({
+      message: "Most viewed stories fetched successfully",
+      mostViewedStories: stories,
+    });
+  } catch (err) {
+    res.status(500).json({
+      message: "Error getting most viewed stories",
+      error: err.message,
+    });
+  }
+};
+
+//get most liked stories
+const getMostLikedStories = async (req, res) => {
+  try {
+    const stories = await Story.find().sort({ likes: -1 }).limit(5);
+    res.status(200).json({
+      message: "Most liked stories fetched successfully",
+      mostLikedStories: stories,
+    });
+  } catch (err) {
+    res.status(500).json({
+      message: "Error getting most liked stories",
+      error: err.message,
+    });
+  }
+};
+
+//get recent stories
+const getRecentStories = async (req, res) => {
+  try {
+    const stories = await Story.find().sort({ createdAt: -1 }).limit(5);
+    res.status(200).json({
+      message: "Recent stories fetched successfully",
+      recentStories: stories,
+    });
+  } catch (err) {
+    res.status(500).json({
+      message: "Error getting recent stories",
+      error: err.message,
+    });
+  }
+};
+
 module.exports = {
   getAllStories,
   getAllStoriesByUser,
@@ -282,4 +376,8 @@ module.exports = {
   increaseDislike,
   decreaseDislike,
   viewStory,
+  getMostLikedStories,
+  getRecentStories,
+  getMostViewedStories,
+  getTrendingStories,
 };

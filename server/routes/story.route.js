@@ -11,6 +11,10 @@ const {
   decreaseDislike,
   decreaseLike,
   increaseDislike,
+  getTrendingStories,
+  getMostViewedStories,
+  getRecentStories,
+  getMostLikedStories,
 } = require("../controllers/story.controller");
 const authMiddleware = require("../middlewares/auth.middleware");
 
@@ -27,5 +31,9 @@ storyRouter.patch("/stories/:id/like/decrement", authMiddleware, decreaseLike);
 storyRouter.patch("/stories/:id/dislike/increment", authMiddleware, increaseDislike);
 storyRouter.patch("/stories/:id/dislike/decrement", authMiddleware, decreaseDislike);
 storyRouter.patch("/stories/:id/viewed", viewStory);
+storyRouter.get("/stories/trending", getTrendingStories);
+storyRouter.get("/stories/mostviewed", getMostViewedStories);
+storyRouter.get("/stories/recent", getRecentStories);
+storyRouter.get("/stories/mostliked", getMostLikedStories);
 
 module.exports = storyRouter;
