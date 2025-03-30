@@ -3,6 +3,7 @@ import StoryPost from "../components/StoryPost";
 import UserActivityNavbar from "../components/UserActivityNavbar";
 
 const Stories = () => {
+  const user = localStorage.getItem("user");
   return (
     <div className="flex flex-col w-full justify-center items-center p-2 bg-purple-200">
       <div className="flex flex-col items-center gap-2">
@@ -24,8 +25,8 @@ const Stories = () => {
         </div>
         {/*navigation section*/}
         <div className="flex w-[20%] flex-col bg-purple-900 rounded-2xl gap-[5rem] h-[40rem] items-center justify-evenly shadow-purple-500 shadow-xl">
-          <PostsNavbar/>
-          <UserActivityNavbar/>
+          <PostsNavbar />
+          {user && <UserActivityNavbar />}
         </div>
       </div>
     </div>

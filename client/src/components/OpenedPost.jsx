@@ -224,7 +224,7 @@ const OpenedPost = () => {
       <div className="w-[20%]">
         <div className="flex flex-col bg-purple-900 rounded-2xl gap-[5rem] h-[40rem] items-center justify-evenly shadow-purple-500 shadow-xl">
           <PostsNavbar />
-          <UserActivityNavbar />
+          {user && <UserActivityNavbar />}
         </div>
       </div>
       <ToastContainer />
