@@ -5,9 +5,23 @@ const User = require("../models/user.model");
 //get all stories (feed)
 const getAllStories = async (req, res) => {
   try {
-    const stories = await Story.find();
+    let { page, limit } = req.query;
+    page = parseInt(page) || 1;
+    limit = parseInt(limit) || 10;
+
+    const skip = (page - 1) * limit;
+    const stories = await Story.find()
+      .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(limit);
+
+    const totalStories = await Story.countDocuments();
+
     res.status(200).json({
       message: "Stories fetched successfully",
+      currentPage: page,
+      totalPages: Math.ceil(totalStories / limit),
+      totalStories: totalStories,
       stories: stories,
     });
   } catch (err) {

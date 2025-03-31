@@ -5,7 +5,6 @@ import UserActivityNavbar from "../components/UserActivityNavbar";
 const Stories = () => {
   const user = localStorage.getItem("user");
 
-
   return (
     <div className="flex flex-col w-full justify-center items-center p-2 bg-purple-200">
       <div className="flex flex-col items-center gap-2">

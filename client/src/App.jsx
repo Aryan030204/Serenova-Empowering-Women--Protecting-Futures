@@ -14,10 +14,6 @@ import RoutesPage from "./pages/RoutesPage";
 import OpenedPost from "./components/OpenedPost";
 import SavedPosts from "./pages/SavedPosts";
 import SavedPost from "./pages/SavedPost";
-import TrendingStories from "./pages/TrendingStories";
-import MostLikedStories from "./pages/MostLikedStories";
-import MostViewedStories from "./pages/MostViewedStories";
-import RecentStories from "./pages/RecentStories";
 function App() {
   return (
     <>
@@ -38,10 +34,6 @@ function App() {
             <Route path="/blog/stories/:id" element={<OpenedPost />} />
             <Route path="/blog/:id/saved" element={<SavedPosts />} />
             <Route path="/user/saved/:id" element={<SavedPost />} />
-            <Route path="/stories/trending" element={<TrendingStories />} />
-            <Route path="/stories/mostliked" element={<MostLikedStories />} />
-            <Route path="/stories/mostviewed" element={<MostViewedStories />} />
-            <Route path="/stories/recent" element={<RecentStories />} />
           </Routes>
           <Footer />
         </div>

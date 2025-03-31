@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { Link } from "react-router";
 import { SERVER_URL } from "../utils/config";
 import axios from "axios";

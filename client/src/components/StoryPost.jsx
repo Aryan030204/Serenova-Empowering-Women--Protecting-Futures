@@ -8,12 +8,15 @@ import "react-toastify/ReactToastify.css";
 import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
 import { setstories } from "../utils/storiesSlice";
+import Pagination from "./Pagination";
 const StoryPost = () => {
   const stories = useSelector((state) => state.stories.stories);
   const dispatch = useDispatch();
   const [liked, setLiked] = useState(false);
   const [disliked, setDisliked] = useState(false);
   const [savedStories, setSavedStories] = useState([]);
+  const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
   const user = JSON.parse(localStorage.getItem("user"));
 
   const likeStory = async (id) => {
@@ -140,16 +143,25 @@ const StoryPost = () => {
     }
   };
 
+  const getStories = async (page = 1) => {
+    try {
+      const res = await axios.get(
+        `${SERVER_URL}/stories/all?page=${page}&limit=5`
+      );
 
-  const getStories = async () => {
-    const res = await axios.get(SERVER_URL + "/stories/all");
-    
-    dispatch(setstories(res.data.stories));
-    getSavedStories();
+      dispatch(setstories(res.data.stories));
+      setPage(res.data.currentPage);
+      setTotalPages(res.data.totalPages);
+      getSavedStories();
+    } catch (error) {
+      console.error("Error fetching stories:", error);
+    }
   };
+
   useEffect(() => {
     getStories();
   }, []);
+
   return (
     <>
       <div className="flex flex-col justify-evenly rounded-lg md:w-fit h-fit p-3 lg:w-[60%] gap-[2rem]">
@@ -280,6 +292,13 @@ const StoryPost = () => {
           );
         })}
         <ToastContainer />
+        <div className="w-full flex justify-center">
+          <Pagination
+            page={page}
+            totalPages={totalPages}
+            fetchStories={getStories}
+          />
+        </div>
       </div>
     </>
   );
