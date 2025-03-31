@@ -21,7 +21,6 @@ const PostsNavbar = () => {
     try {
       const res = await axios.get(SERVER_URL + `/stories/mostliked`);
       dispatch(setstories(res.data.mostLikedStories));
-      console.log(res);
       
     } catch (err) {
       console.log(err);

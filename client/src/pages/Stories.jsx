@@ -1,9 +1,6 @@
-import { useState } from "react";
 import PostsNavbar from "../components/PostsNavbar";
 import StoryPost from "../components/StoryPost";
 import UserActivityNavbar from "../components/UserActivityNavbar";
-import axios from "axios";
-import { SERVER_URL } from "../utils/config";
 
 const Stories = () => {
   const user = localStorage.getItem("user");
