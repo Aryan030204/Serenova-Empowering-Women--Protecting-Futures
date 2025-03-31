@@ -51,6 +51,12 @@ const userSchema = new mongoose.Schema(
         ref: "Story",
       },
     ],
+    draftPosts: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Story",
+      }
+    ]
   },
   {
     timestamps: true,
