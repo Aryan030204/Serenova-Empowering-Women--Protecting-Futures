@@ -1,9 +1,14 @@
+import { useState } from "react";
 import PostsNavbar from "../components/PostsNavbar";
 import StoryPost from "../components/StoryPost";
 import UserActivityNavbar from "../components/UserActivityNavbar";
+import axios from "axios";
+import { SERVER_URL } from "../utils/config";
 
 const Stories = () => {
   const user = localStorage.getItem("user");
+
+
   return (
     <div className="flex flex-col w-full justify-center items-center p-2 bg-purple-200">
       <div className="flex flex-col items-center gap-2">

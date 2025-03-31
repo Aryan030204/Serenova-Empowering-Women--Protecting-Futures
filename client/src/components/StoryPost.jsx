@@ -5,8 +5,12 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/ReactToastify.css";
+import { useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
+import { setstories } from "../utils/storiesSlice";
 const StoryPost = () => {
-  const [stories, setStories] = useState([]);
+  const stories = useSelector((state) => state.stories.stories);
+  const dispatch = useDispatch();
   const [liked, setLiked] = useState(false);
   const [disliked, setDisliked] = useState(false);
   const [savedStories, setSavedStories] = useState([]);
@@ -136,9 +140,11 @@ const StoryPost = () => {
     }
   };
 
+
   const getStories = async () => {
     const res = await axios.get(SERVER_URL + "/stories/all");
-    setStories(res.data.stories);
+    
+    dispatch(setstories(res.data.stories));
     getSavedStories();
   };
   useEffect(() => {

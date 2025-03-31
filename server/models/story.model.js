@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 
-const storySchema = mongoose.Schema(
+const storySchema = new mongoose.Schema(
   {
     userId: {
       type: mongoose.Schema.Types.ObjectId,
@@ -36,10 +36,21 @@ const storySchema = mongoose.Schema(
     views: {
       type: Number,
       default: 0,
+      min: 0,
     },
   },
   {
-    timestamps: true,
+    timestamps: { createdAt: "createdAt", updatedAt: "updatedAt" },
   }
 );
+
+storySchema.pre("save", function (next) {
+  if (this.likes < 0) this.likes = 0;
+  if (this.dislikes < 0) this.dislikes = 0;
+  if (this.views < 0) this.views = 0;
+  next();
+});
+
+
+
 module.exports = mongoose.model("Story", storySchema);

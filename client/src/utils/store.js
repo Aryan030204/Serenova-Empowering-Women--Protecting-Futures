@@ -1,6 +1,7 @@
 import { configureStore } from "@reduxjs/toolkit";
 import userReducer from "./userSlice";
 import routeReducer from "./routeSlice";
+import storyReducer from "./storiesSlice";
 
 // Load user from localStorage when the app starts
 const loadUserFromStorage = () => {
@@ -17,6 +18,7 @@ const store = configureStore({
   reducer: {
     user: userReducer,
     route: routeReducer,
+    stories: storyReducer,
   },
   preloadedState: {
     user: { user: loadUserFromStorage() }, // Preload user state

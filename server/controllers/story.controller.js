@@ -52,7 +52,7 @@ const getStoryById = async (req, res) => {
     });
   } catch (err) {
     res.status(500).json({
-      message: "Error fetching story",
+      message: "Error fetching story getStory",
       error: err,
     });
   }
@@ -150,7 +150,6 @@ const increaseLike = async (req, res) => {
     const { id } = req.params;
     const { _id } = req.user;
     const user = await User.findById(_id);
-    const storyId = mongoose.Types.ObjectId(id);
     const story = await Story.findByIdAndUpdate(
       id,
       { $inc: { likes: 1 } },
@@ -168,7 +167,7 @@ const increaseLike = async (req, res) => {
       });
     }
 
-    user.likedPosts.push(storyId);
+    user.likedPosts.push(id);
     await user.save();
 
     res.status(200).json({
@@ -188,7 +187,6 @@ const decreaseLike = async (req, res) => {
     const { id } = req.params;
     const { _id } = req.user;
     const user = await User.findById(_id);
-    const storyId = mongoose.Schema.ObjectId(id);
     const story = await Story.findByIdAndUpdate(
       id,
       {
@@ -203,7 +201,7 @@ const decreaseLike = async (req, res) => {
         message: "Story not found",
       });
     }
-    user.likedPosts.pull(storyId);
+    user.likedPosts.pull(id);
     await user.save();
 
     res.status(200).json({
