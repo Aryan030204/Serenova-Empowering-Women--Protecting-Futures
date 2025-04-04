@@ -94,68 +94,21 @@ const getSavedPosts = async (req, res) => {
   }
 };
 
-// const createPost = async (req, res) => {
-//   try {
-//     const { title, content } = req.body;
-//     const { _id, firstName, lastName } = req.user;
-
-//     if (!title || !content) {
-//       return res.status(400).json({
-//         message: "All fields are required",
-//       });
-//     }
-
-//     const existingDraft = await Story.findOne({ userId: _id, title, content });
-
-//     if (existingDraft) {
-//       await User.findByIdAndUpdate(_id, {
-//         $pull: { draftPosts: existingDraft._id },
-//       });
-
-//       await Story.findByIdAndDelete(existingDraft._id);
-//     }
-
-//     const newStory = new Story({
-//       userId: _id,
-//       title,
-//       content,
-//       author: `${firstName} ${lastName}`,
-//       likes: 0,
-//       dislikes: 0,
-//       views: 0,
-//     });
-
-//     await newStory.save();
-
-//     res.status(201).json({
-//       message: "Story posted successfully",
-//       story: newStory,
-//     });
-//   } catch (err) {
-//     res.status(500).json({
-//       message: "Error posting story",
-//       error: err.message,
-//     });
-//   }
-// };
-
 const createPost = async (req, res) => {
   try {
     const { title, content } = req.body;
     const { _id, firstName, lastName } = req.user;
 
-    // ✅ Validate input
     if (!title || !content) {
       return res.status(400).json({
         message: "All fields are required",
       });
     }
 
-    // ✅ Check if a story with the same title and content already exists
-    const existingStory = await Story.findOne({ 
-      userId: _id, 
+    const existingStory = await Story.findOne({
+      userId: _id,
       title: { $regex: new RegExp("^" + title + "$", "i") }, // Case-insensitive title check
-      content 
+      content,
     });
 
     if (existingStory) {
@@ -164,14 +117,14 @@ const createPost = async (req, res) => {
       });
     }
 
-    // ✅ Remove draft if it exists
     const existingDraft = await Story.findOne({ userId: _id, title, content });
     if (existingDraft) {
-      await User.findByIdAndUpdate(_id, { $pull: { draftPosts: existingDraft._id } });
+      await User.findByIdAndUpdate(_id, {
+        $pull: { draftPosts: existingDraft._id },
+      });
       await Story.findByIdAndDelete(existingDraft._id);
     }
 
-    // ✅ Create and save new story
     const newStory = new Story({
       userId: _id,
       title,
@@ -188,7 +141,6 @@ const createPost = async (req, res) => {
       message: "Story posted successfully",
       story: newStory,
     });
-
   } catch (err) {
     res.status(500).json({
       message: "Error posting story",
@@ -270,78 +222,6 @@ const getDrafts = async (req, res) => {
   }
 };
 
-// const saveDraft = async (req, res) => {
-//   try {
-//     const { _id } = req.user;
-//     const { title, content } = req.body;
-//     const user = await User.findById(_id);
-//     const draft = new Story({
-//       userId: new mongoose.Types.ObjectId(_id),
-//       title,
-//       content,
-//     });
-
-//     user.draftPosts.push(draft._id);
-//     await user.save();
-
-//     res.status(201).json({
-//       success: true,
-//       message: "Draft saved successfully",
-//       draft: draft,
-//     });
-//   } catch (err) {
-//     res.status(500).json({
-//       success: false,
-//       message: "Error saving draft",
-//       error: err,
-//     });
-//   }
-// };
-
-// const saveDraft = async (req, res) => {
-//   try {
-//     const { _id } = req.user; // User ID from authentication middleware
-//     const { title, content } = req.body;
-
-//     // ✅ Ensure valid MongoDB ObjectId
-//     if (!mongoose.Types.ObjectId.isValid(_id)) {
-//       return res.status(400).json({ success: false, message: "Invalid user ID" });
-//     }
-
-//     const user = await User.findById(_id);
-    
-
-//     const draft = new Story({
-//       userId: new mongoose.Types.ObjectId(_id),
-//       title,
-//       content,
-//       author: user.firstName + " " + user.lastName, // Assuming the user model has these fields
-//     });
-
-//     await draft.save();
-
-//     // ✅ Ensure user.draftPosts is an array before pushing
-//     if (!Array.isArray(user.draftPosts)) {
-//       user.draftPosts = [];
-//     }
-
-//     user.draftPosts.push(draft._id);
-//     await user.save();
-
-//     res.status(201).json({
-//       success: true,
-//       message: "Draft saved successfully",
-//       draft,
-//     });
-//   } catch (err) {
-//     console.error(err); // ✅ Log the actual error for debugging
-//     res.status(500).json({
-//       success: false,
-//       message: "Something went wrong",
-//       error: err.message,
-//     });
-//   }
-// };
 const saveDraft = async (req, res) => {
   try {
     const { _id } = req.user;
@@ -352,12 +232,16 @@ const saveDraft = async (req, res) => {
 
     // ✅ Ensure valid MongoDB ObjectId
     if (!mongoose.Types.ObjectId.isValid(_id)) {
-      return res.status(400).json({ success: false, message: "Invalid user ID" });
+      return res
+        .status(400)
+        .json({ success: false, message: "Invalid user ID" });
     }
 
     const user = await User.findById(_id);
     if (!user) {
-      return res.status(404).json({ success: false, message: "User not found" });
+      return res
+        .status(404)
+        .json({ success: false, message: "User not found" });
     }
 
     // ✅ Create new draft (Ensure `author` is set)
@@ -392,8 +276,6 @@ const saveDraft = async (req, res) => {
     });
   }
 };
-
-
 
 module.exports = {
   savePost,

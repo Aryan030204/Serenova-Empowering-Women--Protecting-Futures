@@ -4,7 +4,7 @@ const storySchema = new mongoose.Schema(
   {
     _id: {
       type: mongoose.Schema.Types.ObjectId,
-      auto: true, // Ensures MongoDB auto-generates _id
+      auto: true,
     },
     userId: {
       type: mongoose.Schema.Types.ObjectId,
@@ -14,7 +14,7 @@ const storySchema = new mongoose.Schema(
     title: {
       type: String,
       required: true,
-      trim: true, // ❌ Removed unique constraint
+      trim: true,
     },
     content: {
       type: String,

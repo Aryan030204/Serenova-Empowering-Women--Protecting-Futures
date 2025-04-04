@@ -7,7 +7,7 @@ const TextEditor = () => {
   const [content, setContent] = useState("");
   const handlePost = async () => {
     try {
-      const res=await axios.post(
+      await axios.post(
         SERVER_URL + "/user/stories/create",
         {
           title: title,
@@ -17,8 +17,6 @@ const TextEditor = () => {
           withCredentials: true,
         }
       );
-      console.log(res);
-      
     } catch (err) {
       console.log(err);
     }
