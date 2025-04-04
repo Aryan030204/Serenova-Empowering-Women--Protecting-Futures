@@ -8,6 +8,7 @@ const {
   updatePost,
   deletePost,
   getDrafts,
+  saveDraft,
 } = require("../controllers/user.controller");
 const userRouter = express.Router();
 
@@ -18,5 +19,6 @@ userRouter.post("/user/stories/create", authMiddleware, createPost);
 userRouter.put("/user/stories/:id/update", authMiddleware, updatePost);
 userRouter.delete("/user/stories/:id/delete", authMiddleware, deletePost);
 userRouter.get("/user/stories/drafts", authMiddleware, getDrafts);
+userRouter.post("/user/stories/drafts/save",authMiddleware, saveDraft);
 
 module.exports = userRouter;

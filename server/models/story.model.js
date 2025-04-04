@@ -2,6 +2,10 @@ const mongoose = require("mongoose");
 
 const storySchema = new mongoose.Schema(
   {
+    _id: {
+      type: mongoose.Schema.Types.ObjectId,
+      auto: true, // Ensures MongoDB auto-generates _id
+    },
     userId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
@@ -10,8 +14,7 @@ const storySchema = new mongoose.Schema(
     title: {
       type: String,
       required: true,
-      unique: true,
-      trim: true,
+      trim: true, // ❌ Removed unique constraint
     },
     content: {
       type: String,
@@ -44,13 +47,12 @@ const storySchema = new mongoose.Schema(
   }
 );
 
+// ✅ Ensure userId is always a valid ObjectId
 storySchema.pre("save", function (next) {
-  if (this.likes < 0) this.likes = 0;
-  if (this.dislikes < 0) this.dislikes = 0;
-  if (this.views < 0) this.views = 0;
+  if (!mongoose.Types.ObjectId.isValid(this.userId)) {
+    return next(new Error("Invalid userId"));
+  }
   next();
 });
-
-
 
 module.exports = mongoose.model("Story", storySchema);
