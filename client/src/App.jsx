@@ -15,6 +15,8 @@ import OpenedPost from "./components/OpenedPost";
 import SavedPosts from "./pages/SavedPosts";
 import SavedPost from "./pages/SavedPost";
 import CreatePost from "./components/CreatePost";
+import Drafts from "./components/Drafts";
+import DraftPost from "./pages/DraftPost";
 function App() {
   const user = localStorage.getItem("user");
   return (
@@ -36,7 +38,9 @@ function App() {
             <Route path="/blog/stories/:id" element={<OpenedPost />} />
             <Route path="/blog/:id/saved" element={<SavedPosts />} />
             <Route path="/user/saved/:id" element={<SavedPost />} />
-            <Route path="/posts/new" element={user && <CreatePost/>}/>
+            <Route path="/posts/new" element={user && <CreatePost />} />
+            <Route path="/user/drafts" element={user && <Drafts />} />
+            <Route path="/user/draft/:id" element={<DraftPost />} />
           </Routes>
           <Footer />
         </div>

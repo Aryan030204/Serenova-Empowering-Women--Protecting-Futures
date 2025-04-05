@@ -289,6 +289,33 @@ const saveDraft = async (req, res) => {
   }
 };
 
+const getDraftbyId = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const draft = await Story.findById(id);
+
+    if (!draft) {
+      return res.status(404).json({
+        success: false,
+        message: "Draft not found",
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      message: "Draft fetched successfully",
+      draft,
+    });
+  } catch (err) {
+    res.status(500).json({
+      success: false,
+      message: "Something went wrong",
+      error: err.message,
+    });
+  }
+};
+
 module.exports = {
   savePost,
   unsavePost,
@@ -298,4 +325,5 @@ module.exports = {
   updatePost,
   getDrafts,
   saveDraft,
+  getDraftbyId
 };

@@ -24,7 +24,7 @@ const TextEditor = () => {
   const handleDraft = async () => {
     try {
       const res = await axios.post(
-        SERVER_URL + "/user/stories/drafts/save",
+        SERVER_URL + "/user/stories/savedraft",
         {
           title: title,
           content: content,
@@ -50,7 +50,7 @@ const TextEditor = () => {
           onChange={(e) => setTitle(e.target.value)}
         />
         <textarea
-          className="w-full border-2 border-red-500 p-2 h-full rounded-xl"
+          className="w-full border-2 border-red-500 p-2 h-full rounded-xl resize-none"
           placeholder="Content..."
           value={content}
           onChange={(e) => setContent(e.target.value)}
