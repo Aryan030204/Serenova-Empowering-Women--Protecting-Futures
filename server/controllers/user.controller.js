@@ -32,7 +32,7 @@ const savePost = async (req, res) => {
   } catch (err) {
     res.status(500).json({
       success: false,
-      message: "Something went wrong savepost",
+      message: "Something went wrong",
       error: err.message,
     });
   }
@@ -64,7 +64,7 @@ const unsavePost = async (req, res) => {
   } catch (err) {
     res.status(500).json({
       success: false,
-      message: "Something went wrong unsave",
+      message: "Something went wrong",
       error: err.message,
     });
   }
@@ -80,7 +80,7 @@ const getSavedPosts = async (req, res) => {
   } catch (err) {
     res.status(500).json({
       success: false,
-      message: "Something went wrong getsaved",
+      message: "Something went wrong",
       error: err.message,
     });
   }
@@ -283,7 +283,7 @@ const saveDraft = async (req, res) => {
 
     res.status(500).json({
       success: false,
-      message: "Something went wrong savedraft",
+      message: "Something went wrong",
       error: err.message,
     });
   }

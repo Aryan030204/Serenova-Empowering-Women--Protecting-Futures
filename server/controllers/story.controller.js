@@ -66,7 +66,7 @@ const getStoryById = async (req, res) => {
     });
   } catch (err) {
     res.status(500).json({
-      message: "Error fetching story getStory",
+      message: "Error fetching story",
       error: err,
     });
   }
