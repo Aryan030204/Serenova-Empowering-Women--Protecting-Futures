@@ -10,15 +10,21 @@ const {
   getDrafts,
   saveDraft,
 } = require("../controllers/user.controller");
+
 const userRouter = express.Router();
 
+// Saved stories
 userRouter.get("/user/stories/saved", authMiddleware, getSavedPosts);
 userRouter.post("/user/stories/:id/save", authMiddleware, savePost);
 userRouter.post("/user/stories/:id/unsave", authMiddleware, unsavePost);
+
+// Story CRUD
 userRouter.post("/user/stories/create", authMiddleware, createPost);
 userRouter.put("/user/stories/:id/update", authMiddleware, updatePost);
 userRouter.delete("/user/stories/:id/delete", authMiddleware, deletePost);
+
+// Drafts
 userRouter.get("/user/stories/drafts", authMiddleware, getDrafts);
-userRouter.post("/user/stories/drafts/save",authMiddleware, saveDraft);
+userRouter.post("/user/stories/drafts/save", authMiddleware, saveDraft);
 
 module.exports = userRouter;

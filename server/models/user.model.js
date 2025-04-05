@@ -27,36 +27,40 @@ const userSchema = new mongoose.Schema(
       unique: true,
       lowercase: true,
       required: true,
-      validate(emailid) {
-        if (!validator.isEmail(emailid)) {
-          throw new Error("Invalid Email");
-        }
+      validate: {
+        validator: function (value) {
+          return validator.isEmail(value);
+        },
+        message: "Invalid Email",
       },
     },
     password: {
       type: String,
       required: true,
-      minLength: 8,
-      maxLength: 256,
+      minlength: 8,
+      maxlength: 256,
     },
     savedPosts: [
       {
         type: mongoose.Schema.Types.ObjectId,
         ref: "Story",
+        default: [],
       },
     ],
     likedPosts: [
       {
         type: mongoose.Schema.Types.ObjectId,
         ref: "Story",
+        default: [],
       },
     ],
     draftPosts: [
       {
         type: mongoose.Schema.Types.ObjectId,
         ref: "Story",
-      }
-    ]
+        default: [],
+      },
+    ],
   },
   {
     timestamps: true,

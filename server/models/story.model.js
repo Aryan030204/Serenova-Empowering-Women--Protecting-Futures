@@ -2,10 +2,6 @@ const mongoose = require("mongoose");
 
 const storySchema = new mongoose.Schema(
   {
-    _id: {
-      type: mongoose.Schema.Types.ObjectId,
-      auto: true,
-    },
     userId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
@@ -46,13 +42,5 @@ const storySchema = new mongoose.Schema(
     timestamps: { createdAt: "createdAt", updatedAt: "updatedAt" },
   }
 );
-
-// ✅ Ensure userId is always a valid ObjectId
-storySchema.pre("save", function (next) {
-  if (!mongoose.Types.ObjectId.isValid(this.userId)) {
-    return next(new Error("Invalid userId"));
-  }
-  next();
-});
 
 module.exports = mongoose.model("Story", storySchema);

@@ -130,30 +130,27 @@ const updateStory = async (req, res) => {
   try {
     const { title, content } = req.body;
     const { id } = req.params;
-    const story = await findByIdAndUpdate(
+
+    const story = await Story.findByIdAndUpdate(
       id,
-      {
-        title: title,
-        content: content,
-      },
-      {
-        new: true,
-        runValidators: true,
-      }
+      { title, content },
+      { new: true, runValidators: true }
     );
+
     if (!story) {
       return res.status(404).json({
         message: "Story not found",
       });
     }
+
     res.status(200).json({
       message: "Story updated successfully",
-      story: story,
+      story,
     });
   } catch (err) {
     res.status(500).json({
       message: "Error updating story",
-      error: err,
+      error: err.message,
     });
   }
 };
