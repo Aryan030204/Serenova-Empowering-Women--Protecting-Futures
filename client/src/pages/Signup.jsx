@@ -9,7 +9,7 @@ import { Link, useNavigate } from "react-router"; // fixed from "react-router"
 import { Eye, EyeOff } from "lucide-react";
 import { useState } from "react";
 import axios from "axios";
-import { RENDER_SERVER_URL, SERVER_URL } from "../utils/config";
+import { SERVER_URL } from "../utils/config";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css"; // fixed path
 import QuoteBox from "../components/QuoteBox";
