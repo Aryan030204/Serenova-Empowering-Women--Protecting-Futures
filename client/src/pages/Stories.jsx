@@ -17,7 +17,6 @@ const Stories = () => {
         <p className="text-xl font-serif text-purple-600 underline">
           Empowering Women, One Story at a Time
         </p>
-        <h3 className="mt-4">In development, come back later :{")"} </h3>
       </div>
       <div className="flex p-1 w-fit items-start ">
         {/*posts section*/}

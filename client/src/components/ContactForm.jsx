@@ -13,15 +13,22 @@ const ContactForm = () => {
     query: "",
   });
 
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
   const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+    const { name, value } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    setIsSubmitting(true);
 
-    emailjs
-      .send(
+    try {
+      const res = await emailjs.send(
         EMAIL_SERVICE_ID,
         EMAIL_TEMPLATE_ID,
         {
@@ -30,56 +37,77 @@ const ContactForm = () => {
           query: formData.query,
         },
         EMAIL_PUBLIC_KEY
-      )
-      .then(
-        (res) => {
-          console.log("Email sent successfully:", res);
-          setFormData({ fullName: "", emailId: "", query: "" });
-        },
-        (err) => {
-          console.error("Failed to send email:", err);
-          alert("Failed to send message. Please try again.");
-        }
       );
+
+      console.log("Email sent successfully:", res);
+      alert("Message sent successfully!");
+      setFormData({ fullName: "", emailId: "", query: "" });
+    } catch (err) {
+      console.error("Failed to send email:", err);
+      alert("Failed to send message. Please try again.");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
-    <div className="max-w-lg mx-auto border border-purple-500 p-6 rounded-lg">
-      <form onSubmit={handleSubmit}>
-        <div className="space-y-4">
+    <div className="max-w-lg mx-auto border border-purple-500 p-6 rounded-2xl shadow-md bg-white w-[50%]">
+      <form onSubmit={handleSubmit} className="space-y-5 w-full">
+        <div>
+          <label htmlFor="fullName" className="block mb-1 font-medium text-gray-700">
+            Full Name
+          </label>
           <input
             type="text"
             name="fullName"
-            placeholder="Full Name"
+            id="fullName"
+            placeholder="Enter your full name"
             value={formData.fullName}
             onChange={handleChange}
-            className="w-full p-3 border rounded-md bg-gray-100 focus:outline-none"
+            className="w-full p-3 border rounded-md bg-gray-100 focus:outline-none focus:ring-2 focus:ring-purple-500"
             required
           />
+        </div>
+
+        <div>
+          <label htmlFor="emailId" className="block mb-1 font-medium text-gray-700">
+            Email Address
+          </label>
           <input
             type="email"
-            name="emailI"
-            placeholder="Email Address"
+            name="emailId"
+            id="emailId"
+            placeholder="Enter your email"
             value={formData.emailId}
             onChange={handleChange}
-            className="w-full p-3 border rounded-md bg-gray-100 focus:outline-none"
+            className="w-full p-3 border rounded-md bg-gray-100 focus:outline-none focus:ring-2 focus:ring-purple-500"
             required
           />
+        </div>
+
+        <div>
+          <label htmlFor="query" className="block mb-1 font-medium text-gray-700">
+            Your Query
+          </label>
           <textarea
             name="query"
-            placeholder="Your query"
+            id="query"
+            placeholder="Write your message here..."
             value={formData.query}
             onChange={handleChange}
-            className="w-full p-3 border rounded-md bg-gray-100 focus:outline-none h-24 resize-none"
+            className="w-full p-3 border rounded-md bg-gray-100 focus:outline-none focus:ring-2 focus:ring-purple-500 h-28 resize-none"
             required
           />
         </div>
 
         <button
           type="submit"
-          className="w-full bg-red-600 text-white px-4 py-3 mt-4 rounded-md font-semibold"
+          disabled={isSubmitting}
+          className={`w-full px-4 py-3 rounded-md font-semibold text-white transition-colors ${
+            isSubmitting ? "bg-red-400 cursor-not-allowed" : "bg-red-600 hover:bg-red-700"
+          }`}
         >
-          Send
+          {isSubmitting ? "Sending..." : "Send"}
         </button>
       </form>
     </div>

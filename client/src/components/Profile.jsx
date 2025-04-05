@@ -1,56 +1,64 @@
 /* eslint-disable react/prop-types */
+import { useDispatch } from "react-redux";
+import { useNavigate, Link } from "react-router";
+import axios from "axios";
+import { toast, ToastContainer } from "react-toastify";
+
+import { logout } from "../utils/userSlice";
+import { SERVER_URL } from "../utils/config";
+
 import male from "../assets/male.png";
 import female from "../assets/female.png";
-import axios from "axios";
-import { SERVER_URL } from "../utils/config";
-import { useDispatch } from "react-redux";
-import { logout } from "../utils/userSlice";
-import { toast, ToastContainer } from "react-toastify";
-import "react-toastify/ReactToastify.css";
-import { useNavigate, Link } from "react-router";
+import "react-toastify/dist/ReactToastify.css";
 
 const Profile = ({ user }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  // Prevent rendering if user is null
   if (!user) return null;
 
   const handleLogout = async () => {
     try {
-      await axios.post(SERVER_URL + "/logout");
-
+      await axios.post(`${SERVER_URL}/logout`);
       dispatch(logout());
-      toast.success("Logged out successfully");
+      toast.success("Logged out successfully!");
 
       setTimeout(() => {
         navigate("/");
       }, 2000);
-    } catch (err) {
-      console.log(err);
+    } catch (error) {
+      console.error("Logout error:", error);
       toast.error("Logout failed. Please try again.");
     }
   };
 
+  const avatar =
+    user.gender === "male" ? male : user.gender === "female" ? female : male;
+
   return (
-    <div className="flex items-center justify-center gap-1 w-[15rem]">
-      <Link to={"/profile"}>
+    <div className="flex items-center justify-center gap-2 w-fit px-3 py-2 bg-white rounded-xl shadow-sm">
+      <Link to="/profile" aria-label="Go to profile">
         <img
-          src={user.gender === "male" ? male : female}
-          alt="dp_avatar"
-          className="w-[2.2rem] border-none rounded-full"
+          src={avatar}
+          alt={`${user.firstName}'s avatar`}
+          className="w-9 h-9 rounded-full object-cover"
         />
       </Link>
-      <h1 className="whitespace-nowrap font-bold mr-5">
-        Hello, <span className="text-blue-500 font-bold">{user.firstName}</span>
+
+      <h1 className="whitespace-nowrap font-bold">
+        Hello,{" "}
+        <span className="text-blue-600 font-bold">{user.firstName}</span>
       </h1>
+
       <button
-        className="border-none bg-red-500 rounded-xl text-sm font-bold text-white p-[6px]"
         onClick={handleLogout}
+        className="ml-3 bg-red-500 hover:bg-red-600 text-white text-sm font-semibold px-3 py-1 rounded-lg transition-colors"
+        aria-label="Logout"
       >
         Logout
       </button>
-      <ToastContainer />
+
+      <ToastContainer position="top-center" autoClose={1500} />
     </div>
   );
 };

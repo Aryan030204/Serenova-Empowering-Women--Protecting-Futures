@@ -1,23 +1,21 @@
 import { Link } from "react-router";
 
 const UserActivityNavbar = () => {
+  const navItems = [
+    { label: "Create", path: "/posts/new" },
+    { label: "My posts", path: "/user/posts" },
+    { label: "Drafts", path: "/user/drafts" },
+  ];
+
   return (
-    <div className="flex flex-col w-[70%] p-4 gap-[1rem] justify-center text-center">
-      <Link to={"/posts/new"}>
-        <div className="flex w-full items-center justify-center bg-red-600 text-white font-semibold p-1 rounded-lg cursor-pointer">
-          <h1>Create</h1>
-        </div>
-      </Link>
-      <Link to={"/user/posts"}>
-        <div className="flex w-full items-center justify-center bg-red-600 text-white font-semibold p-1 rounded-lg cursor-pointer">
-          <h1>My posts</h1>
-        </div>
-      </Link>
-      <Link to={"/user/drafts"}>
-        <div className="flex w-full items-center justify-center bg-red-600 text-white font-semibold p-1 rounded-lg cursor-pointer">
-          <h1>Drafts</h1>
-        </div>
-      </Link>
+    <div className="flex flex-col w-[70%] p-4 gap-4 justify-center text-center">
+      {navItems.map((item, index) => (
+        <Link key={index} to={item.path}>
+          <div className="flex w-full items-center justify-center bg-red-600 text-white font-semibold p-2 rounded-lg cursor-pointer hover:bg-red-700 transition">
+            <h1>{item.label}</h1>
+          </div>
+        </Link>
+      ))}
     </div>
   );
 };

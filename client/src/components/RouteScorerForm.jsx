@@ -1,77 +1,66 @@
 import axios from "axios";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { PYTHON_APP_URL } from "../utils/config";
 
 const RouteScorerForm = () => {
   const [formData, setFormData] = useState({
-    currentLat: 0.0,
-    currentLong: 0.0,
+    currentLat: "",
+    currentLong: "",
     destination: "",
     destLat: "",
     destLong: "",
-    lightIntensity: 0,
-    trafficDensity: 0,
-    crowdDensity: 0,
-    crimeRate: 0,
-    accidentRate: 0,
+    lightIntensity: "",
+    trafficDensity: "",
+    crowdDensity: "",
+    crimeRate: "",
+    accidentRate: "",
   });
 
   const [safetyScore, setSafetyScore] = useState(null);
-
-  const predictScore = async () => {
-    const res = await axios.post(PYTHON_APP_URL + "/predict", {
-      lat1: formData.currentLat,
-      lon1: formData.currentLong,
-      lat2: formData.destLat,
-      lon2: formData.destLong,
-      light_intensity: formData.lightIntensity,
-      traffic_density: formData.trafficDensity,
-      crowd_density: formData.crowdDensity,
-      crime_rate: formData.crimeRate,
-      accident_rate: formData.accidentRate,
-    });
-    setSafetyScore(res.data.safety_score);
-  };
-
   const [suggestions, setSuggestions] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
 
-  // Get current location
+  // ----------------- Location Handling -----------------
   const getCurrentLocation = () => {
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        (position) => {
-          setFormData((prev) => ({
-            ...prev,
-            currentLat: position.coords.latitude.toFixed(6),
-            currentLong: position.coords.longitude.toFixed(6),
-          }));
-        },
-        (error) => console.log("Error fetching location: " + error.message)
-      );
-    } else {
-      console.log("Geolocation is not supported by this browser.");
+    if (!navigator.geolocation) {
+      return alert("Geolocation is not supported by your browser.");
     }
+
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        setFormData((prev) => ({
+          ...prev,
+          currentLat: position.coords.latitude.toFixed(6),
+          currentLong: position.coords.longitude.toFixed(6),
+        }));
+      },
+      (error) => alert("Error fetching location: " + error.message)
+    );
   };
 
-  // Fetch location suggestions from OpenStreetMap
-  const fetchLocationSuggestions = async (query) => {
-    if (query.length < 3) {
-      setSuggestions([]);
-      return;
-    }
+  // ----------------- Location Suggestions -----------------
+  useEffect(() => {
+    const fetchSuggestions = async () => {
+      if (formData.destination.length < 3) {
+        setSuggestions([]);
+        return;
+      }
 
-    try {
-      const response = await fetch(
-        `https://nominatim.openstreetmap.org/search?format=json&q=${query}`
-      );
-      const data = await response.json();
-      setSuggestions(data);
-    } catch (error) {
-      console.error("Error fetching location data:", error);
-    }
-  };
+      try {
+        const res = await fetch(
+          `https://nominatim.openstreetmap.org/search?format=json&q=${formData.destination}`
+        );
+        const data = await res.json();
+        setSuggestions(data.slice(0, 5)); // limit to top 5
+      } catch (err) {
+        console.error("Error fetching suggestions:", err);
+      }
+    };
 
-  // Handle destination selection
+    const debounce = setTimeout(fetchSuggestions, 500);
+    return () => clearTimeout(debounce);
+  }, [formData.destination]);
+
   const selectDestination = (place) => {
     setFormData((prev) => ({
       ...prev,
@@ -82,25 +71,43 @@ const RouteScorerForm = () => {
     setSuggestions([]);
   };
 
-  // Handle input changes
+  // ----------------- Input Change Handler -----------------
   const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
 
-    if (e.target.name === "destination") {
-      fetchLocationSuggestions(e.target.value);
+  // ----------------- Form Submission -----------------
+  const calculateSafetyScore = async (e) => {
+    e.preventDefault();
+    setIsLoading(true);
+
+    try {
+      const res = await axios.post(PYTHON_APP_URL + "/predict", {
+        lat1: formData.currentLat,
+        lon1: formData.currentLong,
+        lat2: formData.destLat,
+        lon2: formData.destLong,
+        light_intensity: formData.lightIntensity,
+        traffic_density: formData.trafficDensity,
+        crowd_density: formData.crowdDensity,
+        crime_rate: formData.crimeRate,
+        accident_rate: formData.accidentRate,
+      });
+
+      setSafetyScore(res.data.safety_score);
+    } catch (err) {
+      console.error("Error predicting safety score:", err);
+      alert("Error predicting safety score. Try again.");
+    } finally {
+      setIsLoading(false);
     }
   };
 
-  // Form submission
-  const calculateSafetyScore = (e) => {
-    e.preventDefault();
-  };
-
+  // ----------------- Component JSX -----------------
   return (
     <div className="max-w-md mx-auto p-6 bg-gray-200 rounded-lg shadow-lg mt-6 border-2 border-purple-500">
-      <h2 className="text-2xl font-bold text-center mb-4">
-        Safety Score Calculator
-      </h2>
+      <h2 className="text-2xl font-bold text-center mb-4">Safety Score Calculator</h2>
 
       <form onSubmit={calculateSafetyScore} className="space-y-4">
         {/* Current Location */}
@@ -108,22 +115,19 @@ const RouteScorerForm = () => {
           <label className="block font-semibold">Current Location:</label>
           <input
             type="text"
-            value={`${formData.currentLat}, ${formData.currentLong}`}
+            value={`${formData.currentLat || "--"}, ${formData.currentLong || "--"}`}
             className="w-full p-2 border rounded mt-1"
+            readOnly
           />
           <div className="mt-2">
-            <input
-              type="checkbox"
-              onClick={getCurrentLocation}
-              id="auto-locate"
-            />
+            <input type="checkbox" id="auto-locate" onClick={getCurrentLocation} />
             <label htmlFor="auto-locate" className="ml-2 text-sm">
               Auto-fill my current location
             </label>
           </div>
         </div>
 
-        {/* Destination */}
+        {/* Destination Search */}
         <div className="relative">
           <label className="block font-semibold">Destination:</label>
           <input
@@ -135,9 +139,9 @@ const RouteScorerForm = () => {
             placeholder="Enter destination..."
             required
           />
-          {/* Suggestions Dropdown */}
+
           {suggestions.length > 0 && (
-            <ul className="absolute z-10 w-full bg-white border mt-1 rounded shadow-md">
+            <ul className="absolute z-10 w-full bg-white border mt-1 rounded shadow-md max-h-40 overflow-y-auto">
               {suggestions.map((place, index) => (
                 <li
                   key={index}
@@ -149,6 +153,7 @@ const RouteScorerForm = () => {
               ))}
             </ul>
           )}
+
           <div className="grid grid-cols-2 gap-2 mt-2">
             <input
               type="text"
@@ -176,15 +181,13 @@ const RouteScorerForm = () => {
           { label: "Crowd Density", name: "crowdDensity" },
           { label: "Crime Rate", name: "crimeRate" },
           { label: "Accident Rate", name: "accidentRate" },
-        ].map((field) => (
-          <div key={field.name}>
-            <label className="block font-semibold">
-              {field.label} (1-100):
-            </label>
+        ].map((param) => (
+          <div key={param.name}>
+            <label className="block font-semibold">{param.label} (1-100):</label>
             <input
               type="number"
-              name={field.name}
-              value={formData[field.name]}
+              name={param.name}
+              value={formData[param.name]}
               onChange={handleChange}
               min="1"
               max="100"
@@ -197,14 +200,19 @@ const RouteScorerForm = () => {
         {/* Submit Button */}
         <button
           type="submit"
-          className="w-full bg-purple-600 text-white p-2 rounded font-semibold hover:bg-purple-700 transition"
-          onClick={predictScore}
+          disabled={isLoading}
+          className={`w-full bg-purple-600 text-white p-2 rounded font-semibold transition ${
+            isLoading ? "opacity-50 cursor-not-allowed" : "hover:bg-purple-700"
+          }`}
         >
-          Calculate Safety Score
+          {isLoading ? "Calculating..." : "Calculate Safety Score"}
         </button>
-        <h1 className="text-green-600 font-bold text-xl">
-          {Math.round(safetyScore)}%
-        </h1>
+
+        {safetyScore !== null && (
+          <h1 className="text-green-600 font-bold text-xl text-center">
+            Safety Score: {Math.round(safetyScore)}%
+          </h1>
+        )}
       </form>
     </div>
   );

@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import axios from "axios";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import {
   setFromLat,
   setToLat,
@@ -8,91 +8,95 @@ import {
   setToLong,
 } from "../utils/routeSlice";
 import { OPENWEATHER_API_KEY, SERVER_URL } from "../utils/config";
-import { useSelector } from "react-redux";
 
 const RouteDetails = () => {
   const dispatch = useDispatch();
   const user = useSelector((state) => state.user);
+
   const [countries, setCountries] = useState([]);
   const [states, setStates] = useState([]);
+
   const [selectedCountry, setSelectedCountry] = useState("");
   const [selectedState, setSelectedState] = useState("");
+
   const [location, setLocation] = useState("");
   const [destination, setDestination] = useState("");
+  const [coordinates, setCoordinates] = useState("");
+
   const [suggestions, setSuggestions] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [coordinates, setCoordinates] = useState("");
+
   const [saved, setSaved] = useState(false);
   const [alreadySaved, setAlreadySaved] = useState(false);
-  const [savebtn, setSaveBtn] = useState(false);
+  const [saveBtnVisible, setSaveBtnVisible] = useState(false);
+  const [useCurrentLocation, setUseCurrentLocation] = useState(false);
 
-  const getLocation = () => {
+  // Fetch current geolocation
+  const detectLocation = async () => {
     navigator.geolocation.getCurrentPosition(
-      async (position) => {
-        const lat = Number(position.coords.latitude.toFixed(4));
-        const lon = Number(position.coords.longitude.toFixed(4));
-        setLocation(`${lat}, ${lon}`);
+      async (pos) => {
+        const lat = Number(pos.coords.latitude.toFixed(4));
+        const lon = Number(pos.coords.longitude.toFixed(4));
+        const loc = `${lat}, ${lon}`;
+        setLocation(loc);
 
         try {
-          const response = await axios.get(
+          const { data } = await axios.get(
             `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}`
           );
-          if (response.data.address) {
-            setSelectedCountry(response.data.address.country || "");
-            setSelectedState(response.data.address.state || "");
-          }
-        } catch (error) {
-          console.error("Error fetching location details:", error);
+          const { country, state } = data?.address || {};
+          setSelectedCountry(country || "");
+          setSelectedState(state || "");
+        } catch (err) {
+          console.error("Failed to fetch location address:", err);
         }
       },
-      (error) => {
-        console.error("Error getting user location:", error);
-      }
+      (err) => console.error("Geolocation error:", err)
     );
   };
+
+  // Load countries on mount
   useEffect(() => {
-    getLocation();
+    detectLocation();
     axios
       .get("https://restcountries.com/v3.1/all")
-      .then((response) => {
-        const countryNames = response.data
-          .map((country) => country.name.common)
-          .sort();
+      .then((res) => {
+        const countryNames = res.data.map((c) => c.name.common).sort();
         setCountries(countryNames);
       })
-      .catch((error) => console.error("Error fetching countries:", error));
+      .catch((err) => console.error("Failed to fetch countries:", err));
   }, []);
 
+  // Load states when country changes
   useEffect(() => {
     if (selectedCountry) {
       axios
         .post("https://countriesnow.space/api/v0.1/countries/states", {
           country: selectedCountry,
         })
-        .then((response) => {
-          setStates(response.data.data.states || []);
-        })
-        .catch((error) => console.error("Error fetching states:", error));
+        .then((res) => setStates(res.data.data.states || []))
+        .catch((err) => console.error("Failed to fetch states:", err));
     } else {
       setStates([]);
     }
   }, [selectedCountry]);
 
+  // Debounced suggestion fetcher
   const fetchLocationSuggestions = useCallback(
     (() => {
-      let timer;
+      let debounceTimer;
       return (query) => {
-        clearTimeout(timer);
-        timer = setTimeout(async () => {
+        clearTimeout(debounceTimer);
+        debounceTimer = setTimeout(async () => {
           if (query.length > 2) {
             setLoading(true);
             try {
-              const response = await axios.get(
+              const { data } = await axios.get(
                 `https://nominatim.openstreetmap.org/search?format=json&q=${query}`
               );
-              setSuggestions(response.data);
-            } catch (error) {
-              console.error("Error fetching location suggestions:", error);
+              setSuggestions(data);
+            } catch (err) {
+              console.error("Suggestion fetch failed:", err);
             } finally {
               setLoading(false);
             }
@@ -105,42 +109,33 @@ const RouteDetails = () => {
     []
   );
 
-  const handleSelectDestination = async (place) => {
+  const handleDestinationSelect = async (place) => {
     setDestination(place.display_name);
     setSuggestions([]);
-
     try {
-      const response = await axios.get(
+      const { data } = await axios.get(
         `https://nominatim.openstreetmap.org/search?format=json&q=${place.display_name}`
       );
-
-      if (response.data.length > 0) {
-        const { lat, lon } = response.data[0];
+      if (data.length > 0) {
+        const { lat, lon } = data[0];
         setCoordinates(`${lat}, ${lon}`);
       }
-    } catch (error) {
-      console.error("Error fetching coordinates:", error);
-    } finally {
-      setLoading(false);
+    } catch (err) {
+      console.error("Failed to get destination coordinates:", err);
     }
   };
 
   const handleSaveRoute = async () => {
-    if (!location || !coordinates) {
-      console.error("Missing location data");
-      return;
-    }
+    if (!location || !coordinates) return console.error("Missing data");
 
     try {
       const [lat, lon] = location.split(",").map(Number);
       const [destLat, destLon] = coordinates.split(",").map(Number);
 
-      const currentNameRes = await axios.get(
-        `http://api.openweathermap.org/geo/1.0/reverse?lat=${lat}&lon=${lon}&appid=${OPENWEATHER_API_KEY}`
-      );
-      const destNameRes = await axios.get(
-        `http://api.openweathermap.org/geo/1.0/reverse?lat=${destLat}&lon=${destLon}&appid=${OPENWEATHER_API_KEY}`
-      );
+      const [currentNameRes, destNameRes] = await Promise.all([
+        axios.get(`http://api.openweathermap.org/geo/1.0/reverse?lat=${lat}&lon=${lon}&appid=${OPENWEATHER_API_KEY}`),
+        axios.get(`http://api.openweathermap.org/geo/1.0/reverse?lat=${destLat}&lon=${destLon}&appid=${OPENWEATHER_API_KEY}`),
+      ]);
 
       await axios.post(
         `${SERVER_URL}/route/save`,
@@ -153,154 +148,151 @@ const RouteDetails = () => {
         },
         { withCredentials: true }
       );
-      console.log("route saved");
-      setAlreadySaved(false);
+
       setSaved(true);
-      setTimeout(() => {
-        setSaved(false);
-      }, 4000);
+      setAlreadySaved(false);
+      setTimeout(() => setSaved(false), 4000);
     } catch (err) {
       setAlreadySaved(true);
-      setTimeout(() => {
-        setAlreadySaved(false);
-      }, 4000);
-      console.error("Error saving route:", err);
+      setTimeout(() => setAlreadySaved(false), 4000);
+      console.error("Route save failed:", err);
     }
   };
+
+  const handleGetRoute = () => {
+    const [fromLat, fromLong] = location.split(",");
+    const [toLat, toLong] = coordinates.split(",");
+    dispatch(setFromLat(fromLat));
+    dispatch(setFromLong(fromLong));
+    dispatch(setToLat(toLat));
+    dispatch(setToLong(toLong));
+    setTimeout(() => setSaveBtnVisible(true), 2000);
+  };
+
   return (
-    <div className="flex flex-col p-10 my-[3rem] h-[45.3rem] gap-2 bg-slate-300 w-[31rem]">
+    <div className="flex flex-col p-10 my-12 h-[45.3rem] gap-2 bg-slate-300 w-[31rem]">
       <h1 className="font-bold text-2xl text-center">SAFE ROUTE PLANNER</h1>
 
-      <div className="flex flex-col w-full h-1/3 text-center">
-        <div className="flex flex-col gap-2 mt-[2rem]">
-          <h1 className="text-start font-semibold text-xl">
-            ENTER CURRENT LOCATION
-          </h1>
+      {/* Current Location */}
+      <div className="flex flex-col w-full h-1/3 text-center mt-8 gap-4">
+        <h1 className="text-start font-semibold text-xl">
+          ENTER CURRENT LOCATION
+        </h1>
+
+        <input
+          type="text"
+          placeholder="Area"
+          className="text-center p-1 dest"
+          value={useCurrentLocation ? location : ""}
+          onChange={(e) => setLocation(e.target.value)}
+          readOnly={useCurrentLocation}
+        />
+
+        <label className="flex gap-2 items-center">
           <input
-            type="text"
-            placeholder="Area"
-            className="currname text-center p-1 dest"
-          />
-
-          <div className="flex gap-2">
-            <input
-              type="checkbox"
-              onChange={async (e) => {
-                if (e.target.checked) {
-                  getLocation();
-                  document.querySelector(".dest").value = location;
-                } else {
-                  document.querySelector(".dest").value = "";
-                  setSelectedCountry("");
-                  setSelectedState("");
-                }
-              }}
-            />
-            <label htmlFor="l">Detect location</label>
-          </div>
-
-          <div className="flex justify-evenly items-center gap-[2rem]">
-            <select
-              className="text-center p-1 w-[10rem]"
-              onChange={(e) => setSelectedCountry(e.target.value)}
-              value={selectedCountry}
-            >
-              <option value="">Select Country</option>
-              {countries.map((country, index) => (
-                <option key={index} value={country}>
-                  {country}
-                </option>
-              ))}
-            </select>
-
-            <select
-              className="text-center p-1 w-[10rem]"
-              onChange={(e) => setSelectedState(e.target.value)}
-              value={selectedState}
-            >
-              <option value="">Select State</option>
-              {states.map((state, index) => (
-                <option key={index} value={state.name}>
-                  {state.name}
-                </option>
-              ))}
-            </select>
-          </div>
-        </div>
-      </div>
-
-      {/* Destination Input with Autocomplete */}
-      <div className="flex flex-col h-1/3 w-full text-center relative">
-        <div className="flex flex-col gap-2 mt-[2rem]">
-          <h1 className="text-start font-semibold text-xl">
-            ENTER DESTINATION
-          </h1>
-          <input
-            type="text"
-            placeholder="Search for a place..."
-            className="destname text-center p-1 border border-gray-400 rounded-md"
-            value={destination}
+            type="checkbox"
+            checked={useCurrentLocation}
             onChange={(e) => {
-              setDestination(e.target.value);
-              fetchLocationSuggestions(e.target.value);
+              setUseCurrentLocation(e.target.checked);
+              if (e.target.checked) detectLocation();
+              else {
+                setLocation("");
+                setSelectedCountry("");
+                setSelectedState("");
+              }
             }}
           />
+          Detect location
+        </label>
 
-          {/* Coordinates Field (Auto-filled) */}
-          <input
-            type="text"
-            className="text-center p-1 border border-gray-400 rounded-md"
-            placeholder="Coordinates"
-            value={coordinates}
-            readOnly
-          />
+        <div className="flex gap-4 justify-center">
+          <select
+            className="text-center p-1 w-[10rem]"
+            onChange={(e) => setSelectedCountry(e.target.value)}
+            value={selectedCountry}
+          >
+            <option value="">Select Country</option>
+            {countries.map((country, index) => (
+              <option key={index} value={country}>{country}</option>
+            ))}
+          </select>
 
-          {/* Loading Spinner */}
-          {loading && <div className="text-gray-500 text-sm">Loading...</div>}
-
-          {/* Autocomplete Suggestions */}
-          {suggestions.length > 0 && (
-            <ul className="absolute top-[92px] left-0 w-full bg-white border border-gray-400 rounded-md mt-2 max-h-[100px] overflow-y-auto shadow-lg z-10">
-              {suggestions.map((place, index) => (
-                <li
-                  key={index}
-                  className="p-2 cursor-pointer hover:bg-gray-300"
-                  onClick={() => handleSelectDestination(place)}
-                >
-                  {place.display_name}
-                </li>
-              ))}
-            </ul>
-          )}
+          <select
+            className="text-center p-1 w-[10rem]"
+            onChange={(e) => setSelectedState(e.target.value)}
+            value={selectedState}
+          >
+            <option value="">Select State</option>
+            {states.map((state, index) => (
+              <option key={index} value={state.name}>{state.name}</option>
+            ))}
+          </select>
         </div>
       </div>
 
-      <div className="flex gap-[1rem] relative top-10 items-center flex-col text-center">
-        <button
-          className="text-white w-[9rem] h-[3rem] text-xl p-2 font-bold bg-green-500"
-          onClick={() => {
-            dispatch(setFromLat(location.split(",")[0]));
-            dispatch(setFromLong(location.split(",")[1]));
-            dispatch(setToLat(coordinates.split(",")[0]));
-            dispatch(setToLong(coordinates.split(",")[1]));
-            setTimeout(() => {
-              setSaveBtn(true);
-            }, 2000);
+      {/* Destination Input */}
+      <div className="flex flex-col h-1/3 w-full mt-4 relative">
+        <h1 className="text-start font-semibold text-xl mb-2">
+          ENTER DESTINATION
+        </h1>
+
+        <input
+          type="text"
+          placeholder="Search for a place..."
+          className="text-center p-1 border border-gray-400 rounded-md"
+          value={destination}
+          onChange={(e) => {
+            setDestination(e.target.value);
+            fetchLocationSuggestions(e.target.value);
           }}
+        />
+
+        <input
+          type="text"
+          placeholder="Coordinates"
+          className="text-center p-1 border border-gray-400 rounded-md mt-2"
+          value={coordinates}
+          readOnly
+        />
+
+        {loading && <p className="text-gray-500 text-sm mt-1">Loading...</p>}
+
+        {suggestions.length > 0 && (
+          <ul className="absolute top-[7.5rem] w-full bg-white border border-gray-400 rounded-md max-h-[100px] overflow-y-auto shadow-lg z-10">
+            {suggestions.map((place, index) => (
+              <li
+                key={index}
+                className="p-2 cursor-pointer hover:bg-gray-200"
+                onClick={() => handleDestinationSelect(place)}
+              >
+                {place.display_name}
+              </li>
+            ))}
+          </ul>
+        )}
+      </div>
+
+      {/* Action Buttons */}
+      <div className="flex flex-col items-center gap-3 mt-10">
+        <button
+          className="text-white w-[9rem] h-[3rem] text-xl p-2 font-bold bg-green-500 rounded"
+          onClick={handleGetRoute}
         >
           GET ROUTE
         </button>
-        {savebtn && (
+
+        {saveBtnVisible && (
           <button
-            className="text-white p-2 items-center font-semibold bg-blue-500 rounded-xl text-[18px] saveRoute"
+            className="text-white p-2 font-semibold bg-blue-500 rounded-xl text-[18px]"
             onClick={handleSaveRoute}
           >
             Save Route
           </button>
         )}
+
         <h1 className="text-green-600 font-semibold underline">
-          {saved ? "route saved successfully" : ""}
-          {alreadySaved ? "route already saved !" : ""}
+          {saved && "Route saved successfully"}
+          {alreadySaved && "Route already saved!"}
         </h1>
       </div>
     </div>

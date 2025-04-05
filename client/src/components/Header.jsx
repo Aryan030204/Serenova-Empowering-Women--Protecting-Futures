@@ -5,12 +5,20 @@ import logo from "../assets/logo.png";
 import { useSelector } from "react-redux";
 import Profile from "./Profile";
 
+const navLinks = [
+  { path: "/blog", label: "Blog" },
+  { path: "/contact", label: "Contact us" },
+  { path: "/help", label: "Want help?" },
+  { path: "/routeplanner", label: "Route Planner" },
+];
+
 const Header = () => {
   const [isOpen, setIsOpen] = useState(false);
   const user = useSelector((store) => store.user.user);
 
   return (
-    <div className="flex w-full h-[5rem] justify-between items-center px-6 bg-white sticky z-50">
+    <header className="w-full h-[5rem] bg-white px-6 flex justify-between items-center sticky top-0 z-50 shadow-sm">
+      {/* Logo */}
       <Link to="/" className="flex items-center">
         <img
           src={logo}
@@ -19,7 +27,7 @@ const Header = () => {
         />
       </Link>
 
-      {/* Hamburger Menu */}
+      {/* Hamburger Icon (Mobile) */}
       <button
         className="lg:hidden text-gray-700"
         onClick={() => setIsOpen(!isOpen)}
@@ -27,79 +35,65 @@ const Header = () => {
         {isOpen ? <X size={30} /> : <Menu size={30} />}
       </button>
 
-      <ul className="hidden lg:flex justify-center gap-10 items-center w-full">
-        <Link to="/blog" className="font-handwriting text-2xl font-semibold">
-          <li>Blog</li>
-        </Link>
-        <Link to="/contact" className="font-handwriting text-2xl font-semibold">
-          <li>Contact us</li>
-        </Link>
-        <Link to="/help" className="font-handwriting text-2xl font-semibold">
-          <li>Want help?</li>
-        </Link>
-        <Link
-          to="/routeplanner"
-          className="font-handwriting text-2xl font-semibold"
-        >
-          <li>Route Planner</li>
-        </Link>
-      </ul>
-      {user !== null && isOpen === false ? (
-        <Profile user={user} />
-      ) : (
-        <Link
-          to="/login"
-          className="font-handwriting text-2xl hidden lg:block font-semibold"
-        >
-          login
-        </Link>
-      )}
+      {/* Desktop Nav */}
+      <nav className="hidden lg:flex items-center gap-10">
+        {navLinks.map((link) => (
+          <li key={link.path} className="list-none">
+            <Link
+              to={link.path}
+              className="font-handwriting text-2xl font-semibold hover:text-purple-600"
+            >
+              {link.label}
+            </Link>
+          </li>
+        ))}
+      </nav>
+
+      {/* Auth/Profile (Desktop) */}
+      <div className="hidden lg:block">
+        {user ? (
+          <Profile user={user} />
+        ) : (
+          <Link
+            to="/login"
+            className="font-handwriting text-2xl font-semibold"
+          >
+            login
+          </Link>
+        )}
+      </div>
 
       {/* Mobile Dropdown */}
       {isOpen && (
-        <ul className="lg:hidden absolute top-16 left-0 w-full bg-white border border-black border-t-1 border-b-0 shadow-lg flex flex-col items-center py-4 space-y-4">
-          <Link
-            to="/blog"
-            className="text-2xl font-semibold font-handwriting"
-            onClick={() => setIsOpen(false)}
-          >
-            <li>Blog</li>
-          </Link>
-          <Link
-            to="/contact"
-            className="text-2xl font-semibold font-handwriting"
-            onClick={() => setIsOpen(false)}
-          >
-            <li>Contact us</li>
-          </Link>
-          <Link
-            to="/help"
-            className="text-2xl font-semibold font-handwriting"
-            onClick={() => setIsOpen(false)}
-          >
-            <li>Want help?</li>
-          </Link>
-          <Link
-            to="/routeplanner"
-            className="text-2xl font-semibold font-handwriting"
-            onClick={() => setIsOpen(false)}
-          >
-            <li>Route Planner</li>
-          </Link>
+        <ul className="lg:hidden absolute top-16 left-0 w-full bg-white shadow-lg border-t border-gray-200 flex flex-col items-center py-4 space-y-4 z-50">
+          {navLinks.map((link) => (
+            <li key={link.path}>
+              <Link
+                to={link.path}
+                className="text-2xl font-handwriting font-semibold"
+                onClick={() => setIsOpen(false)}
+              >
+                {link.label}
+              </Link>
+            </li>
+          ))}
+
           {user ? (
             <Profile user={user} />
           ) : (
-            <Link
-              to="/login"
-              className="text-2xl font-semibold font-handwriting"
-              onClick={() => setIsOpen(false)}
-            >
-              <li>login</li>
-            </Link>
+            <li>
+              <Link
+                to="/login"
+                className="text-2xl font-handwriting font-semibold"
+                onClick={() => setIsOpen(false)}
+              >
+                login
+              </Link>
+            </li>
           )}
         </ul>
       )}
-    </div>
+    </header>
   );
 };
 
