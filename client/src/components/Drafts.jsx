@@ -23,7 +23,7 @@ const Drafts = () => {
   return (
     <>
       <div className="flex flex-col justify-center items-center p-3 gap-[1rem]">
-        <h1 className="text-4xl font-bold my-2">Saved Posts</h1>
+        <h1 className="text-4xl font-bold my-2">Draft Posts</h1>
         <div className="flex flex-col gap-[2rem] items-center justify-center">
           {draftPosts.map((i) => {
             console.log(i);
