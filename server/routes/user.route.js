@@ -24,7 +24,7 @@ userRouter.put("/user/stories/:id/update", authMiddleware, updatePost);
 userRouter.delete("/user/stories/:id/delete", authMiddleware, deletePost);
 
 // Drafts
+userRouter.post("/user/stories/savedraft", authMiddleware, saveDraft);
 userRouter.get("/user/stories/drafts", authMiddleware, getDrafts);
-userRouter.post("/user/stories/drafts/save", authMiddleware, saveDraft);
 
 module.exports = userRouter;

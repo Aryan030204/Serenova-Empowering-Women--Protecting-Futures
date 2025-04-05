@@ -30,13 +30,11 @@ const savePost = async (req, res) => {
       .status(200)
       .json({ success: true, message: "Story saved successfully" });
   } catch (err) {
-    res
-      .status(500)
-      .json({
-        success: false,
-        message: "Something went wrong",
-        error: err.message,
-      });
+    res.status(500).json({
+      success: false,
+      message: "Something went wrong savepost",
+      error: err.message,
+    });
   }
 };
 
@@ -64,13 +62,11 @@ const unsavePost = async (req, res) => {
       .status(200)
       .json({ success: true, message: "Story unsaved successfully" });
   } catch (err) {
-    res
-      .status(500)
-      .json({
-        success: false,
-        message: "Something went wrong",
-        error: err.message,
-      });
+    res.status(500).json({
+      success: false,
+      message: "Something went wrong unsave",
+      error: err.message,
+    });
   }
 };
 
@@ -82,13 +78,11 @@ const getSavedPosts = async (req, res) => {
 
     res.status(200).json({ success: true, savedPosts: user.savedPosts });
   } catch (err) {
-    res
-      .status(500)
-      .json({
-        success: false,
-        message: "Something went wrong",
-        error: err.message,
-      });
+    res.status(500).json({
+      success: false,
+      message: "Something went wrong getsaved",
+      error: err.message,
+    });
   }
 };
 
@@ -169,13 +163,11 @@ const deletePost = async (req, res) => {
       .status(200)
       .json({ success: true, message: "Story deleted successfully" });
   } catch (err) {
-    res
-      .status(500)
-      .json({
-        success: false,
-        message: "Error deleting story",
-        error: err.message,
-      });
+    res.status(500).json({
+      success: false,
+      message: "Error deleting story",
+      error: err.message,
+    });
   }
 };
 
@@ -205,13 +197,11 @@ const updatePost = async (req, res) => {
       .status(200)
       .json({ success: true, message: "Story updated successfully", story });
   } catch (err) {
-    res
-      .status(500)
-      .json({
-        success: false,
-        message: "Error updating story",
-        error: err.message,
-      });
+    res.status(500).json({
+      success: false,
+      message: "Error updating story",
+      error: err.message,
+    });
   }
 };
 
@@ -233,13 +223,11 @@ const getDrafts = async (req, res) => {
       drafts: user.draftPosts,
     });
   } catch (err) {
-    res
-      .status(500)
-      .json({
-        success: false,
-        message: "Error fetching drafts",
-        error: err.message,
-      });
+    res.status(500).json({
+      success: false,
+      message: "Error fetching drafts",
+      error: err.message,
+    });
   }
 };
 
@@ -248,9 +236,6 @@ const saveDraft = async (req, res) => {
   try {
     const { _id } = req.user;
     const { title = "", content = "" } = req.body;
-
-    const trimmedTitle = title.trim();
-    const trimmedContent = content.trim();
 
     if (!mongoose.Types.ObjectId.isValid(_id)) {
       return res
@@ -267,8 +252,8 @@ const saveDraft = async (req, res) => {
 
     const existingDraft = await Story.findOne({
       userId: _id,
-      title: { $regex: new RegExp(`^${trimmedTitle}$`, "i") },
-      content: trimmedContent,
+      title: { $regex: new RegExp(`^${title}$`, "i") },
+      content: content,
     });
 
     if (existingDraft) {
@@ -278,9 +263,9 @@ const saveDraft = async (req, res) => {
     }
 
     const draft = new Story({
-      userId: mongoose.Types.ObjectId(_id),
-      title: trimmedTitle,
-      content: trimmedContent,
+      userId: _id,
+      title: title,
+      content: content,
       author: `${user.firstName} ${user.lastName || ""}`.trim(),
     });
 
@@ -294,13 +279,13 @@ const saveDraft = async (req, res) => {
       .status(201)
       .json({ success: true, message: "Draft saved successfully", draft });
   } catch (err) {
-    res
-      .status(500)
-      .json({
-        success: false,
-        message: "Something went wrong",
-        error: err.message,
-      });
+    console.log(err);
+
+    res.status(500).json({
+      success: false,
+      message: "Something went wrong savedraft",
+      error: err.message,
+    });
   }
 };
 
