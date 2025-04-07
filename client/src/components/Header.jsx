@@ -4,6 +4,7 @@ import { Menu, X } from "lucide-react";
 import logo from "../assets/logo.png";
 import { useSelector } from "react-redux";
 import Profile from "./Profile";
+import WhatsappBtn from "./WhatsappBtn";
 
 const navLinks = [
   { path: "/blog", label: "Blog" },
@@ -14,6 +15,7 @@ const navLinks = [
 
 const Header = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const loggedIn = JSON.parse(localStorage.getItem("user"));
   const user = useSelector((store) => store.user.user);
 
   return (
@@ -52,12 +54,12 @@ const Header = () => {
       {/* Auth/Profile (Desktop) */}
       <div className="hidden lg:block">
         {user ? (
-          <Profile user={user} />
+          <div className="flex items-center gap-5">
+          <WhatsappBtn/>
+            <Profile user={user} />
+          </div>
         ) : (
-          <Link
-            to="/login"
-            className="font-handwriting text-2xl font-semibold"
-          >
+          <Link to="/login" className="font-handwriting text-2xl font-semibold">
             login
           </Link>
         )}
@@ -79,7 +81,10 @@ const Header = () => {
           ))}
 
           {user ? (
-            <Profile user={user} />
+            <>
+              <Profile user={user} />
+              <WhatsappBtn />
+            </>
           ) : (
             <li>
               <Link
