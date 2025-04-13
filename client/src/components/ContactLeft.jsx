@@ -1,5 +1,4 @@
 /* eslint-disable react/no-unescaped-entities */
-import React from "react";
 import rightArrow from "../assets/rightArrow.png";
 
 const ContactLeft = () => {

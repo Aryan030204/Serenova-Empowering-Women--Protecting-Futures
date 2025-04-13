@@ -15,7 +15,6 @@ const navLinks = [
 
 const Header = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const loggedIn = JSON.parse(localStorage.getItem("user"));
   const user = useSelector((store) => store.user.user);
 
   return (

@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import { Quote } from 'lucide-react'
 
 const QuoteBox = ({quote, bcolor, bgcolor}) => {
