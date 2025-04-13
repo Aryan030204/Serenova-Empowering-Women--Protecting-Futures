@@ -52,10 +52,10 @@ const Header = () => {
       </nav>
 
       {/* Auth/Profile (Desktop) */}
-      <div className="hidden lg:block">
+      <div className="hidden lg:flex">
+        <WhatsappBtn />
         {user ? (
           <div className="flex items-center gap-5">
-          <WhatsappBtn/>
             <Profile user={user} />
           </div>
         ) : (

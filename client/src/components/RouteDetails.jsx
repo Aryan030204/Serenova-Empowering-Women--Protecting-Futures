@@ -133,8 +133,12 @@ const RouteDetails = () => {
       const [destLat, destLon] = coordinates.split(",").map(Number);
 
       const [currentNameRes, destNameRes] = await Promise.all([
-        axios.get(`http://api.openweathermap.org/geo/1.0/reverse?lat=${lat}&lon=${lon}&appid=${OPENWEATHER_API_KEY}`),
-        axios.get(`http://api.openweathermap.org/geo/1.0/reverse?lat=${destLat}&lon=${destLon}&appid=${OPENWEATHER_API_KEY}`),
+        axios.get(
+          `http://api.openweathermap.org/geo/1.0/reverse?lat=${lat}&lon=${lon}&appid=${OPENWEATHER_API_KEY}`
+        ),
+        axios.get(
+          `http://api.openweathermap.org/geo/1.0/reverse?lat=${destLat}&lon=${destLon}&appid=${OPENWEATHER_API_KEY}`
+        ),
       ]);
 
       await axios.post(
@@ -213,7 +217,9 @@ const RouteDetails = () => {
           >
             <option value="">Select Country</option>
             {countries.map((country, index) => (
-              <option key={index} value={country}>{country}</option>
+              <option key={index} value={country}>
+                {country}
+              </option>
             ))}
           </select>
 
@@ -224,7 +230,9 @@ const RouteDetails = () => {
           >
             <option value="">Select State</option>
             {states.map((state, index) => (
-              <option key={index} value={state.name}>{state.name}</option>
+              <option key={index} value={state.name}>
+                {state.name}
+              </option>
             ))}
           </select>
         </div>
