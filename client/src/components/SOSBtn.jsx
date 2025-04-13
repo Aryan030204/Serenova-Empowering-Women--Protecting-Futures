@@ -1,7 +1,7 @@
 import whatsapp from "../assets/whatsapp.png";
 import { WHATSAPP_ALERT_MESSAGE } from "../utils/config";
 
-const WhatsappBtn = () => {
+const SOSBtn = () => {
   const handleConnect = async () => {
     const confirmed = window.confirm(
       "Serenova is requesting to open WhatsApp Web. Do you want to continue?"
@@ -37,4 +37,4 @@ const WhatsappBtn = () => {
   );
 };
 
-export default WhatsappBtn;
+export default SOSBtn;

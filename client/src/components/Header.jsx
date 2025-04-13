@@ -4,7 +4,7 @@ import { Menu, X } from "lucide-react";
 import logo from "../assets/logo.png";
 import { useSelector } from "react-redux";
 import Profile from "./Profile";
-import WhatsappBtn from "./WhatsappBtn";
+import SOSBtn from "./SOSBtn";
 
 const navLinks = [
   { path: "/blog", label: "Blog" },
@@ -53,7 +53,7 @@ const Header = () => {
 
       {/* Auth/Profile (Desktop) */}
       <div className="hidden lg:flex">
-        <WhatsappBtn />
+        <SOSBtn />
         {user ? (
           <div className="flex items-center gap-5">
             <Profile user={user} />
@@ -83,7 +83,7 @@ const Header = () => {
           {user ? (
             <>
               <Profile user={user} />
-              <WhatsappBtn />
+              <SOSBtn />
             </>
           ) : (
             <li>
