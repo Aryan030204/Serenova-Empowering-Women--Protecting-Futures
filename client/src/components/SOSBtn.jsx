@@ -30,7 +30,7 @@ const SOSBtn = () => {
   };
 
   return (
-    <div className="flex items-center justify-center bg-red-500 rounded-full p-2 font-bold text-white gap-1">
+    <div className="flex items-center justify-center bg-red-500 rounded-full mr-4 p-2 font-bold text-white gap-1">
       <img src={whatsapp} className="w-6" />
       <button onClick={handleConnect}>Emergency SOS</button>
     </div>

@@ -16,6 +16,7 @@
   "author": "Aryan Arora",
   "license": "ISC",
   "dependencies": {
+    "@google/genai": "^0.13.0",
     "bcrypt": "^5.1.1",
     "cookie-parser": "^1.4.7",
     "cors": "^2.8.5",

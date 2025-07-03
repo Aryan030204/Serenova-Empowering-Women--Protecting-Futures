@@ -8,6 +8,7 @@ const cors = require("cors");
 const routesRouter = require("./routes/routes.route");
 const storyRouter = require("./routes/story.route");
 const userRouter = require("./routes/user.route");
+const chatRouter = require("./routes/chatbot.route");
 require("dotenv").config();
 
 app.use(express.json());
@@ -24,6 +25,7 @@ app.use("/api/", profileRouter);
 app.use("/api/", routesRouter);
 app.use("/api/", storyRouter);
 app.use("/api/", userRouter);
+app.use("/api/", chatRouter);
 
 app.listen(process.env.PORT, () => {
   try {

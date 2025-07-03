@@ -160,34 +160,43 @@ const increaseLike = async (req, res) => {
   try {
     const { id } = req.params;
     const { _id } = req.user;
+    
+    
     const user = await User.findById(_id);
-    const story = await Story.findByIdAndUpdate(
-      id,
-      { $inc: { likes: 1 } },
-      { new: true }
-    );
+    const story = await Story.findById(id);
+    // console.log(story);
 
-    if (!story) {
-      return res.status(404).json({
-        message: "Story not found",
-      });
-    }
-    if (user.likedPosts.includes(id)) {
-      return res.status(400).json({
-        message: "You already liked this story",
-      });
+    if (!story) return res.status(404).json({ message: "Story not found" });
+
+    const hasLiked = user.likedPosts.includes(id);
+    const hasDisliked = user.dislikedPosts.includes(id);
+
+    if (hasLiked) {
+      // Unlike
+      story.likes = Math.max(0, story.likes - 1);
+      user.likedPosts.pull(id);
+    } else {
+      // Like
+      story.likes += 1;
+      user.likedPosts.push(id);
+
+      // Remove previous dislike (if any)
+      if (hasDisliked) {
+        story.dislikes = Math.max(0, story.dislikes - 1);
+        user.dislikedPosts.pull(id);
+      }
     }
 
-    user.likedPosts.push(id);
     await user.save();
+    await story.save();
 
     res.status(200).json({
-      message: "Story like increased successfully",
-      story: story,
+      message: hasLiked ? "Story unliked" : "Story liked",
+      story,
     });
   } catch (err) {
     res.status(500).json({
-      message: "Error increasing like on story",
+      message: "Error processing like toggle",
       error: err.message,
     });
   }
@@ -197,31 +206,41 @@ const decreaseLike = async (req, res) => {
   try {
     const { id } = req.params;
     const { _id } = req.user;
+
     const user = await User.findById(_id);
-    const story = await Story.findByIdAndUpdate(
-      id,
-      {
-        $inc: { likes: -1 },
-      },
-      {
-        new: true,
+    const story = await Story.findById(id);
+
+    if (!story) return res.status(404).json({ message: "Story not found" });
+
+    const hasDisliked = user.dislikedPosts.includes(id);
+    const hasLiked = user.likedPosts.includes(id);
+
+    if (hasDisliked) {
+      // Remove dislike
+      story.dislikes = Math.max(0, story.dislikes - 1);
+      user.dislikedPosts.pull(id);
+    } else {
+      // Add dislike
+      story.dislikes += 1;
+      user.dislikedPosts.push(id);
+
+      // Remove like if it exists
+      if (hasLiked) {
+        story.likes = Math.max(0, story.likes - 1);
+        user.likedPosts.pull(id);
       }
-    );
-    if (!story) {
-      return res.status(404).json({
-        message: "Story not found",
-      });
     }
-    user.likedPosts.pull(id);
+
     await user.save();
+    await story.save();
 
     res.status(200).json({
-      message: "Story like increased successfully",
-      story: story,
+      message: hasDisliked ? "Dislike removed" : "Story disliked",
+      story,
     });
   } catch (err) {
     res.status(500).json({
-      message: "Error increasing like on story",
+      message: "Error processing dislike toggle",
       error: err.message,
     });
   }
