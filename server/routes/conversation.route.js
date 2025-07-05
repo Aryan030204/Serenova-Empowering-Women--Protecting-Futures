@@ -7,8 +7,8 @@ const {
 
 const conversationRouter = express.Router();
 
-conversationRouter.get("chat/conversation/get", getConversation);
-conversationRouter.post("chat/message/send", sendMessage);
-conversationRouter.delete("chat/conversation/delete", deleteConversation);
+conversationRouter.get("/:userId/chat/conversation/get", getConversation);
+conversationRouter.post("/chat/message/send", sendMessage);
+conversationRouter.delete("/:userId/chat/conversation/delete", deleteConversation);
 
 module.exports = conversationRouter;
