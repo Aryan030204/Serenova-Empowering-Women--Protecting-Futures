@@ -9,6 +9,7 @@ const routesRouter = require("./routes/routes.route");
 const storyRouter = require("./routes/story.route");
 const userRouter = require("./routes/user.route");
 const chatRouter = require("./routes/chatbot.route");
+const conversationRouter = require("./routes/conversation.route");
 require("dotenv").config();
 
 app.use(express.json());
@@ -26,6 +27,7 @@ app.use("/api/", routesRouter);
 app.use("/api/", storyRouter);
 app.use("/api/", userRouter);
 app.use("/api/", chatRouter);
+app.use("/api/", conversationRouter);
 
 app.listen(process.env.PORT, () => {
   try {
