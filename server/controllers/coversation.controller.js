@@ -1,11 +1,12 @@
 const Conversation = require("../models/conversation.model");
 const genai = require("@google/genai").GoogleGenAI;
+const relevantKeywords = require("../assets/keywords");
 
 const getConversation = async (req, res) => {
   try {
     const { userId } = req.params;
-    
-    const conversation = await Conversation.find({userId});
+
+    const conversation = await Conversation.find({ userId });
     return res.status(200).json({
       success: true,
       data: conversation,
@@ -30,32 +31,46 @@ const sendMessage = async (req, res) => {
       });
     }
 
-    const bot = new genai({ apiKey: process.env.GEMINI_API_KEY });
+    const userTextLower = text.toLowerCase();
+    const isRelevant = relevantKeywords.some((keyword) =>
+      userTextLower.includes(keyword)
+    );
 
-    const response = await bot.models.generateContent({
-      model: "gemini-2.5-flash",
-      contents: text,
-    });
+    let replyText = "";
 
-    const replyText = response.candidates?.[0]?.content?.parts?.[0]?.text || "Sorry, I couldn't understand that.";
+    if (!isRelevant) {
+      replyText =
+        "Oops! That might be out of my expertise. Let’s stick to helping and supporting women through important conversations.";
+    } else {
+      const bot = new genai({ apiKey: process.env.GEMINI_API_KEY });
+      const prompt = text + ". give me answer in not more than 100 words and straight to the point."
+      const response = await bot.models.generateContent({
+        model: "gemini-2.5-flash",
+        contents: prompt,
+      });
+
+      replyText =
+        response.candidates?.[0]?.content?.parts?.[0]?.text ||
+        "Sorry, I couldn't understand that.";
+    }
 
     let conversation = await Conversation.findOne({ userId });
-
     if (!conversation) {
       conversation = new Conversation({ userId, messages: [] });
     }
 
-    conversation.messages.push({
-      text,
-      sender: "user",
-      timestamp: new Date(),
-    });
-
-    conversation.messages.push({
-      text: replyText,
-      sender: "bot",
-      timestamp: new Date(),
-    });
+    conversation.messages.push(
+      {
+        text,
+        sender: "user",
+        timestamp: new Date(),
+      },
+      {
+        text: replyText,
+        sender: "bot",
+        timestamp: new Date(),
+      }
+    );
 
     await conversation.save();
 
@@ -72,7 +87,6 @@ const sendMessage = async (req, res) => {
     });
   }
 };
-
 
 const deleteConversation = async (req, res) => {
   try {
