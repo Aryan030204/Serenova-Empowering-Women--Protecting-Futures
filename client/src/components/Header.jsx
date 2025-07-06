@@ -42,7 +42,7 @@ const Header = () => {
           <li key={link.path} className="list-none">
             <Link
               to={link.path}
-              className="font-handwriting text-2xl font-semibold hover:text-purple-600"
+              className="text-lg font-bold hover:text-purple-600"
             >
               {link.label}
             </Link>
@@ -58,7 +58,7 @@ const Header = () => {
             <Profile user={user} />
           </div>
         ) : (
-          <Link to="/login" className="font-handwriting text-2xl font-semibold">
+          <Link to="/login" className="font- text-lg font-semibold">
             login
           </Link>
         )}
@@ -66,12 +66,12 @@ const Header = () => {
 
       {/* Mobile Dropdown */}
       {isOpen && (
-        <ul className="lg:hidden absolute top-16 left-0 w-full bg-white shadow-lg border-t border-gray-200 flex flex-col items-center py-4 space-y-4 z-50">
+        <ul className="lg:hidden absolute top-16 left-0 w-full bg-white shadow-lg border-t border-gray-200 flex flex-col items-center py-4 space-y-2 z-50">
           {navLinks.map((link) => (
             <li key={link.path}>
               <Link
                 to={link.path}
-                className="text-2xl font-handwriting font-semibold"
+                className="text-lg font-bold"
                 onClick={() => setIsOpen(false)}
               >
                 {link.label}
@@ -88,7 +88,7 @@ const Header = () => {
             <li>
               <Link
                 to="/login"
-                className="text-2xl font-handwriting font-semibold"
+                className="text-lg font-bold"
                 onClick={() => setIsOpen(false)}
               >
                 login

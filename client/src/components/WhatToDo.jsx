@@ -6,7 +6,7 @@ const WhatToDo = () => {
     <>
       <div className="flex flex-col gap-[1rem] w-full items-center bg-purple-400 p-6">
         <div className="flex items-center justify-center text-center">
-          <h1 className="lg:text-6xl md:text-4xl font-handwriting text-red-500">What you can do...</h1>
+          <h1 className="lg:text-5xl md:text-4xl font-bold text-red-500">What you can do...</h1>
         </div>
         <div className="flex items-center justify-evenly gap-[2rem]">
           <div className="flex justify-start items-center relative">
