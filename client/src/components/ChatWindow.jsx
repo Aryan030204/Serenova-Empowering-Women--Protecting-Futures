@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import { useEffect, useRef, useState } from "react";
 import { IoMdSend } from "react-icons/io";
 import bot_avatar from "../assets/bot_avatar.png";
