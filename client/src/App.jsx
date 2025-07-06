@@ -19,6 +19,7 @@ import MyPosts from "./pages/MyPosts";
 import EditPost from "./pages/EditPost";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
+import ChatButton from "./components/ChatButton";
 
 function App() {
   const user = localStorage.getItem("user");
@@ -27,6 +28,7 @@ function App() {
     <BrowserRouter>
       <div className="flex flex-col h-[100vh]">
         <Header />
+        <ChatButton />
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/blog" element={<Stories />} />
@@ -41,15 +43,9 @@ function App() {
           <Route path="/blog/stories/:id" element={<OpenedPost />} />
           <Route path="/blog/:id/saved" element={<SavedPosts />} />
           <Route path="/user/saved/:id" element={<SavedPost />} />
-          
-          <Route
-            path="/posts/new"
-            element={user && <CreatePost /> }
-          />
-          <Route
-            path="/user/drafts"
-            element={user ? <Drafts /> : <Login />}
-          />
+
+          <Route path="/posts/new" element={user && <CreatePost />} />
+          <Route path="/user/drafts" element={user ? <Drafts /> : <Login />} />
           <Route path="/user/draft/:id" element={<DraftPost />} />
           <Route path="/user/posts" element={<MyPosts />} />
           <Route path="/stories/:id/edit" element={<EditPost />} />
