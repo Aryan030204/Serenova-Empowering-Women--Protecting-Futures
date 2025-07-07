@@ -14,12 +14,40 @@ const ChatWindow = ({ setIsOpen }) => {
   const [messages, setMessages] = useState([]);
   const user = JSON.parse(localStorage.getItem("user"));
 
+  const generateGuestId = () => {
+    return [...Array(24)]
+      .map(() => Math.floor(Math.random() * 16).toString(16))
+      .join("");
+  };
   const fetchConversation = async () => {
     try {
-      const res = await axios.get(
-        SERVER_URL + `/${user._id}/chat/conversation/get`
-      );
-      setMessages(res.data.data[0].messages);
+      let res = "";
+
+      // Check only sessionStorage (clears on refresh)
+      const guestUser = JSON.parse(sessionStorage.getItem("guest_user"));
+
+      if (!user && !guestUser) {
+        // If no logged-in user or guest_user in sessionStorage
+        const guestId = generateGuestId();
+        res = await axios.get(`${SERVER_URL}/${guestId}/chat/conversation/get`);
+
+        if (res.data.guest) {
+          // Only store guest in sessionStorage (not localStorage)
+          sessionStorage.setItem("guest_user", JSON.stringify(res.data.guest));
+        }
+      } else if (guestUser && !user) {
+        res = await axios.get(
+          `${SERVER_URL}/${guestUser._id}/chat/conversation/get`
+        );
+      } else {
+        res = await axios.get(
+          `${SERVER_URL}/${user._id}/chat/conversation/get`
+        );
+      }
+
+      if (res.data.data.length > 0) {
+        setMessages(res.data.data[0].messages);
+      }
     } catch (err) {
       console.log(err);
     }
@@ -28,10 +56,14 @@ const ChatWindow = ({ setIsOpen }) => {
   const sendMsg = async (text) => {
     try {
       setResLoading(true);
+      const guestUser = JSON.parse(sessionStorage.getItem("guest_user"));
+      const userId = user ? user._id : guestUser?._id;
+
       await axios.post(SERVER_URL + "/chat/message/send", {
-        userId: user._id,
-        text: text,
+        userId,
+        text,
       });
+
       setMsg("");
       fetchConversation();
     } catch (err) {

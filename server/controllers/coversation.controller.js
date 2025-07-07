@@ -1,14 +1,62 @@
 const Conversation = require("../models/conversation.model");
 const genai = require("@google/genai").GoogleGenAI;
 const relevantKeywords = require("../assets/keywords");
+const User = require("../models/user.model");
+const { default: mongoose } = require("mongoose");
 
 const getConversation = async (req, res) => {
   try {
     const { userId } = req.params;
 
-    const conversation = await Conversation.find({ userId });
+    // Validate ObjectId
+    if (!mongoose.Types.ObjectId.isValid(userId)) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid user ID",
+      });
+    }
+
+    // Check if user exists
+    let user = await User.findById(userId);
+
+    // If user doesn't exist, create guest with unique email
+    if (!user) {
+      const randomNum = Math.floor(Math.random() * 1000000);
+      user = await User.create({
+        firstName: "guest",
+        age: 22,
+        gender: "not to say",
+        email: `guest${randomNum}@example.com`, // unique email
+        password: "0123456789",
+      });
+    }
+
+    // Find conversation
+    let conversation = await Conversation.find({ userId: user._id });
+    if (!conversation || conversation.length === 0) {
+      conversation = new Conversation({
+        userId: userId,
+        messages: [
+          {
+            text: "Hi, what can I do for you?",
+            sender: "bot",
+          },
+        ],
+      });
+
+      await conversation.save(); // Save to DB
+
+      return res.status(200).json({
+        success: true,
+        message: "conversation fetched successfully",
+        data: [conversation],
+        "guest": user
+      });
+    }
+
     return res.status(200).json({
       success: true,
+      message: "conversation fetched successfully",
       data: conversation,
     });
   } catch (err) {
@@ -43,7 +91,9 @@ const sendMessage = async (req, res) => {
         "Oops! That might be out of my expertise. Let’s stick to helping and supporting women through important conversations.";
     } else {
       const bot = new genai({ apiKey: process.env.GEMINI_API_KEY });
-      const prompt = text + ". give me answer in not more than 100 words and straight to the point."
+      const prompt =
+        text +
+        ". give me answer in not more than 100 words and straight to the point.";
       const response = await bot.models.generateContent({
         model: "gemini-2.5-flash",
         contents: prompt,

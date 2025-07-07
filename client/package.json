@@ -21,6 +21,7 @@
     "leaflet": "^1.9.4",
     "leaflet-routing-machine": "^3.2.12",
     "lucide-react": "^0.475.0",
+    "mongoose": "^8.16.1",
     "quill": "^2.0.3",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
