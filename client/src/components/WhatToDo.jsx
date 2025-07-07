@@ -61,7 +61,7 @@ const WhatToDo = () => {
             <img
               src={guide2}
               alt="guide2"
-              className="md:hidden lg:block absolute lg:right-[1rem] lg:bottom-[-39.5rem]"
+              className="md:hidden lg:block absolute lg:right-[1rem] lg:bottom-[-38.8rem]"
             />
           </div>
         </div>

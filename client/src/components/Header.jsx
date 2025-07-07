@@ -42,7 +42,7 @@ const Header = () => {
           <li key={link.path} className="list-none">
             <Link
               to={link.path}
-              className="text-lg font-bold hover:text-purple-600"
+              className="text-lg font-bold transition-all ease-in-out duration-300 hover:text-purple-600"
             >
               {link.label}
             </Link>

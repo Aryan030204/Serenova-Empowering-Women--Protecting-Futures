@@ -49,7 +49,7 @@ const HeroBanner = () => {
             to feel secure!
           </p>
         </div>
-        <div className="w-fit bg-white font-semibold p-2 shadow-lg relative lg:left-[2.5rem] top-3 border-none rounded-3xl cursor-pointer md:left-[1.8rem] hover:text-white hover:bg-black">
+        <div className="w-fit bg-white font-semibold p-2 shadow-lg relative lg:left-[2.5rem] top-3 border-none rounded-3xl cursor-pointer md:left-[1.8rem] transition-all ease-in-out duration-300 hover:text-white hover:bg-black">
           <Link to="/login" className="md:text-sm">
             <button>JOIN NOW</button>
           </Link>
