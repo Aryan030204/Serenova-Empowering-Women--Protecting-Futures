@@ -23,16 +23,13 @@ const ChatWindow = ({ setIsOpen }) => {
     try {
       let res = "";
 
-      // Check only sessionStorage (clears on refresh)
       const guestUser = JSON.parse(sessionStorage.getItem("guest_user"));
 
       if (!user && !guestUser) {
-        // If no logged-in user or guest_user in sessionStorage
         const guestId = generateGuestId();
         res = await axios.get(`${SERVER_URL}/${guestId}/chat/conversation/get`);
 
         if (res.data.guest) {
-          // Only store guest in sessionStorage (not localStorage)
           sessionStorage.setItem("guest_user", JSON.stringify(res.data.guest));
         }
       } else if (guestUser && !user) {

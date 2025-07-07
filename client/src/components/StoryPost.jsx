@@ -23,8 +23,9 @@ const StoryPost = () => {
       const res = await axios.get(`${SERVER_URL}/profile`, {
         withCredentials: true,
       });
-      setUser(res.data);
-      localStorage.setItem("user", JSON.stringify(res.data));
+      
+      setUser(res.data.data);
+      localStorage.setItem("user", JSON.stringify(res.data.data));
     } catch (err) {
       console.error("Failed to fetch user:", err);
     }
@@ -139,9 +140,10 @@ const StoryPost = () => {
           }, ${dateParts[0]} ${timePart}`;
           
           
+          
 
-          const isLiked = user?.data?.likedPosts?.includes(i._id);
-          const isDisliked = user?.data?.dislikedPosts?.includes(i._id);
+          const isLiked = user?.likedPosts?.includes(i._id);
+          const isDisliked = user?.dislikedPosts?.includes(i._id);
           
 
           return (
