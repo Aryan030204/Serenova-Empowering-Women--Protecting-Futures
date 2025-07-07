@@ -51,14 +51,14 @@ const Header = () => {
       </nav>
 
       {/* Auth/Profile (Desktop) */}
-      <div className="hidden lg:flex">
+      <div className="hidden lg:flex items-center">
         <SOSBtn />
         {user ? (
           <div className="flex items-center gap-5">
             <Profile user={user} />
           </div>
         ) : (
-          <Link to="/login" className="font- text-lg font-semibold">
+          <Link to="/login" className=" text-lg font-semibold hover:underline">
             login
           </Link>
         )}
