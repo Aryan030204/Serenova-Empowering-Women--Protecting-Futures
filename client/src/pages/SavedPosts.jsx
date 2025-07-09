@@ -1,5 +1,5 @@
 import axios from "axios";
-import { SERVER_URL } from "../utils/config";
+import { PRODUCTION_URL } from "../utils/config";
 import { useEffect, useState } from "react";
 import { Link } from "react-router";
 import { Bookmark } from "lucide-react";
@@ -8,7 +8,7 @@ const SavedPosts = () => {
   const [savedPosts, setSavedPosts] = useState([]);
   const getSavedStories = async () => {
     try {
-      const res = await axios.get(SERVER_URL + `/user/stories/saved`, {
+      const res = await axios.get(PRODUCTION_URL + `/user/stories/saved`, {
         withCredentials: true,
       });
       

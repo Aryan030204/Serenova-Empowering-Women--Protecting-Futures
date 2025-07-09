@@ -3,7 +3,7 @@ import axios from "axios";
 import { Pencil, Trash2 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Link } from "react-router";
-import { SERVER_URL } from "../utils/config";
+import { PRODUCTION_URL } from "../utils/config";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
@@ -12,7 +12,7 @@ const MyPosts = () => {
   const user = JSON.parse(localStorage.getItem("user"));
   const getMyPosts = async () => {
     try {
-      const res = await axios.get(SERVER_URL + `/${user._id}/stories`, {
+      const res = await axios.get(PRODUCTION_URL + `/${user._id}/stories`, {
         withCredentials: true,
       });
       console.log(res.data.stories);
@@ -24,7 +24,7 @@ const MyPosts = () => {
 
   const handleDelete = async (id) => {
     try {
-      await axios.delete(SERVER_URL + `/stories/${id}`, {
+      await axios.delete(PRODUCTION_URL + `/stories/${id}`, {
         withCredentials: true,
       });
       toast.success("Post deleted successfully");

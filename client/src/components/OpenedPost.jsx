@@ -2,7 +2,7 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router";
-import { SERVER_URL } from "../utils/config";
+import { PRODUCTION_URL } from "../utils/config";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/ReactToastify.css";
 import PostsNavbar from "./PostsNavbar";
@@ -32,7 +32,7 @@ const OpenedPost = () => {
   ];
   const getSavedStories = async () => {
     try {
-      const res = await axios.get(SERVER_URL + `/user/stories/saved`, {
+      const res = await axios.get(PRODUCTION_URL + `/user/stories/saved`, {
         withCredentials: true,
       });
       setSavedStories(res.data.savedPosts.map((post) => post._id));
@@ -42,7 +42,7 @@ const OpenedPost = () => {
   };
   const getStory = async () => {
     try {
-      const res = await axios.get(SERVER_URL + `/stories/${id}`, {
+      const res = await axios.get(PRODUCTION_URL + `/stories/${id}`, {
         withCredentials: true,
       });
 
@@ -61,7 +61,7 @@ const OpenedPost = () => {
     try {
       if (!liked) {
         await axios.patch(
-          SERVER_URL + `/stories/${id}/like/increment`,
+          PRODUCTION_URL + `/stories/${id}/like/increment`,
           {},
           {
             withCredentials: true,
@@ -70,7 +70,7 @@ const OpenedPost = () => {
         setLiked(true);
         if (disliked) {
           await axios.patch(
-            SERVER_URL + `/stories/${id}/dislike/decrement`,
+            PRODUCTION_URL + `/stories/${id}/dislike/decrement`,
             {},
             {
               withCredentials: true,
@@ -80,7 +80,7 @@ const OpenedPost = () => {
         }
       } else {
         await axios.patch(
-          SERVER_URL + `/stories/${id}/like/decrement`,
+          PRODUCTION_URL + `/stories/${id}/like/decrement`,
           {},
           {
             withCredentials: true,
@@ -99,7 +99,7 @@ const OpenedPost = () => {
     try {
       if (!disliked) {
         await axios.patch(
-          SERVER_URL + `/stories/${id}/dislike/increment`,
+          PRODUCTION_URL + `/stories/${id}/dislike/increment`,
           {},
           {
             withCredentials: true,
@@ -108,7 +108,7 @@ const OpenedPost = () => {
         setDisliked(true);
         if (liked) {
           await axios.patch(
-            SERVER_URL + `/stories/${id}/like/decrement`,
+            PRODUCTION_URL + `/stories/${id}/like/decrement`,
             {},
             {
               withCredentials: true,
@@ -118,7 +118,7 @@ const OpenedPost = () => {
         }
       } else {
         await axios.patch(
-          SERVER_URL + `/stories/${id}/dislike/decrement`,
+          PRODUCTION_URL + `/stories/${id}/dislike/decrement`,
           {},
           {
             withCredentials: true,

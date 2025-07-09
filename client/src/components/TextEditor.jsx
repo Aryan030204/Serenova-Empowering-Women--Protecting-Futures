@@ -1,7 +1,7 @@
 import { Button, Snackbar, TextField, Alert } from "@mui/material";
 import axios from "axios";
 import { useState } from "react";
-import { SERVER_URL } from "../utils/config";
+import { PRODUCTION_URL } from "../utils/config";
 
 const TextEditor = () => {
   const [title, setTitle] = useState("");
@@ -10,7 +10,7 @@ const TextEditor = () => {
   const [snack, setSnack] = useState({ open: false, message: "", severity: "success" });
 
   const postData = async (endpoint, data) => {
-    return await axios.post(SERVER_URL + endpoint, data, {
+    return await axios.post(PRODUCTION_URL + endpoint, data, {
       withCredentials: true,
     });
   };

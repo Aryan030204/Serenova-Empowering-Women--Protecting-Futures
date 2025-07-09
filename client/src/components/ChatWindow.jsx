@@ -3,7 +3,7 @@ import { useEffect, useRef, useState } from "react";
 import { IoMdSend } from "react-icons/io";
 import bot_avatar from "../assets/bot_avatar.png";
 import axios from "axios";
-import { SERVER_URL } from "../utils/config";
+import { PRODUCTION_URL } from "../utils/config";
 import loader from "../assets/loader.gif";
 
 const ChatWindow = ({ setIsOpen }) => {
@@ -27,18 +27,18 @@ const ChatWindow = ({ setIsOpen }) => {
 
       if (!user && !guestUser) {
         const guestId = generateGuestId();
-        res = await axios.get(`${SERVER_URL}/${guestId}/chat/conversation/get`);
+        res = await axios.get(`${PRODUCTION_URL}/${guestId}/chat/conversation/get`);
 
         if (res.data.guest) {
           sessionStorage.setItem("guest_user", JSON.stringify(res.data.guest));
         }
       } else if (guestUser && !user) {
         res = await axios.get(
-          `${SERVER_URL}/${guestUser._id}/chat/conversation/get`
+          `${PRODUCTION_URL}/${guestUser._id}/chat/conversation/get`
         );
       } else {
         res = await axios.get(
-          `${SERVER_URL}/${user._id}/chat/conversation/get`
+          `${PRODUCTION_URL}/${user._id}/chat/conversation/get`
         );
       }
 
@@ -56,7 +56,7 @@ const ChatWindow = ({ setIsOpen }) => {
       const guestUser = JSON.parse(sessionStorage.getItem("guest_user"));
       const userId = user ? user._id : guestUser?._id;
 
-      await axios.post(SERVER_URL + "/chat/message/send", {
+      await axios.post(PRODUCTION_URL + "/chat/message/send", {
         userId,
         text,
       });

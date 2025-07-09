@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import PostsNavbar from "../components/PostsNavbar";
 import UserActivityNavbar from "../components/UserActivityNavbar";
 import { useParams } from "react-router";
-import { SERVER_URL } from "../utils/config";
+import { PRODUCTION_URL } from "../utils/config";
 import axios from "axios";
 
 const SavedPost = () => {
@@ -11,7 +11,7 @@ const SavedPost = () => {
   const { id } = useParams();
   const getStory = async () => {
     try {
-      const res = await axios.get(SERVER_URL + `/stories/${id}`, {
+      const res = await axios.get(PRODUCTION_URL + `/stories/${id}`, {
         withCredentials: true,
       });
       setStory(res.data.story);

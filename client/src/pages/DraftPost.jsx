@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import PostsNavbar from "../components/PostsNavbar";
 import UserActivityNavbar from "../components/UserActivityNavbar";
 import axios from "axios";
-import { SERVER_URL } from "../utils/config";
+import { PRODUCTION_URL } from "../utils/config";
 import { useParams } from "react-router";
 import { Button, TextField } from "@mui/material";
 
@@ -14,7 +14,7 @@ const DraftPost = () => {
   const handlePost = async () => {
     try {
       await axios.post(
-        SERVER_URL + "/user/stories/create",
+        PRODUCTION_URL + "/user/stories/create",
         {
           title: draft.title,
           content: draft.content,
@@ -31,7 +31,7 @@ const DraftPost = () => {
   const handleDraft = async () => {
     try {
       await axios.post(
-        SERVER_URL + "/user/stories/drafts/save",
+        PRODUCTION_URL + "/user/stories/drafts/save",
         {
           title: draft.title,
           content: draft.content,
@@ -47,7 +47,7 @@ const DraftPost = () => {
 
   const getDraft = async () => {
     try {
-      const res = await axios.get(SERVER_URL + `/user/stories/drafts/${id}`, {
+      const res = await axios.get(PRODUCTION_URL + `/user/stories/drafts/${id}`, {
         withCredentials: true,
       });
       setDraft(res.data.draft);

@@ -2,7 +2,7 @@
 import { Button, TextField } from "@mui/material";
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { SERVER_URL } from "../utils/config";
+import { PRODUCTION_URL } from "../utils/config";
 import { useParams } from "react-router";
 import {toast, ToastContainer} from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -13,7 +13,7 @@ const EditPost = () => {
 
   const getPost = async () => {
     try {
-      const res = await axios.get(`${SERVER_URL}/user/stories/drafts/${id}`, {
+      const res = await axios.get(`${PRODUCTION_URL}/user/stories/drafts/${id}`, {
         withCredentials: true,
       });
       setPost(res.data.draft);
@@ -25,7 +25,7 @@ const EditPost = () => {
   const handleEdit = async () => {
     try {
       await axios.put(
-        SERVER_URL + `/stories/${id}`,
+        PRODUCTION_URL + `/stories/${id}`,
         {
           title: post.title,
           content: post.content,
