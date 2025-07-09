@@ -5,7 +5,7 @@ import { Eye, EyeOff } from "lucide-react";
 import { useState } from "react";
 import { useDispatch } from "react-redux";
 import axios from "axios";
-// import { PRODUCTION_URL } from "../utils/config";
+import { SERVER_URL } from "../utils/config";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { login } from "../utils/userSlice";
@@ -16,7 +16,7 @@ const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const dispatch = useDispatch();
-  const PRODUCTION_URL = import.meta.env.PRODUCTION_URL;
+  // const SERVER_URL = import.meta.env.SERVER_URL;
   const navigate = useNavigate();
 
   const handleLogin = async () => {
@@ -26,7 +26,7 @@ const Login = () => {
 
     try {
       const res = await axios.post(
-        `${PRODUCTION_URL}/login`,
+        `${SERVER_URL}/login`,
         { email, password },
         { withCredentials: true }
       );

@@ -3,18 +3,18 @@ import { useEffect, useState } from "react";
 import PostsNavbar from "../components/PostsNavbar";
 import UserActivityNavbar from "../components/UserActivityNavbar";
 import axios from "axios";
-// import { PRODUCTION_URL } from "../utils/config";
+import { SERVER_URL } from "../utils/config";
 import { useParams } from "react-router";
 import { Button, TextField } from "@mui/material";
 
 const DraftPost = () => {
   const [draft, setDraft] = useState({ title: "", content: "" });
   const { id } = useParams();
-const PRODUCTION_URL = import.meta.env.PRODUCTION_URL;
+// const SERVER_URL = import.meta.env.SERVER_URL;
   const handlePost = async () => {
     try {
       await axios.post(
-        PRODUCTION_URL + "/user/stories/create",
+        SERVER_URL + "/user/stories/create",
         {
           title: draft.title,
           content: draft.content,
@@ -31,7 +31,7 @@ const PRODUCTION_URL = import.meta.env.PRODUCTION_URL;
   const handleDraft = async () => {
     try {
       await axios.post(
-        PRODUCTION_URL + "/user/stories/drafts/save",
+        SERVER_URL + "/user/stories/drafts/save",
         {
           title: draft.title,
           content: draft.content,
@@ -47,7 +47,7 @@ const PRODUCTION_URL = import.meta.env.PRODUCTION_URL;
 
   const getDraft = async () => {
     try {
-      const res = await axios.get(PRODUCTION_URL + `/user/stories/drafts/${id}`, {
+      const res = await axios.get(SERVER_URL + `/user/stories/drafts/${id}`, {
         withCredentials: true,
       });
       setDraft(res.data.draft);

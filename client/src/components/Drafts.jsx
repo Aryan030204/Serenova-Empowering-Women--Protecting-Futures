@@ -1,15 +1,15 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { Link } from "react-router";
-// import { PRODUCTION_URL } from "../utils/config";
+import { SERVER_URL } from "../utils/config";
 import { Bookmark } from "lucide-react";
 
 const Drafts = () => {
-  const PRODUCTION_URL = import.meta.env.PRODUCTION_URL;
+  // const SERVER_URL = import.meta.env.SERVER_URL;
   const [draftPosts, setDraftPosts] = useState([]);
   const getDrafts = async () => {
     try {
-      const res = await axios.get(PRODUCTION_URL + "/user/stories/drafts", {
+      const res = await axios.get(SERVER_URL + "/user/stories/drafts", {
         withCredentials: true,
       });
       setDraftPosts(res.data.drafts);

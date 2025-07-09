@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { Bookmark, Share2, ThumbsDown, ThumbsUp } from "lucide-react";
 import axios from "axios";
-// import { PRODUCTION_URL } from "../utils/config";
+import { SERVER_URL } from "../utils/config";
 import { useEffect, useState } from "react";
 import { Link } from "react-router";
 import { toast, ToastContainer } from "react-toastify";
@@ -17,10 +17,10 @@ const StoryPost = () => {
   const [totalPages, setTotalPages] = useState(1);
   const dispatch = useDispatch();
   const [user, setUser] = useState(JSON.parse(localStorage.getItem("user")));
-  const PRODUCTION_URL = import.meta.env.PRODUCTION_URL;
+  // const SERVER_URL = import.meta.env.SERVER_URL;
   const updateUser = async () => {
     try {
-      const res = await axios.get(`${PRODUCTION_URL}/profile`, {
+      const res = await axios.get(`${SERVER_URL}/profile`, {
         withCredentials: true,
       });
       
@@ -34,7 +34,7 @@ const StoryPost = () => {
   const likeStory = async (id) => {
     try {
       await axios.patch(
-        `${PRODUCTION_URL}/stories/${id}/like/increment`,
+        `${SERVER_URL}/stories/${id}/like/increment`,
         {},
         { withCredentials: true }
       );
@@ -48,7 +48,7 @@ const StoryPost = () => {
   const dislikeStory = async (id) => {
     try {
       await axios.patch(
-        `${PRODUCTION_URL}/stories/${id}/like/decrement`,
+        `${SERVER_URL}/stories/${id}/like/decrement`,
         {},
         { withCredentials: true }
       );
@@ -63,7 +63,7 @@ const StoryPost = () => {
     try {
       if (savedStories.includes(id)) {
         await axios.post(
-          `${PRODUCTION_URL}/user/stories/${id}/unsave`,
+          `${SERVER_URL}/user/stories/${id}/unsave`,
           {},
           { withCredentials: true }
         );
@@ -71,7 +71,7 @@ const StoryPost = () => {
         toast.success("Post unsaved");
       } else {
         await axios.post(
-          `${PRODUCTION_URL}/user/stories/${id}/save`,
+          `${SERVER_URL}/user/stories/${id}/save`,
           {},
           { withCredentials: true }
         );
@@ -86,7 +86,7 @@ const StoryPost = () => {
   const viewStory = async (id) => {
     try {
       await axios.patch(
-        `${PRODUCTION_URL}/stories/${id}/viewed`,
+        `${SERVER_URL}/stories/${id}/viewed`,
         {},
         { withCredentials: true }
       );
@@ -97,7 +97,7 @@ const StoryPost = () => {
 
   const getSavedStories = async () => {
     try {
-      const res = await axios.get(`${PRODUCTION_URL}/user/stories/saved`, {
+      const res = await axios.get(`${SERVER_URL}/user/stories/saved`, {
         withCredentials: true,
       });
       setSavedStories(res.data.savedPosts.map((post) => post._id));
@@ -109,7 +109,7 @@ const StoryPost = () => {
   const getStories = async (page = 1) => {
     try {
       const res = await axios.get(
-        `${PRODUCTION_URL}/stories/all?page=${page}&limit=5`
+        `${SERVER_URL}/stories/all?page=${page}&limit=5`
       );
       dispatch(setstories(res.data.stories));
       setPage(res.data.currentPage);

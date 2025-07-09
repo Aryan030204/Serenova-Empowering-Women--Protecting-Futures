@@ -1,20 +1,24 @@
 import { Button, Snackbar, TextField, Alert } from "@mui/material";
 import axios from "axios";
 import { useState } from "react";
-// import { PRODUCTION_URL } from "../utils/config";
+import { SERVER_URL } from "../utils/config";
 
 const TextEditor = () => {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [loading, setLoading] = useState(false);
-  const [snack, setSnack] = useState({ open: false, message: "", severity: "success" });
+  const [snack, setSnack] = useState({
+    open: false,
+    message: "",
+    severity: "success",
+  });
 
   const postData = async (endpoint, data) => {
-    return await axios.post(PRODUCTION_URL + endpoint, data, {
+    return await axios.post(SERVER_URL + endpoint, data, {
       withCredentials: true,
     });
   };
-const PRODUCTION_URL = import.meta.env.PRODUCTION_URL;
+  // const SERVER_URL = import.meta.env.SERVER_URL;
   const showSnackbar = (message, severity = "success") => {
     setSnack({ open: true, message, severity });
   };
@@ -90,7 +94,10 @@ const PRODUCTION_URL = import.meta.env.PRODUCTION_URL;
         onClose={() => setSnack({ ...snack, open: false })}
         anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
       >
-        <Alert severity={snack.severity} onClose={() => setSnack({ ...snack, open: false })}>
+        <Alert
+          severity={snack.severity}
+          onClose={() => setSnack({ ...snack, open: false })}
+        >
           {snack.message}
         </Alert>
       </Snackbar>

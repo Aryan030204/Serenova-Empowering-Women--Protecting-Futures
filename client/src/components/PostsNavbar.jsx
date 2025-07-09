@@ -1,16 +1,16 @@
 import { Link } from "react-router";
-// import { PRODUCTION_URL } from "../utils/config";
+import { SERVER_URL } from "../utils/config";
 import axios from "axios";
 import { setstories } from "../utils/storiesSlice";
 import { useDispatch } from "react-redux";
 
 const PostsNavbar = () => {
-  const PRODUCTION_URL = import.meta.env.PRODUCTION_URL;
+  // const SERVER_URL = import.meta.env.SERVER_URL;
   const user = JSON.parse(localStorage.getItem("user"));
   const dispatch = useDispatch();
   const getTrendingStories = async () => {
     try {
-      const res = await axios.get(PRODUCTION_URL + `/stories/trending`);
+      const res = await axios.get(SERVER_URL + `/stories/trending`);
       dispatch(setstories(res.data.trendingStories));
     } catch (err) {
       console.log(err);
@@ -19,7 +19,7 @@ const PostsNavbar = () => {
 
   const getMostLikedStories = async () => {
     try {
-      const res = await axios.get(PRODUCTION_URL + `/stories/mostliked`);
+      const res = await axios.get(SERVER_URL + `/stories/mostliked`);
       dispatch(setstories(res.data.mostLikedStories));
       
     } catch (err) {
@@ -29,7 +29,7 @@ const PostsNavbar = () => {
 
   const getMostViewedStories = async () => {
     try {
-      const res = await axios.get(PRODUCTION_URL + `/stories/mostviewed`);
+      const res = await axios.get(SERVER_URL + `/stories/mostviewed`);
       dispatch(setstories(res.data.mostViewedStories));
     } catch (err) {
       console.log(err);
@@ -38,7 +38,7 @@ const PostsNavbar = () => {
 
   const getRecentStories = async () => {
     try {
-      const res = await axios.get(PRODUCTION_URL + `/stories/recent`);
+      const res = await axios.get(SERVER_URL + `/stories/recent`);
       dispatch(setstories(res.data.recentStories));
     } catch (err) {
       console.log(err);

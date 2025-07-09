@@ -8,11 +8,11 @@ import {
   setFromLong,
   setToLong,
 } from "../utils/routeSlice";
-// import { OPENWEATHER_API_KEY, PRODUCTION_URL } from "../utils/config";
+import { OPENWEATHER_API_KEY, SERVER_URL } from "../utils/config";
 
 const RouteDetails = () => {
   const dispatch = useDispatch();
-  const PRODUCTION_URL = import.meta.env.PRODUCTION_URL;
+  // const SERVER_URL = import.meta.env.SERVER_URL;
   const user = useSelector((state) => state.user);
 
   const [countries, setCountries] = useState([]);
@@ -144,7 +144,7 @@ const RouteDetails = () => {
       ]);
 
       await axios.post(
-        `${PRODUCTION_URL}/route/save`,
+        `${SERVER_URL}/route/save`,
         {
           userId: user.user._id,
           currentLocation: [lat, lon],

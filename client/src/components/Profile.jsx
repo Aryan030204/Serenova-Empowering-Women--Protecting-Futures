@@ -5,7 +5,7 @@ import axios from "axios";
 import { toast, ToastContainer } from "react-toastify";
 
 import { logout } from "../utils/userSlice";
-// import { PRODUCTION_URL } from "../utils/config";
+import { SERVER_URL } from "../utils/config";
 
 import male from "../assets/male.png";
 import female from "../assets/female.png";
@@ -14,13 +14,13 @@ import "react-toastify/dist/ReactToastify.css";
 const Profile = ({ user }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const PRODUCTION_URL = import.meta.env.PRODUCTION_URL;
+  // const SERVER_URL = import.meta.env.SERVER_URL;
 
   if (!user) return null;
 
   const handleLogout = async () => {
     try {
-      await axios.post(`${PRODUCTION_URL}/logout`);
+      await axios.post(`${SERVER_URL}/logout`);
       dispatch(logout());
       toast.success("Logged out successfully!");
 

@@ -1,15 +1,15 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
-// import { PRODUCTION_URL } from "../utils/config";
+import { SERVER_URL } from "../utils/config";
 import {toast, ToastContainer} from "react-toastify"
 import "react-toastify/dist/ReactToastify.css";
 
 const RoutesPage = () => {
   const [routes, setRoutes] = useState([]);
-  const PRODUCTION_URL = import.meta.env.PRODUCTION_URL;
+  // const SERVER_URL = import.meta.env.SERVER_URL;
 
   const getRoutes = async () => {
-    const res = await axios.get(PRODUCTION_URL + "/route/all", {
+    const res = await axios.get(SERVER_URL + "/route/all", {
       withCredentials: true,
     });
     setRoutes(res.data.routes);
@@ -17,7 +17,7 @@ const RoutesPage = () => {
 
   const handleDelete = async (_id) => {
     try {
-      await axios.delete(PRODUCTION_URL + `/route/delete/${_id}`, {
+      await axios.delete(SERVER_URL + `/route/delete/${_id}`, {
         withCredentials: true,
       });
       toast.success("Route deleted");
