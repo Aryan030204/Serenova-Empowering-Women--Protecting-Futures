@@ -5,7 +5,7 @@ import axios from "axios";
 import { toast, ToastContainer } from "react-toastify";
 
 import { logout } from "../utils/userSlice";
-import { PRODUCTION_URL } from "../utils/config";
+// import { PRODUCTION_URL } from "../utils/config";
 
 import male from "../assets/male.png";
 import female from "../assets/female.png";
@@ -14,6 +14,7 @@ import "react-toastify/dist/ReactToastify.css";
 const Profile = ({ user }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const PRODUCTION_URL = import.meta.env.PRODUCTION_URL;
 
   if (!user) return null;
 

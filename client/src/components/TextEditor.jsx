@@ -1,7 +1,7 @@
 import { Button, Snackbar, TextField, Alert } from "@mui/material";
 import axios from "axios";
 import { useState } from "react";
-import { PRODUCTION_URL } from "../utils/config";
+// import { PRODUCTION_URL } from "../utils/config";
 
 const TextEditor = () => {
   const [title, setTitle] = useState("");
@@ -14,7 +14,7 @@ const TextEditor = () => {
       withCredentials: true,
     });
   };
-
+const PRODUCTION_URL = import.meta.env.PRODUCTION_URL;
   const showSnackbar = (message, severity = "success") => {
     setSnack({ open: true, message, severity });
   };

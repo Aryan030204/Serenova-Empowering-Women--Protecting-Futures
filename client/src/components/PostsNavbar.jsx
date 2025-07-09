@@ -1,10 +1,11 @@
 import { Link } from "react-router";
-import { PRODUCTION_URL } from "../utils/config";
+// import { PRODUCTION_URL } from "../utils/config";
 import axios from "axios";
 import { setstories } from "../utils/storiesSlice";
 import { useDispatch } from "react-redux";
 
 const PostsNavbar = () => {
+  const PRODUCTION_URL = import.meta.env.PRODUCTION_URL;
   const user = JSON.parse(localStorage.getItem("user"));
   const dispatch = useDispatch();
   const getTrendingStories = async () => {

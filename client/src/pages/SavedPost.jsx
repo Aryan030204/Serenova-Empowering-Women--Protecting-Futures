@@ -3,12 +3,13 @@ import { useEffect, useState } from "react";
 import PostsNavbar from "../components/PostsNavbar";
 import UserActivityNavbar from "../components/UserActivityNavbar";
 import { useParams } from "react-router";
-import { PRODUCTION_URL } from "../utils/config";
+// import { PRODUCTION_URL } from "../utils/config";
 import axios from "axios";
 
 const SavedPost = () => {
   const [story, setStory] = useState({});
   const { id } = useParams();
+  const PRODUCTION_URL = import.meta.env.PRODUCTION_URL;
   const getStory = async () => {
     try {
       const res = await axios.get(PRODUCTION_URL + `/stories/${id}`, {

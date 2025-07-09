@@ -1,10 +1,11 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { Link } from "react-router";
-import { PRODUCTION_URL } from "../utils/config";
+// import { PRODUCTION_URL } from "../utils/config";
 import { Bookmark } from "lucide-react";
 
 const Drafts = () => {
+  const PRODUCTION_URL = import.meta.env.PRODUCTION_URL;
   const [draftPosts, setDraftPosts] = useState([]);
   const getDrafts = async () => {
     try {

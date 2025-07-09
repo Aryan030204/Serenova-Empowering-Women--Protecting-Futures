@@ -1,7 +1,7 @@
 import { TextField } from "@mui/material";
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { PRODUCTION_URL } from "../utils/config";
+// import { PRODUCTION_URL } from "../utils/config";
 import male from "../assets/male.png";
 import female from "../assets/female.png";
 import { toast, ToastContainer } from "react-toastify";
@@ -14,6 +14,7 @@ const ProfileForm = () => {
     age: "",
     gender: "",
   });
+  const PRODUCTION_URL = import.meta.env.PRODUCTION_URL;
 
   const [saved, setSaved] = useState(false);
 

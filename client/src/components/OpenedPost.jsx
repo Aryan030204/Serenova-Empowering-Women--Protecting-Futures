@@ -2,7 +2,7 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router";
-import { PRODUCTION_URL } from "../utils/config";
+// import { PRODUCTION_URL } from "../utils/config";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/ReactToastify.css";
 import PostsNavbar from "./PostsNavbar";
@@ -11,6 +11,7 @@ import { Bookmark, Share2, ThumbsDown, ThumbsUp } from "lucide-react";
 
 const OpenedPost = () => {
   const { id } = useParams();
+  const PRODUCTION_URL = import.meta.env.PRODUCTION_URL;
   const [story, setStory] = useState({});
   const [liked, setLiked] = useState(false);
   const [disliked, setDisliked] = useState(false);

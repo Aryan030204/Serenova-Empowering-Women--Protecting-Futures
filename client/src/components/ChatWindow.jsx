@@ -3,7 +3,7 @@ import { useEffect, useRef, useState } from "react";
 import { IoMdSend } from "react-icons/io";
 import bot_avatar from "../assets/bot_avatar.png";
 import axios from "axios";
-import { PRODUCTION_URL } from "../utils/config";
+// import { PRODUCTION_URL } from "../utils/config";
 import loader from "../assets/loader.gif";
 
 const ChatWindow = ({ setIsOpen }) => {
@@ -13,7 +13,7 @@ const ChatWindow = ({ setIsOpen }) => {
   const bottomRef = useRef(null);
   const [messages, setMessages] = useState([]);
   const user = JSON.parse(localStorage.getItem("user"));
-
+  const PRODUCTION_URL = import.meta.env.PRODUCTION_URL;
   const generateGuestId = () => {
     return [...Array(24)]
       .map(() => Math.floor(Math.random() * 16).toString(16))

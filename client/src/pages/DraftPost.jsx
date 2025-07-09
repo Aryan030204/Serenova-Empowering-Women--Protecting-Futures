@@ -3,14 +3,14 @@ import { useEffect, useState } from "react";
 import PostsNavbar from "../components/PostsNavbar";
 import UserActivityNavbar from "../components/UserActivityNavbar";
 import axios from "axios";
-import { PRODUCTION_URL } from "../utils/config";
+// import { PRODUCTION_URL } from "../utils/config";
 import { useParams } from "react-router";
 import { Button, TextField } from "@mui/material";
 
 const DraftPost = () => {
   const [draft, setDraft] = useState({ title: "", content: "" });
   const { id } = useParams();
-
+const PRODUCTION_URL = import.meta.env.PRODUCTION_URL;
   const handlePost = async () => {
     try {
       await axios.post(

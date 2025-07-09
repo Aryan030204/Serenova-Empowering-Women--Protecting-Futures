@@ -1,11 +1,12 @@
 import axios from "axios";
-import { PRODUCTION_URL } from "../utils/config";
+// import { PRODUCTION_URL } from "../utils/config";
 import { useEffect, useState } from "react";
 import { Link } from "react-router";
 import { Bookmark } from "lucide-react";
 
 const SavedPosts = () => {
   const [savedPosts, setSavedPosts] = useState([]);
+  const PRODUCTION_URL = import.meta.env.PRODUCTION_URL;
   const getSavedStories = async () => {
     try {
       const res = await axios.get(PRODUCTION_URL + `/user/stories/saved`, {

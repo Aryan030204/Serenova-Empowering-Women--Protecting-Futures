@@ -8,10 +8,11 @@ import {
   setFromLong,
   setToLong,
 } from "../utils/routeSlice";
-import { OPENWEATHER_API_KEY, PRODUCTION_URL } from "../utils/config";
+// import { OPENWEATHER_API_KEY, PRODUCTION_URL } from "../utils/config";
 
 const RouteDetails = () => {
   const dispatch = useDispatch();
+  const PRODUCTION_URL = import.meta.env.PRODUCTION_URL;
   const user = useSelector((state) => state.user);
 
   const [countries, setCountries] = useState([]);

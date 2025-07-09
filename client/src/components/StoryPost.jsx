@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { Bookmark, Share2, ThumbsDown, ThumbsUp } from "lucide-react";
 import axios from "axios";
-import { PRODUCTION_URL } from "../utils/config";
+// import { PRODUCTION_URL } from "../utils/config";
 import { useEffect, useState } from "react";
 import { Link } from "react-router";
 import { toast, ToastContainer } from "react-toastify";
@@ -17,7 +17,7 @@ const StoryPost = () => {
   const [totalPages, setTotalPages] = useState(1);
   const dispatch = useDispatch();
   const [user, setUser] = useState(JSON.parse(localStorage.getItem("user")));
-
+  const PRODUCTION_URL = import.meta.env.PRODUCTION_URL;
   const updateUser = async () => {
     try {
       const res = await axios.get(`${PRODUCTION_URL}/profile`, {

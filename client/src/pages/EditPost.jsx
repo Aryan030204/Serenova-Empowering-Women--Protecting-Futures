@@ -2,7 +2,7 @@
 import { Button, TextField } from "@mui/material";
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { PRODUCTION_URL } from "../utils/config";
+// import { PRODUCTION_URL } from "../utils/config";
 import { useParams } from "react-router";
 import {toast, ToastContainer} from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -10,7 +10,7 @@ import "react-toastify/dist/ReactToastify.css";
 const EditPost = () => {
   const [post, setPost] = useState({ title: "", content: "" });
   const { id } = useParams();
-
+const PRODUCTION_URL = import.meta.env.PRODUCTION_URL;
   const getPost = async () => {
     try {
       const res = await axios.get(`${PRODUCTION_URL}/user/stories/drafts/${id}`, {

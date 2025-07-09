@@ -1,11 +1,12 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { PRODUCTION_URL } from "../utils/config";
+// import { PRODUCTION_URL } from "../utils/config";
 import {toast, ToastContainer} from "react-toastify"
 import "react-toastify/dist/ReactToastify.css";
 
 const RoutesPage = () => {
   const [routes, setRoutes] = useState([]);
+  const PRODUCTION_URL = import.meta.env.PRODUCTION_URL;
 
   const getRoutes = async () => {
     const res = await axios.get(PRODUCTION_URL + "/route/all", {
