@@ -1,4 +1,7 @@
 const Route = require("../models/route.model");
+const fetchRoutes = require("../utils/shortestPathFinder");
+const axios = require("axios");
+const polyline = require("@mapbox/polyline");
 
 const saveRoute = async (req, res) => {
   try {
@@ -84,8 +87,113 @@ const getRoutes = async (req, res) => {
   }
 };
 
+// const getSafeRoutes = async (req, res) => {
+//   try {
+//     const { source, destination, mode } = req.body;
+
+//     if (!source || !destination || !mode) {
+//       return res.status(400).json({
+//         error: "Source, destination, and mode are required",
+//       });
+//     }
+
+//     const medium =
+//       mode === "driving"
+//         ? "driving-car"
+//         : mode === "cycling"
+//         ? "cycling-regular"
+//         : "foot-walking";
+
+//     const routeData = await fetchRoutes(source, destination, medium);
+
+//   } catch (err) {
+//     res.status(500).json({
+//       message: "Error fetching safe routes",
+//       error: err,
+//     });
+//   }
+// };
+const getSafeRoutes = async (req, res) => {
+  const { source, destination, mode } = req.body;
+
+  try {
+    if (!source || !destination || !mode) {
+      return res.status(400).json({
+        error: "Source, destination, and mode are required",
+      });
+    }
+
+    const medium =
+      mode === "driving"
+        ? "driving-car"
+        : mode === "cycling"
+        ? "cycling-regular"
+        : "foot-walking";
+
+    const routeData = await fetchRoutes(source, destination, medium);
+
+    const routes = routeData.routes;
+
+    if (!routes || !Array.isArray(routes)) {
+      return res.status(500).json({
+        error: "No valid routes received from ORS",
+      });
+    }
+
+    const safeRoutes = await Promise.all(
+      routes.slice(0, 3).map(async (route) => {
+        try {
+          // Decode the encoded geometry string to get coordinates
+          const coords = polyline.decode(route.geometry);
+
+          if (!coords || coords.length < 2) {
+            throw new Error("Invalid decoded coordinates");
+          }
+
+          const [lat1, lon1] = coords[0];
+          const [lat2, lon2] = coords[coords.length - 1];
+
+          // ML safety score prediction
+          const mlRes = await axios.post("http://localhost:5000/predict", {
+            lat1,
+            lon1,
+            lat2,
+            lon2,
+            use_full_model: false,
+          });
+
+          const safetyScore = mlRes.data?.safety_score ?? null;
+
+          return {
+            route,
+            safetyScore,
+          };
+        } catch (mlErr) {
+          console.error("ML Error for route:", mlErr.message);
+          return {
+            route,
+            safetyScore: null,
+          };
+        }
+      })
+    );
+
+    return res.status(200).json({
+      success: true,
+      routes: safeRoutes,
+    });
+  } catch (err) {
+    console.error("Error in getSafeRoutes:", err);
+    return res.status(500).json({
+      message: "Error fetching safe routes",
+      error: err.message || err,
+    });
+  }
+};
+
 module.exports = {
   saveRoute,
   deleteRoute,
   getRoutes,
+  getSafeRoutes,
 };

@@ -7,6 +7,7 @@ import {
   setToLat,
   setFromLong,
   setToLong,
+  setTransportMode,
 } from "../utils/routeSlice";
 import { OPENWEATHER_API_KEY, SERVER_URL } from "../utils/config";
 
@@ -17,6 +18,7 @@ const RouteDetails = () => {
 
   const [countries, setCountries] = useState([]);
   const [states, setStates] = useState([]);
+  const [mode, setMode] = useState("driving");
 
   const [selectedCountry, setSelectedCountry] = useState("");
   const [selectedState, setSelectedState] = useState("");
@@ -172,6 +174,7 @@ const RouteDetails = () => {
     dispatch(setFromLong(fromLong));
     dispatch(setToLat(toLat));
     dispatch(setToLong(toLong));
+    dispatch(setTransportMode(mode));
     setTimeout(() => setSaveBtnVisible(true), 2000);
   };
 
@@ -182,7 +185,7 @@ const RouteDetails = () => {
       {/* Current Location */}
       <div className="flex flex-col w-full h-1/3 text-center mt-8 gap-4">
         <h1 className="text-start font-semibold text-xl">
-          ENTER CURRENT LOCATION
+          Enter Current location
         </h1>
 
         <input
@@ -243,7 +246,7 @@ const RouteDetails = () => {
       {/* Destination Input */}
       <div className="flex flex-col h-1/3 w-full mt-4 relative">
         <h1 className="text-start font-semibold text-xl mb-2">
-          ENTER DESTINATION
+          Enter Destination
         </h1>
 
         <input
@@ -280,6 +283,43 @@ const RouteDetails = () => {
             ))}
           </ul>
         )}
+      </div>
+
+      {/* mode of transport */}
+      <div className="flex flex-col h-1/3 w-full mt-4 relative">
+        <label className="text-xl font-semibold">Mode of transport</label>
+        <ul className="flex items-center gap-4 my-3 w-full">
+          <li>
+            <input
+              type="radio"
+              name="transport"
+              value="driving"
+              checked={mode === "driving"}
+              onChange={(e) => setMode(e.target.value)}
+            />
+            <label className="text-lg ml-2">Car</label>
+          </li>
+          <li>
+            <input
+              type="radio"
+              name="transport"
+              value="cycling"
+              checked={mode === "cycling"}
+              onChange={(e) => setMode(e.target.value)}
+            />
+            <label className="text-lg ml-2">Cycling</label>
+          </li>
+          <li>
+            <input
+              type="radio"
+              name="transport"
+              value="foot"
+              checked={mode === "foot"}
+              onChange={(e) => setMode(e.target.value)}
+            />
+            <label className="text-lg ml-2">Foot</label>
+          </li>
+        </ul>
       </div>
 
       {/* Action Buttons */}

@@ -25,6 +25,10 @@ const RouteSlice = createSlice({
       state.toLong = action.payload;
       localStorage.setItem("toLong", action.payload);
     },
+    setTransportMode: (state, action) => {
+      state.mode = action.payload;
+      localStorage.setItem("Mode", action.payload);
+    },
   },
 });
 
@@ -41,5 +45,6 @@ export const loadRouteFromStorage = () => (dispatch) => {
   dispatch(setToLong(toLong));
 };
 
-export const { setFromLat, setToLat, setFromLong, setToLong } = RouteSlice.actions;
+export const { setFromLat, setToLat, setFromLong, setToLong, setTransportMode } =
+  RouteSlice.actions;
 export default RouteSlice.reducer;

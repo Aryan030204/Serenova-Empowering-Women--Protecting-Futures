@@ -1,52 +1,44 @@
-require('dotenv').config();
-const axios = require('axios');
+const axios = require("axios");
 
-const ORS_API_KEY = process.env.ORS_API_KEY;
-
-async function findRoutesORS(source, destination, medium, speed) {
-  if (!source || !destination || source.length !== 2 || destination.length !== 2) {
-    throw new Error('Invalid source or destination coordinates');
-  }
-
-  const url = `https://api.openrouteservice.org/v2/directions/${medium}-${speed}/geojson`;
+const fetchRoutes = async (start, end, mode) => {
+  console.log({
+    start: start,
+    end: end,
+    mode: mode,
+  });
 
   const body = {
-    coordinates: [source, destination],
-    preference: 'fastest',
+    coordinates: [
+      [start[0], start[1]],
+      [end[0], end[1]],
+    ],
     alternative_routes: {
       target_count: 3,
+      weight_factor: 1.4,
       share_factor: 0.6,
-      weight_factor: 1.6
     },
-    instructions: false
   };
+
+  const url = `https://api.openrouteservice.org/v2/directions/${mode}`;
 
   try {
     const response = await axios.post(url, body, {
       headers: {
-        Authorization: ORS_API_KEY,
-        'Content-Type': 'application/json'
-      }
+        Authorization: process.env.ORS_API_KEY,
+        "Content-Type": "application/json",
+        Accept:
+          "application/json, application/geo+json, application/gpx+xml, img/png; charset=utf-8",
+      },
     });
 
-    const features = response.data.features;
-
-    if (!features || features.length === 0) {
-      throw new Error('No routes found');
-    }
-
-    const routes = features.map((feature, index) => ({
-      routeId: `route_${index + 1}`,
-      geometry: feature.geometry.coordinates, // [ [lng, lat], ... ]
-      distance: feature.properties.summary.distance, // in meters
-      duration: feature.properties.summary.duration  // in seconds
-    }));
-
-    return routes;
-  } catch (err) {
-    console.error('Error fetching routes from ORS:', err.response?.data || err.message);
-    throw new Error('Failed to get routes from ORS.');
+    return response.data;
+  } catch (error) {
+    console.error(
+      "Error in fetchRoutes:",
+      error.response?.data || error.message
+    );
+    throw error;
   }
-}
+};
 
-module.exports = { findRoutesORS };
+module.exports = fetchRoutes;

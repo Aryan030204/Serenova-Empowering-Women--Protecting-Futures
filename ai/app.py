@@ -20,8 +20,8 @@ full_features = [
 
 @app.route('/predict', methods=['POST'])
 def predict():
-
     data = request.json
+    print("Received request:", data)  # Optional: debugging
 
     use_full_model = data.get("use_full_model", False)
 
@@ -42,7 +42,7 @@ def predict():
 
         input_data = np.array([[lat1, lon1], [lat2, lon2]])
         predictions = model_coords.predict(input_data)
-        prediction = np.mean(predictions)  # Average safety score
+        prediction = float(np.mean(predictions))  # ensure serializable
 
     return jsonify({"safety_score": prediction})
 

@@ -5,17 +5,34 @@ import Map from "./Map";
 import Map2 from "./Map2";
 import Map3 from "./Map3";
 import { predictSafetyScore } from "../utils/api";
+import axios from "axios";
+import { SERVER_URL } from "../utils/config";
 
 const SafeRoute = () => {
   const fromLat = parseFloat(localStorage.getItem("fromLat"));
   const fromLong = parseFloat(localStorage.getItem("fromLong"));
   const toLat = parseFloat(localStorage.getItem("toLat"));
   const toLong = parseFloat(localStorage.getItem("toLong"));
-
+  const mode = JSON.stringify(localStorage.getItem("Mode"));
+  
   const [scores, setScores] = useState({ red: "", orange: "", green: "" });
-
+  const source = [fromLat, fromLong];
+  const destination = [toLat, toLong];
   const getSafetyScore = useCallback(
     async (routeType, latOffset, longOffset) => {
+      const res = await axios.post(
+        SERVER_URL + "/route/find",
+        {
+          source: source,
+          destination: destination,
+          mode: mode,
+        },
+        {
+          withCredentials: true,
+        }
+      );
+      console.log(res);
+      
       const score = await predictSafetyScore(
         fromLat + latOffset,
         fromLong + longOffset,
@@ -30,17 +47,45 @@ const SafeRoute = () => {
   return (
     <div className="flex flex-col p-10 my-[3rem] w-[31rem] h-fit gap-5 bg-slate-300 items-center">
       <h1 className="font-bold text-2xl text-center">SAFE ROUTES HERE</h1>
-      {[{ comp: Map, color: "green", label: "Route 1", route: "green", lat: 0.1, long: 0.1 },
-        { comp: Map2, color: "orange", label: "Route 2", route: "orange", lat: 2, long: 2 },
-        { comp: Map3, color: "red", label: "Route 3", route: "red", lat: 1, long: 1 }].map(({ comp: MapComponent, color, label, route, lat, long }) => (
-        <div key={route} className="flex justify-between items-center w-full gap-4">
+      {[
+        {
+          comp: Map,
+          color: "green",
+          label: "Route 1",
+          route: "green",
+          lat: 0.1,
+          long: 0.1,
+        },
+        {
+          comp: Map2,
+          color: "orange",
+          label: "Route 2",
+          route: "orange",
+          lat: 2,
+          long: 2,
+        },
+        {
+          comp: Map3,
+          color: "red",
+          label: "Route 3",
+          route: "red",
+          lat: 1,
+          long: 1,
+        },
+      ].map(({ comp: MapComponent, color, label, route, lat, long }) => (
+        <div
+          key={route}
+          className="flex justify-between items-center w-full gap-4"
+        >
           <div className="flex w-full items-center">
             <div className="flex gap-2 items-center w-full">
               <MapComponent />
               <Circle size={15} color={color} />
               <p>
-                {label} {" "}
-                <span className={`text-${color}-500 font-bold text-[12px]`}>{`(${Math.round(scores[route])}%)`}</span>
+                {label}{" "}
+                <span
+                  className={`text-${color}-500 font-bold text-[12px]`}
+                >{`(${Math.round(scores[route])}%)`}</span>
               </p>
             </div>
             <button
@@ -53,7 +98,7 @@ const SafeRoute = () => {
         </div>
       ))}
       <h1 className="text-center relative top-5 text-sm">
-        Want to know about how routes are scored ? {" "}
+        Want to know about how routes are scored ?{" "}
         <Link to={"/routescorer"} className="text-blue-500 underline">
           Know here
         </Link>
