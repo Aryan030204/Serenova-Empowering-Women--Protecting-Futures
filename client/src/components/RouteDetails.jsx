@@ -63,9 +63,9 @@ const RouteDetails = () => {
   useEffect(() => {
     detectLocation();
     axios
-      .get("https://restcountries.com/v3.1/all")
+      .get("https://countriesnow.space/api/v0.1/countries/positions")
       .then((res) => {
-        const countryNames = res.data.map((c) => c.name.common).sort();
+        const countryNames = res.data.data.map((c) => c.name).sort();
         setCountries(countryNames);
       })
       .catch((err) => console.error("Failed to fetch countries:", err));

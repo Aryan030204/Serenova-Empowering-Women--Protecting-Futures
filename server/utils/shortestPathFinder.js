@@ -17,6 +17,7 @@ const fetchRoutes = async (start, end, mode) => {
       weight_factor: 1.4,
       share_factor: 0.6,
     },
+    radiuses: [5000, 5000],
   };
 
   const url = `https://api.openrouteservice.org/v2/directions/${mode}`;
