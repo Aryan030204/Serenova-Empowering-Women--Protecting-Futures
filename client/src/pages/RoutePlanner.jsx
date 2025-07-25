@@ -3,7 +3,7 @@ import SafeRoute from "../components/SafeRoute"
 
 const RoutePlanner = () => {
   return (
-    <div className="flex flex-wrap items-center justify-center w-full p-2 gap-[5rem]">
+    <div className="flex flex-col flex-wrap items-center justify-center w-full p-2 gap-[5rem]">
       <RouteDetails />
       <SafeRoute />
     </div>

@@ -2,13 +2,14 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useCallback, useEffect, useState } from "react";
 import axios from "axios";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import {
   setFromLat,
   setToLat,
   setFromLong,
   setToLong,
   setTransportMode,
+  setRoutes,
 } from "../utils/routeSlice";
 import { OPENWEATHER_API_KEY, SERVER_URL } from "../utils/config";
 import {
@@ -21,9 +22,11 @@ import {
   FaCheckCircle,
   FaExclamationCircle,
 } from "react-icons/fa";
+import { useSelector } from "react-redux";
 
 const RouteDetails = () => {
   const dispatch = useDispatch();
+  const user = useSelector((state) => state.user.user);
   const [mode, setMode] = useState("driving");
   const [source, setSource] = useState("");
   const [location, setLocation] = useState("");
@@ -131,7 +134,38 @@ const RouteDetails = () => {
   };
 
   const handleSaveRoute = async () => {
-    /* ... unchanged ... */
+    if (!location || !coordinates) return console.error("Missing data");
+    try {
+      const [lat, lon] = location.split(",").map(Number);
+      const [destLat, destLon] = coordinates.split(",").map(Number);
+      const [currentNameRes, destNameRes] = await Promise.all([
+        axios.get(
+          `http://api.openweathermap.org/geo/1.0/reverse?lat=${lat}&lon=${lon}&appid=${OPENWEATHER_API_KEY}`
+        ),
+
+        axios.get(
+          `http://api.openweathermap.org/geo/1.0/reverse?lat=${destLat}&lon=${destLon}&appid=${OPENWEATHER_API_KEY}`
+        ),
+      ]);
+      await axios.post(
+        `${SERVER_URL}/route/save`,
+        {
+          userId: user._id,
+          currentLocation: [lat, lon],
+          destinationLocation: [destLat, destLon],
+          currentLocationName: currentNameRes?.data?.[0]?.name || "Unknown",
+          destinationLocationName: destNameRes?.data?.[0]?.name || "Unknown",
+        },
+        { withCredentials: true }
+      );
+      setSaved(true);
+      setAlreadySaved(false);
+      setTimeout(() => setSaved(false), 4000);
+    } catch (err) {
+      setAlreadySaved(true);
+      setTimeout(() => setAlreadySaved(false), 4000);
+      console.error("Route save failed:", err);
+    }
   };
 
   const handleGetRoute = async () => {
@@ -141,18 +175,20 @@ const RouteDetails = () => {
     }
     const [fromLat, fromLong] = location.split(",");
     const [toLat, toLong] = coordinates.split(",");
+    const sourceCoords = [parseFloat(fromLat), parseFloat(fromLong)];
+    const destinationCoords = [parseFloat(toLat), parseFloat(toLong)];
     const res = await axios.post(SERVER_URL + "/route/find", {
-      source: [parseFloat(fromLong), parseFloat(fromLat)],
-      destination: [parseFloat(toLong), parseFloat(toLat)],
+      source: sourceCoords,
+      destination: destinationCoords,
       mode: mode,
     });
-    console.log(res.data);
-
+    dispatch(setRoutes(res.data.routes));
     dispatch(setFromLat(fromLat));
     dispatch(setFromLong(fromLong));
     dispatch(setToLat(toLat));
     dispatch(setToLong(toLong));
     dispatch(setTransportMode(mode));
+    localStorage.setItem("routes", JSON.stringify(res.data.routes));
     setTimeout(() => setSaveBtnVisible(true), 2000);
   };
 
@@ -281,7 +317,7 @@ const RouteDetails = () => {
           className="w-full py-3 text-lg font-bold text-white bg-indigo-600 rounded-lg hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-all shadow-md hover:shadow-lg"
           onClick={handleGetRoute}
         >
-          GET ROUTE
+          GET ROUTES
         </button>
 
         {saveBtnVisible && (

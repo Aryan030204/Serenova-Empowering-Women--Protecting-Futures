@@ -150,7 +150,7 @@ const getSafeRoutes = async (req, res) => {
       routes: safeRoutes,
     });
   } catch (err) {
-    console.error("Error in getSafeRoutes:", err);
+    console.error("Error in getSafeRoutes:", err.message);
     return res.status(500).json({
       message: "Error fetching safe routes",
       error: err,

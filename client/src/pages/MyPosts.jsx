@@ -16,7 +16,6 @@ const MyPosts = () => {
       const res = await axios.get(SERVER_URL + `/${user._id}/stories`, {
         withCredentials: true,
       });
-      console.log(res.data.stories);
       setMyPosts(res.data.stories);
     } catch (err) {
       console.log(err);
@@ -43,7 +42,6 @@ const MyPosts = () => {
         <h1 className="text-4xl font-bold my-2">My Posts</h1>
         <div className="flex flex-col gap-[2rem] items-center justify-center">
           {myPosts.map((i) => {
-            console.log(i);
             return (
               <>
                 <Link>

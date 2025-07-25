@@ -27,7 +27,6 @@ const Drafts = () => {
         <h1 className="text-4xl font-bold my-2">Draft Posts</h1>
         <div className="flex flex-col gap-[2rem] items-center justify-center">
           {draftPosts.map((i) => {
-            console.log(i);
             return (
               <>
                 <div key={i._id}>

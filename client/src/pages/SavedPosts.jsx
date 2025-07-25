@@ -26,7 +26,6 @@ const SavedPosts = () => {
       <h1 className="text-4xl font-bold my-2">Saved Posts</h1>
       <div className="flex flex-col gap-[2rem] items-center justify-center">
         {savedPosts.map((i) => {
-          console.log(i);
           return (
             <>
               <Link to={`/user/saved/${i._id}`}>

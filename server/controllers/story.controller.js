@@ -160,11 +160,9 @@ const increaseLike = async (req, res) => {
   try {
     const { id } = req.params;
     const { _id } = req.user;
-    
-    
+
     const user = await User.findById(_id);
     const story = await Story.findById(id);
-    // console.log(story);
 
     if (!story) return res.status(404).json({ message: "Story not found" });
 
