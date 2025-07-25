@@ -87,32 +87,6 @@ const getRoutes = async (req, res) => {
   }
 };
 
-// const getSafeRoutes = async (req, res) => {
-//   try {
-//     const { source, destination, mode } = req.body;
-
-//     if (!source || !destination || !mode) {
-//       return res.status(400).json({
-//         error: "Source, destination, and mode are required",
-//       });
-//     }
-
-//     const medium =
-//       mode === "driving"
-//         ? "driving-car"
-//         : mode === "cycling"
-//         ? "cycling-regular"
-//         : "foot-walking";
-
-//     const routeData = await fetchRoutes(source, destination, medium);
-
-//   } catch (err) {
-//     res.status(500).json({
-//       message: "Error fetching safe routes",
-//       error: err,
-//     });
-//   }
-// };
 const getSafeRoutes = async (req, res) => {
   const { source, destination, mode } = req.body;
 
@@ -123,14 +97,7 @@ const getSafeRoutes = async (req, res) => {
       });
     }
 
-    const medium =
-      mode === "driving"
-        ? "driving-car"
-        : mode === "cycling"
-        ? "cycling-regular"
-        : "foot-walking";
-
-    const routeData = await fetchRoutes(source, destination, medium);
+    const routeData = await fetchRoutes(source, destination, mode);
 
     const routes = routeData.routes;
 
@@ -186,7 +153,7 @@ const getSafeRoutes = async (req, res) => {
     console.error("Error in getSafeRoutes:", err);
     return res.status(500).json({
       message: "Error fetching safe routes",
-      error: err.message || err,
+      error: err,
     });
   }
 };

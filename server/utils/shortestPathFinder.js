@@ -1,34 +1,43 @@
 const axios = require("axios");
 
 const fetchRoutes = async (start, end, mode) => {
-  console.log({
-    start: start,
-    end: end,
-    mode: mode,
-  });
+  let medium = "";
+  switch (mode) {
+    case "car":
+      medium = "driving-car";
+      break;
+    case "bike":
+      medium = "cycling-regular";
+      break;
+    case "foot":
+      medium = "foot-walking";
+      break;
+    default:
+      medium = "driving-car";
+  }
+
+  const url = `https://api.openrouteservice.org/v2/directions/${medium}`;
 
   const body = {
     coordinates: [
-      [start[0], start[1]],
-      [end[0], end[1]],
+      [start[1], start[0]], // [lng, lat]
+      [end[1], end[0]],
     ],
     alternative_routes: {
-      target_count: 3,
+      target_count: 2,
       weight_factor: 1.4,
       share_factor: 0.6,
     },
-    radiuses: [5000, 5000],
+    radiuses: 3000,
   };
-
-  const url = `https://api.openrouteservice.org/v2/directions/${mode}`;
 
   try {
     const response = await axios.post(url, body, {
       headers: {
-        Authorization: process.env.ORS_API_KEY,
-        "Content-Type": "application/json",
         Accept:
           "application/json, application/geo+json, application/gpx+xml, img/png; charset=utf-8",
+        Authorization: process.env.ORS_API_KEY,
+        "Content-Type": "application/json; charset=utf-8",
       },
     });
 
@@ -38,7 +47,7 @@ const fetchRoutes = async (start, end, mode) => {
       "Error in fetchRoutes:",
       error.response?.data || error.message
     );
-    throw error;
+    return null;
   }
 };
 
