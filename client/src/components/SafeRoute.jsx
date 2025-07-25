@@ -25,7 +25,7 @@ const SafeRoute = () => {
   const routes = useSelector((state) => state.route.routes);
 
   return (
-    <div className="w-fit flex flex-col flex-wrap items-center p-4 gap-10 border-2">
+    <div className="w-fit flex flex-col flex-wrap items-center p-4 gap-10">
       <h1 className="text-3xl font-semibold text-center">Safe Routes</h1>
       <div className="w-full">
         {routes.length === 0 ? (
