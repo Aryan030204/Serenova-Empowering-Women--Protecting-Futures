@@ -25,13 +25,13 @@ const SafeRoute = () => {
   const routes = useSelector((state) => state.route.routes);
 
   return (
-    <div className="w-fit flex flex-col flex-wrap items-center p-4 gap-10">
+    <div className="w-full flex flex-col items-center p-4 gap-10">
       <h1 className="text-3xl font-semibold text-center">Safe Routes</h1>
       <div className="w-full">
         {routes.length === 0 ? (
-          <p className="text-gray-500 text-lg">Loading routes...</p>
+          <p className="text-gray-500 text-lg text-center">Loading routes...</p>
         ) : (
-          <div className="flex lg:flex-row flex-col flex-wrap gap-8 w-full max-w-7xl">
+          <div className="flex flex-wrap justify-center gap-8 w-full max-w-7xl mx-auto">
             {routes.map((routeObj, index) => {
               const geometry = routeObj.route.geometry;
               const coordinates = polyline
@@ -42,7 +42,7 @@ const SafeRoute = () => {
               return (
                 <div
                   key={index}
-                  className="border w-[30rem] rounded-2xl shadow-md p-4 bg-white"
+                  className="border w-full sm:w-[30rem] rounded-2xl shadow-md p-4 bg-white"
                 >
                   <h2 className="text-xl font-bold mb-2 text-center">
                     Route {index + 1}
@@ -53,12 +53,11 @@ const SafeRoute = () => {
                   </p>
 
                   <MapContainer
-                    key={index}
                     center={coordinates[0]}
                     zoom={11}
                     scrollWheelZoom={true}
                     style={{ height: "350px", width: "100%" }}
-                    className="rounded-xl"
+                    className="rounded-xl z-0"
                   >
                     <TileLayer
                       url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
@@ -76,8 +75,9 @@ const SafeRoute = () => {
                       weight={5}
                     />
                   </MapContainer>
-                  <div className="flex w-full items-center">
-                    <h1 className="font-bold my-2">
+
+                  <div className="flex w-full items-center justify-center mt-3">
+                    <h1 className="font-bold">
                       Safety Score:{" "}
                       <span className="text-green-600">
                         {routeObj.safetyScore}%

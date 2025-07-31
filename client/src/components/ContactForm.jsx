@@ -51,7 +51,7 @@ const ContactForm = () => {
   };
 
   return (
-    <div className="max-w-lg mx-auto border border-purple-500 p-6 rounded-2xl shadow-md bg-white w-[50%]">
+    <div className="w-full md:w-[90%] lg:w-[50%] max-w-lg mx-auto border border-purple-500 p-6 rounded-2xl shadow-md bg-white">
       <form onSubmit={handleSubmit} className="space-y-5 w-full">
         <div>
           <label htmlFor="fullName" className="block mb-1 font-medium text-gray-700">

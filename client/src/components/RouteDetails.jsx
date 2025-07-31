@@ -193,7 +193,7 @@ const RouteDetails = () => {
   };
 
   return (
-    <div className="bg-yellow-100 p-8 rounded-2xl shadow-2xl w-full max-w-md my-12 font-sans">
+    <div className="bg-yellow-300 p-8 rounded-2xl shadow-2xl w-full max-w-md my-12 font-sans">
       <h1 className="text-3xl font-bold text-center text-red-500 mb-2">
         Safe Route Planner
       </h1>

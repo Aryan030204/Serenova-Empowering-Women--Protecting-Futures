@@ -1,72 +1,63 @@
 import guide1 from "../assets/guide1.png";
 import guide2 from "../assets/guide2.png";
 import CustomButton from "./CustomButton";
+
+const tipData = [
+  "Stick to well-lit, busy streets and avoid isolated shortcuts.",
+  "Share your route with a friend or family member.",
+  "Keep your phone accessible and fully charged.",
+  "Trust your instincts and seek help if you feel unsafe.",
+];
+
 const WhatToDo = () => {
   return (
-    <>
-      <div className="flex flex-col gap-[1rem] w-full items-center bg-purple-400 p-6">
-        <div className="flex items-center justify-center text-center">
-          <h1 className="lg:text-5xl md:text-4xl font-bold text-red-500">What you can do...</h1>
-        </div>
-        <div className="flex items-center justify-evenly gap-[2rem]">
-          <div className="flex justify-start items-center relative">
-            <img
-              src={guide1}
-              alt="guide1"
-              className="absolute z-1 lg:right-[30rem] lg:top-[-5rem] lg:w-[29rem] lg:h-[25rem] md:right-[9rem] md:top-[-1rem] md:w-[19rem] md:h-[20rem]"
-            />
-            <div className="flex flex-col gap-[1rem] font-sans text-center relative z-2 lg:right-[15rem] md:right-2">
-              <div className="flex gap-[3rem] items-center">
-                <div className="flex flex-col border-none p-[1rem] bg-red-200 md:text-sm">
-                  <h1 className="font-bold lg:text-lg">Choose Safe routes</h1>
-                  <p>
-                    Stick to well-lit, busy <br /> streets, <br /> and avoid
-                    isolated <br /> shortcuts
-                  </p>
-                </div>
-                <div className="flex flex-col border-none p-[1rem] bg-red-200 md:text-sm">
-                  <h1 className="font-bold lg:text-lg">Choose Safe routes</h1>
-                  <p>
-                    Stick to well-lit, busy <br /> streets, <br /> and avoid
-                    isolated <br /> shortcuts
-                  </p>
-                </div>
-              </div>
-              <div className="flex gap-[3rem] items-center">
-                <div className="flex flex-col border-none p-[1rem] bg-red-200 md:text-sm">
-                  <h1 className="font-bold lg:text-lg">Choose Safe routes</h1>
-                  <p>
-                    Stick to well-lit, busy <br /> streets, <br /> and avoid
-                    isolated <br /> shortcuts
-                  </p>
-                </div>
-                <div className="flex flex-col border-none p-[1rem] bg-red-200 md:text-sm">
-                  <h1 className="font-bold lg:text-lg">Choose Safe routes</h1>
-                  <p>
-                    Stick to well-lit, busy <br /> streets, <br /> and avoid
-                    isolated <br /> shortcuts
-                  </p>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div className="flex justify-center items-center font-mono font-extrabold lg:text-6xl md:text-4xl relative lg:right-[10%] md:right-3">
-            <h1>OR</h1>
-          </div>
-          <div className="flex justify-center items-center gap-[2rem] font-sans font-bold">
-            <div className="flex h-full items-center justify-center relative lg:left-[15.5rem]">
-              <CustomButton title={"Download Our App"} color={"red"} />
-            </div>
+    <div className="flex flex-col w-full items-center bg-purple-400 px-4 py-10 relative overflow-hidden">
+      <h1 className="text-center text-red-500 font-bold text-3xl md:text-4xl lg:text-5xl mb-8">
+        What you can do...
+      </h1>
 
-            <img
-              src={guide2}
-              alt="guide2"
-              className="md:hidden lg:block absolute lg:right-[1rem] lg:bottom-[-38.8rem]"
-            />
+      {/* Main Flex Area */}
+      <div className="flex flex-col lg:flex-row justify-center items-center gap-8 w-full relative z-10">
+        {/* Left: Tips with Guide Image */}
+        <div className="flex flex-col lg:flex-row items-center gap-6 relative">
+          <img
+            src={guide1}
+            alt="guide1"
+            className="w-[18rem] md:w-[22rem] lg:w-[26rem] h-auto drop-shadow-md"
+          />
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-center">
+            {tipData.map((tip, idx) => (
+              <div
+                key={idx}
+                className="bg-red-200 p-4 rounded-xl font-sans text-sm md:text-base shadow-md"
+              >
+                <h2 className="font-bold text-lg mb-1">Stay Safe Tip #{idx + 1}</h2>
+                <p>{tip}</p>
+              </div>
+            ))}
           </div>
+        </div>
+
+        {/* OR Divider */}
+        <div className="text-4xl font-extrabold font-mono text-white hidden lg:block">
+          OR
+        </div>
+
+        {/* Right: CTA with App Image */}
+        <div className="flex flex-col items-center gap-6 lg:ml-10">
+          <CustomButton title="Download Our App" color="red" />
+          <img
+            src={guide2}
+            alt="guide2"
+            className="w-[14rem] md:w-[16rem] hidden lg:block drop-shadow-lg"
+          />
         </div>
       </div>
-    </>
+
+      {/* OR on small screens */}
+      <div className="block lg:hidden mt-10 text-white text-2xl font-bold font-mono">OR</div>
+    </div>
   );
 };
 

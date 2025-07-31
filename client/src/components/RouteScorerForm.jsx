@@ -16,14 +16,16 @@ const RouteScorerForm = () => {
     accidentRate: "",
   });
 
+  const [autoLocate, setAutoLocate] = useState(false);
   const [safetyScore, setSafetyScore] = useState(null);
   const [suggestions, setSuggestions] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
 
-  // ----------------- Location Handling -----------------
+  // ----------------- Geolocation -----------------
   const getCurrentLocation = () => {
     if (!navigator.geolocation) {
-      return alert("Geolocation is not supported by your browser.");
+      alert("Geolocation is not supported by your browser.");
+      return;
     }
 
     navigator.geolocation.getCurrentPosition(
@@ -34,11 +36,27 @@ const RouteScorerForm = () => {
           currentLong: position.coords.longitude.toFixed(6),
         }));
       },
-      (error) => alert("Error fetching location: " + error.message)
+      (error) => {
+        alert("Error fetching location: " + error.message);
+        setAutoLocate(false); // revert checkbox
+      }
     );
   };
 
-  // ----------------- Location Suggestions -----------------
+  useEffect(() => {
+    if (autoLocate) {
+      getCurrentLocation();
+    } else {
+      // Allow manual input if auto-locate is off
+      setFormData((prev) => ({
+        ...prev,
+        currentLat: "",
+        currentLong: "",
+      }));
+    }
+  }, [autoLocate]);
+
+  // ----------------- Destination Suggestions -----------------
   useEffect(() => {
     const fetchSuggestions = async () => {
       if (formData.destination.length < 3) {
@@ -51,13 +69,13 @@ const RouteScorerForm = () => {
           `https://nominatim.openstreetmap.org/search?format=json&q=${formData.destination}`
         );
         const data = await res.json();
-        setSuggestions(data.slice(0, 5)); // limit to top 5
+        setSuggestions(data.slice(0, 5));
       } catch (err) {
         console.error("Error fetching suggestions:", err);
       }
     };
 
-    const debounce = setTimeout(fetchSuggestions, 500);
+    const debounce = setTimeout(fetchSuggestions, 400);
     return () => clearTimeout(debounce);
   }, [formData.destination]);
 
@@ -71,19 +89,19 @@ const RouteScorerForm = () => {
     setSuggestions([]);
   };
 
-  // ----------------- Input Change Handler -----------------
+  // ----------------- Change Handler -----------------
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  // ----------------- Form Submission -----------------
+  // ----------------- Submit -----------------
   const calculateSafetyScore = async (e) => {
     e.preventDefault();
     setIsLoading(true);
 
     try {
-      const res = await axios.post(PYTHON_APP_URL + "/predict", {
+      const res = await axios.post(`${PYTHON_APP_URL}/predict`, {
         lat1: formData.currentLat,
         lon1: formData.currentLong,
         lat2: formData.destLat,
@@ -97,79 +115,99 @@ const RouteScorerForm = () => {
 
       setSafetyScore(res.data.safety_score);
     } catch (err) {
-      console.error("Error predicting safety score:", err);
-      alert("Error predicting safety score. Try again.");
+      console.error("Prediction error:", err);
+      alert("Failed to calculate safety score. Try again.");
     } finally {
       setIsLoading(false);
     }
   };
 
-  // ----------------- Component JSX -----------------
+  // ----------------- UI -----------------
   return (
-    <div className="max-w-md mx-auto p-6 bg-gray-200 rounded-lg shadow-lg mt-6 border-2 border-purple-500">
-      <h2 className="text-2xl font-bold text-center mb-4">Safety Score Calculator</h2>
+    <div className="max-w-xl mx-auto p-6 bg-white rounded-xl shadow-xl mt-6 border-2 border-purple-500">
+      <h2 className="text-3xl font-extrabold text-center mb-6 text-purple-700">
+        🚦 Route Safety Estimator
+      </h2>
 
-      <form onSubmit={calculateSafetyScore} className="space-y-4">
+      <form onSubmit={calculateSafetyScore} className="space-y-5">
         {/* Current Location */}
         <div>
-          <label className="block font-semibold">Current Location:</label>
-          <input
-            type="text"
-            value={`${formData.currentLat || "--"}, ${formData.currentLong || "--"}`}
-            className="w-full p-2 border rounded mt-1"
-            readOnly
-          />
-          <div className="mt-2">
-            <input type="checkbox" id="auto-locate" onClick={getCurrentLocation} />
-            <label htmlFor="auto-locate" className="ml-2 text-sm">
-              Auto-fill my current location
+          <label className="block font-semibold mb-1">Source Location</label>
+          <div className="grid grid-cols-2 gap-2">
+            <input
+              type="text"
+              name="currentLat"
+              value={formData.currentLat}
+              onChange={handleChange}
+              placeholder="Latitude"
+              className="p-2 border rounded w-full"
+              disabled={autoLocate}
+            />
+            <input
+              type="text"
+              name="currentLong"
+              value={formData.currentLong}
+              onChange={handleChange}
+              placeholder="Longitude"
+              className="p-2 border rounded w-full"
+              disabled={autoLocate}
+            />
+          </div>
+          <div className="mt-2 flex items-center">
+            <input
+              type="checkbox"
+              id="auto-locate"
+              checked={autoLocate}
+              onChange={() => setAutoLocate((prev) => !prev)}
+              className="mr-2"
+            />
+            <label htmlFor="auto-locate" className="text-sm text-gray-700">
+              Detect my location
             </label>
           </div>
         </div>
 
         {/* Destination Search */}
         <div className="relative">
-          <label className="block font-semibold">Destination:</label>
+          <label className="block font-semibold mb-1">Destination</label>
           <input
             type="text"
             name="destination"
             value={formData.destination}
             onChange={handleChange}
-            className="w-full p-2 border rounded mt-1"
-            placeholder="Enter destination..."
+            placeholder="Search for destination..."
+            className="p-2 border rounded w-full"
             required
           />
-
           {suggestions.length > 0 && (
-            <ul className="absolute z-10 w-full bg-white border mt-1 rounded shadow-md max-h-40 overflow-y-auto">
-              {suggestions.map((place, index) => (
+            <ul className="absolute z-10 bg-white w-full border mt-1 rounded shadow max-h-40 overflow-y-auto">
+              {suggestions.map((place, idx) => (
                 <li
-                  key={index}
+                  key={idx}
                   onClick={() => selectDestination(place)}
-                  className="p-2 cursor-pointer hover:bg-gray-100"
+                  className="p-2 hover:bg-gray-100 cursor-pointer text-sm"
                 >
                   {place.display_name}
                 </li>
               ))}
             </ul>
           )}
-
           <div className="grid grid-cols-2 gap-2 mt-2">
             <input
               type="text"
               name="destLat"
               value={formData.destLat}
-              className="w-full p-2 border rounded"
-              placeholder="Latitude"
               readOnly
+              placeholder="Latitude"
+              className="p-2 border rounded w-full bg-gray-100"
             />
             <input
               type="text"
               name="destLong"
               value={formData.destLong}
-              className="w-full p-2 border rounded"
-              placeholder="Longitude"
               readOnly
+              placeholder="Longitude"
+              className="p-2 border rounded w-full bg-gray-100"
             />
           </div>
         </div>
@@ -183,7 +221,9 @@ const RouteScorerForm = () => {
           { label: "Accident Rate", name: "accidentRate" },
         ].map((param) => (
           <div key={param.name}>
-            <label className="block font-semibold">{param.label} (1-100):</label>
+            <label className="block font-semibold mb-1">
+              {param.label} (1-100)
+            </label>
             <input
               type="number"
               name={param.name}
@@ -191,7 +231,7 @@ const RouteScorerForm = () => {
               onChange={handleChange}
               min="1"
               max="100"
-              className="w-full p-2 border rounded mt-1"
+              className="p-2 border rounded w-full"
               required
             />
           </div>
@@ -201,17 +241,18 @@ const RouteScorerForm = () => {
         <button
           type="submit"
           disabled={isLoading}
-          className={`w-full bg-purple-600 text-white p-2 rounded font-semibold transition ${
+          className={`w-full bg-purple-600 text-white py-2 rounded-lg font-bold transition-all duration-200 ${
             isLoading ? "opacity-50 cursor-not-allowed" : "hover:bg-purple-700"
           }`}
         >
           {isLoading ? "Calculating..." : "Calculate Safety Score"}
         </button>
 
+        {/* Result */}
         {safetyScore !== null && (
-          <h1 className="text-green-600 font-bold text-xl text-center">
-            Safety Score: {Math.round(safetyScore)}%
-          </h1>
+          <div className="text-center mt-4 text-xl font-bold text-green-600">
+            ✅ Safety Score: {Math.round(safetyScore)}%
+          </div>
         )}
       </form>
     </div>

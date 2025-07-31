@@ -28,7 +28,7 @@ const Header = () => {
         />
       </Link>
 
-      {/* Hamburger Icon (Mobile) */}
+      {/* Hamburger Icon */}
       <button
         className="lg:hidden text-gray-700"
         onClick={() => setIsOpen(!isOpen)}
@@ -36,37 +36,36 @@ const Header = () => {
         {isOpen ? <X size={30} /> : <Menu size={30} />}
       </button>
 
-      {/* Desktop Nav */}
-      <nav className="hidden lg:flex items-center gap-10">
-        {navLinks.map((link) => (
-          <li key={link.path} className="list-none">
-            <Link
-              to={link.path}
-              className="text-lg font-bold transition-all ease-in-out duration-300 hover:text-purple-600"
-            >
-              {link.label}
-            </Link>
-          </li>
-        ))}
-      </nav>
+      {/* Desktop Nav & Auth */}
+      <div className="hidden lg:flex items-center gap-10">
+        <nav className="flex items-center gap-10">
+          {navLinks.map((link) => (
+            <li key={link.path} className="list-none">
+              <Link
+                to={link.path}
+                className="text-lg font-bold transition-all ease-in-out duration-300 hover:text-purple-600"
+              >
+                {link.label}
+              </Link>
+            </li>
+          ))}
+        </nav>
 
-      {/* Auth/Profile (Desktop) */}
-      <div className="hidden lg:flex items-center">
-        <SOSBtn />
-        {user ? (
-          <div className="flex items-center gap-5">
+        <div className="flex items-center gap-5">
+          <SOSBtn />
+          {user ? (
             <Profile user={user} />
-          </div>
-        ) : (
-          <Link to="/login" className=" text-lg font-semibold hover:underline">
-            login
-          </Link>
-        )}
+          ) : (
+            <Link to="/login" className="text-lg font-semibold hover:underline">
+              login
+            </Link>
+          )}
+        </div>
       </div>
 
       {/* Mobile Dropdown */}
       {isOpen && (
-        <ul className="lg:hidden absolute top-16 left-0 w-full bg-white shadow-lg border-t border-gray-200 flex flex-col items-center py-4 space-y-2 z-50">
+        <ul className="lg:hidden absolute top-[5rem] left-0 w-full bg-white shadow-lg border-t border-gray-200 flex flex-col items-center py-4 space-y-4 z-50">
           {navLinks.map((link) => (
             <li key={link.path}>
               <Link
@@ -81,8 +80,10 @@ const Header = () => {
 
           {user ? (
             <>
-              <Profile user={user} />
-              <SOSBtn />
+              <div className="flex flex-col items-center space-y-3">
+                <Profile user={user} />
+                <SOSBtn />
+              </div>
             </>
           ) : (
             <li>

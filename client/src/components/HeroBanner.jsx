@@ -8,61 +8,46 @@ const HeroBanner = () => {
   useEffect(() => {
     gsap.fromTo(
       ".hero2",
-      {
-        opacity: 0,
-        x: 100,
-      },
-      {
-        opacity: 1,
-        x: 0,
-        duration: 1,
-        ease: "power2.out",
-      }
+      { opacity: 0, x: 100 },
+      { opacity: 1, x: 0, duration: 1, ease: "power2.out" }
     );
     gsap.fromTo(
       ".hero1",
-      {
-        opacity: 0,
-        x: 50,
-      },
-      {
-        opacity: 1,
-        x: 0,
-        duration: 2,
-        ease: "power2.out",
-      }
+      { opacity: 0, x: 50 },
+      { opacity: 1, x: 0, duration: 2, ease: "power2.out" }
     );
   }, []);
 
   return (
-    <div className="flex bg-purple-400 lg:w-full lg:h-[40vh] md:h-[17rem]">
-      <div className="flex flex-col w-[60%]">
-        <div className="w-full">
-          <h1 className="text-white font-bold lg:text-7xl ml-[2rem] my-2 md:text-3xl md:mt-[1rem] drop-shadow-[0px_0px_1px_black] headerr">
-            <span className="text-red-500">THEY</span> BUILT CAGES, <br /> SHE
-            GREW <span className="text-blue-600">WINGS...</span>
-          </h1>
-        </div>
-        <div className="w-full">
-          <p className="text-white relative font-bold lg:ml-[2.5rem] lg:mt-4 md:text-sm md:ml-[2rem] drop-shadow-[0px_0px_1px_black]">
-            Protection at your fingertips, <br /> because every woman deserves
-            to feel secure!
-          </p>
-        </div>
-        <div className="w-fit bg-white font-semibold p-2 shadow-lg relative lg:left-[2.5rem] top-3 border-none rounded-3xl cursor-pointer md:left-[1.8rem] transition-all ease-in-out duration-300 hover:text-white hover:bg-black">
-          <Link to="/login" className="md:text-sm">
+    <div className="flex flex-col lg:flex-row bg-purple-400 w-full lg:h-[40vh] md:h-[17rem] px-4 py-6 md:py-0">
+      {/* Text Section */}
+      <div className="w-full lg:w-[60%] flex flex-col justify-center">
+        <h1 className="text-white font-bold lg:text-7xl md:text-3xl text-2xl ml-4 my-2 drop-shadow-[0px_0px_1px_black]">
+          <span className="text-red-500">THEY</span> BUILT CAGES, <br />
+          SHE GREW <span className="text-blue-600">WINGS...</span>
+        </h1>
+        <p className="text-white font-bold ml-4 mt-2 md:text-sm text-xs drop-shadow-[0px_0px_1px_black]">
+          Protection at your fingertips, <br />
+          because every woman deserves to feel secure!
+        </p>
+        <div className="w-fit bg-white font-semibold px-4 py-2 mt-4 ml-4 rounded-3xl shadow-lg transition-all duration-300 hover:text-white hover:bg-black">
+          <Link to="/login" className="text-sm md:text-base">
             <button>JOIN NOW</button>
           </Link>
         </div>
       </div>
-      <div className="flex w-[40%] gap-2">
+
+      {/* Image Section */}
+      <div className="w-full lg:w-[40%] flex justify-center items-center relative mt-6 lg:mt-0">
         <img
           src={hero2}
-          className="relative lg:top-[12.5rem] lg:left-[7rem] w-[32rem] h-[13rem] md:left-[-4rem] md:top-[5.5rem] hero2"
+          alt="hero2"
+          className="hero2 absolute lg:top-[12.5rem] lg:left-[7rem] w-[20rem] md:w-[18rem] sm:w-[16rem] h-auto"
         />
         <img
           src={hero1}
-          className="relative lg:bottom-[4.5rem] lg:h-[32rem] md:h-[22rem] lg:right-[1rem] md:bottom-[3rem] md:right-[8.5rem] hero1"
+          alt="hero1"
+          className="hero1 relative lg:bottom-[4.5rem] lg:h-[32rem] md:h-[22rem] h-[18rem] lg:right-[1rem]"
         />
       </div>
     </div>

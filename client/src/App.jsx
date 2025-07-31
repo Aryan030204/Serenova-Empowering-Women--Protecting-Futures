@@ -43,7 +43,6 @@ function App() {
           <Route path="/blog/stories/:id" element={<OpenedPost />} />
           <Route path="/blog/:id/saved" element={<SavedPosts />} />
           <Route path="/user/saved/:id" element={<SavedPost />} />
-
           <Route path="/posts/new" element={user && <CreatePost />} />
           <Route path="/user/drafts" element={user ? <Drafts /> : <Login />} />
           <Route path="/user/draft/:id" element={<DraftPost />} />
