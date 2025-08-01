@@ -47,7 +47,7 @@ const HeroFeatures = () => {
         Our Features
       </h1>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 w-full max-w-7xl">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 w-full max-w-7xl">
         {features.map((feature, idx) => (
           <div
             key={idx}
@@ -55,7 +55,7 @@ const HeroFeatures = () => {
           >
             <div className="mb-4 text-white">{feature.icon}</div>
             <h2 className="text-xl font-bold mb-2">{feature.title}</h2>
-            <p className="font-serif text-sm">{feature.desc}</p>
+            <p className="font-sans text-lg">{feature.desc}</p>
           </div>
         ))}
       </div>
