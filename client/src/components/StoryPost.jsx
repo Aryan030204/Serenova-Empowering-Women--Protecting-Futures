@@ -12,6 +12,7 @@ import Pagination from "./Pagination";
 
 const StoryPost = () => {
   const stories = useSelector((state) => state.stories.stories);
+  console.log("component mounted");
   const [savedStories, setSavedStories] = useState([]);
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
