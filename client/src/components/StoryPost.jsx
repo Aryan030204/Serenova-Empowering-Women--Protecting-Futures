@@ -17,12 +17,13 @@ const StoryPost = () => {
   const [totalPages, setTotalPages] = useState(1);
   const dispatch = useDispatch();
   const [user, setUser] = useState(JSON.parse(localStorage.getItem("user")));
-
+  // const SERVER_URL = import.meta.env.SERVER_URL;
   const updateUser = async () => {
     try {
       const res = await axios.get(`${SERVER_URL}/profile`, {
         withCredentials: true,
       });
+
       setUser(res.data.data);
       localStorage.setItem("user", JSON.stringify(res.data.data));
     } catch (err) {
@@ -37,7 +38,7 @@ const StoryPost = () => {
         {},
         { withCredentials: true }
       );
-      await updateUser();
+      await updateUser(); // <-- update user first
       await getStories();
     } catch (err) {
       console.log(err);
@@ -51,7 +52,7 @@ const StoryPost = () => {
         {},
         { withCredentials: true }
       );
-      await updateUser();
+      await updateUser(); // <-- update user first
       await getStories();
     } catch (err) {
       console.log(err);
@@ -121,97 +122,115 @@ const StoryPost = () => {
 
   useEffect(() => {
     getStories();
-    updateUser();
   }, []);
 
   return (
-    <div className="flex flex-col justify-evenly w-full h-fit p-2 gap-6">
-      {stories.map((i) => {
-        const months = [
-          "January", "February", "March", "April", "May", "June",
-          "July", "August", "September", "October", "November", "December",
-        ];
-        const dateParts = i.createdAt.split("T")[0].split("-");
-        const timePart = i.createdAt.split("T")[1].split(".")[0];
-        const formattedDate = `${dateParts[2]}th ${
-          months[+dateParts[1] - 1]
-        }, ${dateParts[0]} ${timePart}`;
+    <>
+      <div className="flex flex-col justify-evenly rounded-lg md:w-fit h-fit p-3 lg:w-[60%] gap-[2rem]">
+        {stories.map((i) => {
+          const months = [
+            "January",
+            "February",
+            "March",
+            "April",
+            "May",
+            "June",
+            "July",
+            "August",
+            "September",
+            "October",
+            "November",
+            "December",
+          ];
+          const dateParts = i.createdAt.split("T")[0].split("-");
+          const timePart = i.createdAt.split("T")[1].split(".")[0];
+          const formattedDate = `${dateParts[2]}th ${
+            months[+dateParts[1] - 1]
+          }, ${dateParts[0]} ${timePart}`;
 
-        const isLiked = user?.likedPosts?.includes(i._id);
-        const isDisliked = user?.dislikedPosts?.includes(i._id);
+          const isLiked = user?.likedPosts?.includes(i._id);
+          const isDisliked = user?.dislikedPosts?.includes(i._id);
 
-        return (
-          <div
-            key={i._id}
-            className="flex flex-col gap-2 p-4 bg-gray-800 rounded-3xl shadow-xl shadow-purple-500 text-white"
-          >
-            <Link
-              to={`stories/${i._id}`}
-              onClick={() => viewStory(i._id)}
-              className="w-full"
+          return (
+            <div
+              key={i._id}
+              className="flex flex-col gap-2 mt-2 p-3 bg-gray-800 rounded-3xl shadow-purple-500 shadow-xl text-white"
             >
-              <h1 className="text-yellow-400 text-xl md:text-2xl font-bold">
-                {i.title}
-              </h1>
-              <div className="flex gap-2 text-sm opacity-70 mt-1">
-                <p>Posted: {formattedDate}</p>
-                <span>•</span>
-                <p>{i.author}</p>
+              <Link to={`stories/${i._id}`} onClick={() => viewStory(i._id)}>
+                <div className="w-full flex flex-col text-3xl font-bold text-start">
+                  <h1 className="text-yellow-400">{i.title}</h1>
+                  <div className="flex gap-2 items-center justify-start">
+                    <h1 className="text-sm font-normal opacity-50 mt-1">
+                      Posted: {formattedDate}
+                    </h1>
+                    <h1 className="text-sm font-normal opacity-50 mt-1">
+                      {i.author}
+                    </h1>
+                  </div>
+                  <div className="w-full h-[1px] mt-3 mb-2 bg-white"></div>
+                </div>
+                <div className="w-full text-lg text-start whitespace-pre-line my-1">
+                  <p className="overflow-hidden">{i.content}</p>
+                </div>
+              </Link>
+
+              {/* navigation */}
+              <div className="flex gap-2 w-full justify-between p-1 text-2xl items-center mt-3">
+                <div className="flex gap-2">
+                  <div className="flex gap-1 text-lg">
+                    <button
+                      onClick={() => {
+                        if (!user) return toast.error("Login required");
+                        likeStory(i._id);
+                      }}
+                    >
+                      {isLiked ? <ThumbsUp fill="blue" /> : <ThumbsUp />}
+                    </button>
+                    <h1>{i.likes || 0}</h1>
+                  </div>
+                  <div className="flex gap-1 text-lg">
+                    <button
+                      onClick={() => {
+                        if (!user) return toast.error("Login required");
+                        dislikeStory(i._id);
+                      }}
+                    >
+                      {isDisliked ? <ThumbsDown fill="red" /> : <ThumbsDown />}
+                    </button>
+                    <h1>{i.dislikes || 0}</h1>
+                  </div>
+                  <div className="flex gap-1 text-lg">
+                    <button onClick={() => saveStory(i._id)}>
+                      {savedStories.includes(i._id) ? (
+                        <Bookmark fill="white" />
+                      ) : (
+                        <Bookmark />
+                      )}
+                    </button>
+                  </div>
+                  <div className="flex gap-1 justify-end text-lg">
+                    <button>
+                      <Share2 />
+                    </button>
+                  </div>
+                </div>
+                <div className="flex">
+                  <h1 className="text-lg opacity-50">{i.views} views</h1>
+                </div>
               </div>
-              <hr className="my-3 border-white/30" />
-              <p className="whitespace-pre-line text-base md:text-lg">
-                {i.content}
-              </p>
-            </Link>
-
-            <div className="flex flex-wrap justify-between items-center mt-3 gap-3">
-              <div className="flex gap-3 text-lg items-center">
-                <button
-                  onClick={() => {
-                    if (!user) return toast.error("Login required");
-                    likeStory(i._id);
-                  }}
-                >
-                  {isLiked ? <ThumbsUp fill="blue" /> : <ThumbsUp />}
-                </button>
-                <span>{i.likes || 0}</span>
-
-                <button
-                  onClick={() => {
-                    if (!user) return toast.error("Login required");
-                    dislikeStory(i._id);
-                  }}
-                >
-                  {isDisliked ? <ThumbsDown fill="red" /> : <ThumbsDown />}
-                </button>
-                <span>{i.dislikes || 0}</span>
-
-                <button onClick={() => saveStory(i._id)}>
-                  {savedStories.includes(i._id) ? (
-                    <Bookmark fill="white" />
-                  ) : (
-                    <Bookmark />
-                  )}
-                </button>
-
-                <button>
-                  <Share2 />
-                </button>
-              </div>
-              <span className="text-sm opacity-50">{i.views} views</span>
             </div>
-          </div>
-        );
-      })}
-      <ToastContainer />
-      <div className="w-full flex justify-center">
-        <Pagination
-          page={page}
-          totalPages={totalPages}
-          fetchStories={getStories}
-        />
+          );
+        })}
+        <ToastContainer />
+        <div className="w-full flex justify-center">
+          <Pagination
+            page={page}
+            totalPages={totalPages}
+            fetchStories={getStories}
+          />
+        </div>
       </div>
-    </div>
+    </>
   );
 };
 
