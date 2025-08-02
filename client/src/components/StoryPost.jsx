@@ -17,7 +17,7 @@ const StoryPost = () => {
   const [totalPages, setTotalPages] = useState(1);
   const dispatch = useDispatch();
   const [user, setUser] = useState(JSON.parse(localStorage.getItem("user")));
-  // const SERVER_URL = import.meta.env.SERVER_URL;
+
   const updateUser = async () => {
     try {
       const res = await axios.get(`${SERVER_URL}/profile`, {
@@ -114,7 +114,9 @@ const StoryPost = () => {
       dispatch(setstories(res.data.stories));
       setPage(res.data.currentPage);
       setTotalPages(res.data.totalPages);
-      getSavedStories();
+      if (user !== null) {
+        getSavedStories();
+      }
     } catch (err) {
       console.error("Error fetching stories:", err);
     }
