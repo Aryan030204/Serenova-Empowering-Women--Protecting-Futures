@@ -86,7 +86,7 @@ const ChatWindow = ({ setIsOpen }) => {
 
   return (
     <div
-      className={`flex flex-col justify-between w-full h-full bg-red-200 rounded-2xl rounded-br-none shadow-xl drop-shadow-lg outline outline-1 transition-all duration-300 ease-in-out ${
+      className={`flex flex-col justify-between w-full h-full bg-red-200 rounded-2xl rounded-br-none shadow-2xl drop-shadow-2xl transition-all duration-300 ease-in-out ${
         show ? "opacity-100 scale-100" : "opacity-0 scale-90"
       }`}
     >

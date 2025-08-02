@@ -157,13 +157,13 @@ const StoryPost = () => {
           return (
             <div
               key={i._id}
-              className="flex flex-col gap-2 mt-2 p-3 bg-gray-800 rounded-3xl shadow-purple-500 shadow-xl text-white"
+              className="flex flex-col w-[17rem] lg:w-fit max-h-[22rem] lg:h-fit gap-2 mt-2 p-3 bg-gray-800 rounded-3xl shadow-purple-500 shadow-xl text-white"
             >
               <Link to={`stories/${i._id}`} onClick={() => viewStory(i._id)}>
-                <div className="w-full flex flex-col text-3xl font-bold text-start">
+                <div className="w-full flex flex-col lg:text-3xl text-lg font-bold text-start">
                   <h1 className="text-yellow-400">{i.title}</h1>
                   <div className="flex gap-2 items-center justify-start">
-                    <h1 className="text-sm font-normal opacity-50 mt-1">
+                    <h1 className="text-sm  font-normal opacity-50 mt-1">
                       Posted: {formattedDate}
                     </h1>
                     <h1 className="text-sm font-normal opacity-50 mt-1">
@@ -172,15 +172,22 @@ const StoryPost = () => {
                   </div>
                   <div className="w-full h-[1px] mt-3 mb-2 bg-white"></div>
                 </div>
-                <div className="w-full text-lg text-start whitespace-pre-line my-1">
-                  <p className="overflow-hidden">{i.content}</p>
+                <div className="w-full lg:text-lg text-sm text-start whitespace-pre-line my-1">
+                  <p className="overflow-hidden">
+                    {i.content.slice(
+                      0,
+                      i.content.length -
+                        i.content.length / 2 -
+                        i.content.length / 4
+                    )}... <Link to={`stories/${i._id}`} className="text-blue-100 underline">Read more</Link>
+                  </p>
                 </div>
               </Link>
 
               {/* navigation */}
-              <div className="flex gap-2 w-full justify-between p-1 text-2xl items-center mt-3">
+              <div className="flex gap-2 w-full justify-between p-1 text-sm lg:text-2xl items-center mt-1">
                 <div className="flex gap-2">
-                  <div className="flex gap-1 text-lg">
+                  <div className="flex gap-1 lg:text-lg">
                     <button
                       onClick={() => {
                         if (!user) return toast.error("Login required");
@@ -191,7 +198,7 @@ const StoryPost = () => {
                     </button>
                     <h1>{i.likes || 0}</h1>
                   </div>
-                  <div className="flex gap-1 text-lg">
+                  <div className="flex gap-1 lg:text-lg">
                     <button
                       onClick={() => {
                         if (!user) return toast.error("Login required");
@@ -202,7 +209,7 @@ const StoryPost = () => {
                     </button>
                     <h1>{i.dislikes || 0}</h1>
                   </div>
-                  <div className="flex gap-1 text-lg">
+                  <div className="flex gap-1 lg:text-lg">
                     <button onClick={() => saveStory(i._id)}>
                       {savedStories.includes(i._id) ? (
                         <Bookmark fill="white" />
@@ -211,14 +218,14 @@ const StoryPost = () => {
                       )}
                     </button>
                   </div>
-                  <div className="flex gap-1 justify-end text-lg">
+                  <div className="flex gap-1 justify-end lg:text-lg">
                     <button>
                       <Share2 />
                     </button>
                   </div>
                 </div>
                 <div className="flex">
-                  <h1 className="text-lg opacity-50">{i.views} views</h1>
+                  <h1 className="lg:text-lg opacity-50">{i.views} views</h1>
                 </div>
               </div>
             </div>
