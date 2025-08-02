@@ -6,11 +6,12 @@ import { Link } from "react-router";
 import { SERVER_URL } from "../utils/config";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { useSelector } from "react-redux";
 
 const MyPosts = () => {
   const [myPosts, setMyPosts] = useState([]);
-  const user = JSON.parse(localStorage.getItem("user"));
-  // const SERVER_URL = import.meta.env.SERVER_URL;
+  const user = useSelector(state => state.user.user);
+  
   const getMyPosts = async () => {
     try {
       const res = await axios.get(SERVER_URL + `/${user._id}/stories`, {

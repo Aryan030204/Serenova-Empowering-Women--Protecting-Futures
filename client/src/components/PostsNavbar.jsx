@@ -2,10 +2,10 @@ import { Link } from "react-router";
 import { SERVER_URL } from "../utils/config";
 import axios from "axios";
 import { setstories } from "../utils/storiesSlice";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
 const PostsNavbar = () => {
-  const user = JSON.parse(localStorage.getItem("user"));
+  const user = useSelector(state => state.user.user);
   const dispatch = useDispatch();
 
   const fetchStories = async (type) => {

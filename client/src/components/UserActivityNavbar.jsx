@@ -1,9 +1,10 @@
+import { useSelector } from "react-redux";
 import PostsNavbar from "../components/PostsNavbar";
 import StoryPost from "../components/StoryPost";
 import UserActivityNavbar from "../components/UserActivityNavbar";
 
 const Stories = () => {
-  const user = localStorage.getItem("user");
+  const user = useSelector(state => state.user.user);
 
   return (
     <div className="flex flex-col w-full justify-center items-center p-2 bg-purple-200">

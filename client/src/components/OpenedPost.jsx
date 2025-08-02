@@ -8,6 +8,7 @@ import "react-toastify/ReactToastify.css";
 import PostsNavbar from "./PostsNavbar";
 import UserActivityNavbar from "./UserActivityNavbar";
 import { Bookmark, Share2, ThumbsDown, ThumbsUp } from "lucide-react";
+import { useSelector } from "react-redux";
 
 const OpenedPost = () => {
   const { id } = useParams();
@@ -16,7 +17,7 @@ const OpenedPost = () => {
   const [liked, setLiked] = useState(false);
   const [disliked, setDisliked] = useState(false);
   const [savedStories, setSavedStories] = useState([]);
-  const user = localStorage.getItem("user");
+  const user = useSelector(state => state.user.user);
   const months = [
     "January",
     "February",
