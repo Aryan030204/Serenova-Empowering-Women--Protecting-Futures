@@ -148,7 +148,7 @@ const Footer = () => {
 
                 <button
                   type="submit"
-                  className="inline-flex items-center justify-center px-3 py-3 mt-3 w-[6rem] font-semibold text-white transition-all duration-200 bg-purple-600 rounded-md hover:bg-purple-700 focus:bg-purple-700"
+                  className="inline-flex items-center justify-center px-3 py-3 mt-3 w-[6rem] font-semibold text-white transition-all duration-200 bg-purple-950 rounded-md hover:bg-purple-700 focus:bg-purple-700"
                 >
                   Send
                 </button>

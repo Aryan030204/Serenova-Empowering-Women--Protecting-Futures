@@ -157,7 +157,7 @@ const StoryPost = () => {
           return (
             <div
               key={i._id}
-              className="flex flex-col w-[17rem] lg:w-fit max-h-[22rem] lg:h-fit gap-2 mt-2 p-3 bg-gray-800 rounded-3xl shadow-purple-500 shadow-xl text-white"
+              className="flex flex-col w-[17rem] lg:w-fit max-h-[22rem] lg:h-fit gap-2 mt-2 p-3 bg-gray-800 rounded-3xl shadow-xl text-white"
             >
               <Link to={`stories/${i._id}`} onClick={() => viewStory(i._id)}>
                 <div className="w-full flex flex-col lg:text-3xl text-lg font-bold text-start">
