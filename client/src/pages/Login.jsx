@@ -1,5 +1,5 @@
 /* eslint-disable react/no-unescaped-entities */
-import { Button, TextField } from "@mui/material";
+import { TextField } from "@mui/material";
 import { Link, useNavigate } from "react-router";
 import { Eye, EyeOff } from "lucide-react";
 import { useState } from "react";
@@ -19,7 +19,8 @@ const Login = () => {
   // const SERVER_URL = import.meta.env.SERVER_URL;
   const navigate = useNavigate();
 
-  const handleLogin = async () => {
+  const handleLogin = async (e) => {
+    e.preventDefault();
     if (!email || !password) {
       return toast.error("Please fill all fields");
     }
@@ -46,7 +47,7 @@ const Login = () => {
   return (
     <>
       <div className="flex items-center justify-center">
-        <div>
+        <div className="hidden lg:block">
           <div className="relative right-[22rem] top-10">
             <QuoteBox
               quote="Empowered women empower the world—rise, lead, and inspire change with courage, confidence, and resilience."
@@ -93,14 +94,15 @@ const Login = () => {
                   {hidden ? <EyeOff /> : <Eye />}
                 </div>
               </div>
-
-              <Button
-                variant="contained"
-                color="secondary"
-                onClick={() => handleLogin()}
-              >
-                Login
-              </Button>
+              <div className="w-full flex items-center justify-center">
+                <button
+                type="button"
+                  className="bg-purple-700 w-1/3 p-2 rounded-lg shadow-2xl font-bold text-white hover:bg-purple-800 transition-all ease-in-out"
+                  onClick={handleLogin}
+                >
+                  Login
+                </button>
+              </div>
             </form>
 
             <h1 className="relative top-4 font-semibold">
@@ -114,7 +116,7 @@ const Login = () => {
           </div>
         </div>
 
-        <div>
+        <div className="hidden lg:block">
           <div className="relative left-[18rem]">
             <QuoteBox
               quote="Empowered women empower the world—rise, lead, and inspire change with courage, confidence, and resilience."

@@ -14,7 +14,6 @@ const ProfileForm = () => {
     age: "",
     gender: "",
   });
-  // const SERVER_URL = import.meta.env.SERVER_URL;
 
   const [saved, setSaved] = useState(false);
 
@@ -63,13 +62,13 @@ const ProfileForm = () => {
   const avatar = formData.gender === "male" ? male : female;
 
   return (
-    <div className="flex flex-col items-center gap-5 p-6 lg:w-1/4 md:w-1/2 my-8 border-2 border-purple-500 shadow-lg bg-purple-50 rounded-xl">
+    <div className="flex flex-col items-center gap-5 p-6 lg:w-1/4 md:w-1/2 my-8 border-2 bg-purple-50 drop-shadow-[0px_1px_9px] shadow-lg rounded-xl">
       <h1 className="text-2xl font-bold text-blue-600">My Profile</h1>
 
       <img
         src={avatar}
         alt="User avatar"
-        className="w-40 h-40 object-cover border-4 border-black rounded-full"
+        className="w-20 h-20 lg:w-40 lg:h-40 object-cover border-4 border-black rounded-full"
       />
 
       <div className="flex flex-col w-[80%] gap-4">
@@ -96,7 +95,7 @@ const ProfileForm = () => {
       </div>
 
       <button
-        className="mt-2 bg-red-500 hover:bg-red-600 text-white font-bold text-lg px-6 py-2 rounded-lg shadow-lg transition-colors"
+        className="mt-2 bg-green-600 hover:bg-green-500 text-white font-bold text-lg px-6 py-2 rounded-lg shadow-lg transition-colors"
         onClick={handleUpdate}
       >
         {saved ? "Saved!" : "Save Profile"}

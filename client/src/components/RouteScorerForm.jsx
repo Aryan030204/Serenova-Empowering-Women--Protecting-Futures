@@ -126,7 +126,7 @@ const RouteScorerForm = () => {
   return (
     <div className="min-w-[22rem] mx-auto p-6 bg-white rounded-xl shadow-xl mt-6 border-2 border-purple-500">
       <h2 className="text-3xl font-extrabold text-center mb-6 text-purple-700">
-        🚦 Route Safety Estimator
+        Manual Safety Score Calculator
       </h2>
 
       <form onSubmit={calculateSafetyScore} className="space-y-5">
