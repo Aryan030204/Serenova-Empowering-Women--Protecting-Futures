@@ -12,7 +12,6 @@ import Pagination from "./Pagination";
 
 const StoryPost = () => {
   const stories = useSelector((state) => state.stories.stories);
-  console.log("component mounted");
   const [savedStories, setSavedStories] = useState([]);
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
@@ -219,7 +218,10 @@ const StoryPost = () => {
                     </button>
                   </div>
                   <div className="flex gap-1 justify-end lg:text-lg">
-                    <button>
+                    <button onClick={() => {
+                      navigator.clipboard.writeText(`${SERVER_URL}/stories/${i._id}`); 
+                      toast.success("Link copied to clipboard");
+                    }}>
                       <Share2 />
                     </button>
                   </div>
