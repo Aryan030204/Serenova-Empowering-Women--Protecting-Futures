@@ -28,7 +28,7 @@ function App() {
 
   return (
     <BrowserRouter>
-      <div className="flex flex-col h-[100vh]">
+      <div className="flex flex-col min-h-screen">
         <Header />
         <ChatButton />
         <Routes>

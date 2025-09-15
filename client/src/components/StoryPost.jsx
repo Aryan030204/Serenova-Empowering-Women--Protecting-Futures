@@ -2,7 +2,7 @@
 import { Bookmark, Share2, ThumbsDown, ThumbsUp } from "lucide-react";
 import axios from "axios";
 import { SERVER_URL } from "../utils/config";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -17,6 +17,8 @@ const StoryPost = () => {
   const [totalPages, setTotalPages] = useState(1);
   const dispatch = useDispatch();
   const [user, setUser] = useState(JSON.parse(localStorage.getItem("user")));
+  const [loading, setLoading] = useState(false);
+  const listRef = useRef(null);
 
   const updateUser = async () => {
     try {
@@ -108,6 +110,7 @@ const StoryPost = () => {
 
   const getStories = async (page = 1) => {
     try {
+      setLoading(true);
       const res = await axios.get(
         `${SERVER_URL}/stories/all?page=${page}&limit=5`
       );
@@ -117,8 +120,15 @@ const StoryPost = () => {
       if (user !== null) {
         getSavedStories();
       }
+      // scroll list into view on page change
+      setTimeout(() => {
+        listRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+      }, 0);
     } catch (err) {
       console.error("Error fetching stories:", err);
+    }
+    finally {
+      setLoading(false);
     }
   };
 
@@ -128,8 +138,14 @@ const StoryPost = () => {
 
   return (
     <>
-      <div className="flex flex-col justify-evenly rounded-lg md:w-fit h-fit p-3 lg:w-[60%] gap-[2rem]">
-        {stories.map((i) => {
+      <div ref={listRef} className="flex flex-col justify-evenly rounded-lg md:w-fit h-fit p-3 lg:w-[60%] gap-[2rem] reveal" id="stories-list">
+        {loading && (
+          <div className="text-center text-sm opacity-70">Loading stories...</div>
+        )}
+        {!loading && stories.length === 0 && (
+          <div className="text-center text-sm opacity-70">No stories found for this page.</div>
+        )}
+        {!loading && stories.map((i, idx) => {
           const months = [
             "January",
             "February",
@@ -156,7 +172,8 @@ const StoryPost = () => {
           return (
             <div
               key={i._id}
-              className="flex flex-col w-[17rem] lg:w-fit max-h-[22rem] lg:h-fit gap-2 mt-2 p-3 bg-gray-800 rounded-3xl shadow-xl text-white"
+              className="flex flex-col w-[17rem] lg:w-fit max-h-[22rem] lg:h-fit gap-2 mt-2 p-3 bg-gray-800 rounded-3xl shadow-xl text-white animate-fade-up"
+              style={{ animationDelay: `${idx * 80}ms` }}
             >
               <Link to={`stories/${i._id}`} onClick={() => viewStory(i._id)}>
                 <div className="w-full flex flex-col lg:text-3xl text-lg font-bold text-start">
